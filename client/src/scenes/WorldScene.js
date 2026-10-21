@@ -142,7 +142,8 @@ export class WorldScene extends Phaser.Scene {
     this.bubbleOther = this.add.text(0, 0, '', { fontFamily: 'VT323', fontSize: '12px', color: '#2a1f2d', backgroundColor: '#f3efe4', padding: { x: 3, y: 1 } }).setOrigin(0.5, 1).setDepth(9700).setResolution(4).setVisible(false);
 
     // input
-    this.keys = this.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,E,SPACE,ESC');
+    this.keys = this.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,E,SPACE,ESC', false);
+    this.input.keyboard.disableGlobalCapture();
     this.input.keyboard.on('keydown-E', () => this.onInteractKey());
     this.input.keyboard.on('keydown-SPACE', () => this.onInteractKey());
     this.input.keyboard.on('keydown-ESC', () => { if (this.lookout) this.setLookout(false); });

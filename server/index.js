@@ -10,6 +10,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import { createState, restoreState, applyAction, tick, SLOTS, other } from '../shared/logic.js';
@@ -272,7 +273,13 @@ setInterval(() => {
 }, 100);
 
 loadRooms();
-server.listen(PORT, () => log(`Beacon Isle server on http://localhost:${PORT}`));
+server.listen(PORT, () => {
+  log(`Beacon Isle server on http://localhost:${PORT}`);
+  // addresses another computer on the same Wi-Fi can use
+  for (const list of Object.values(os.networkInterfaces())) {
+    for (const a of list || []) if (a.family === 'IPv4' && !a.internal) log(`  same Wi-Fi: http://${a.address}:${PORT}`);
+  }
+});
 
 for (const sig of ['SIGINT', 'SIGTERM']) {
   process.on(sig, () => {

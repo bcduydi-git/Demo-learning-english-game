@@ -9,7 +9,7 @@
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
 
-const URL = process.env.URL || 'http://localhost:8090/';
+const URL = process.env.URL || 'http://localhost:8080/';
 const OUT = process.env.OUT || '/tmp/claude-0/shots';
 const EXE = process.env.CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 fs.mkdirSync(OUT, { recursive: true });
@@ -124,6 +124,9 @@ try {
   await a.click('button.chip:has-text("Yes, I can hear you.")');
   await closeModal(a);
   await press(b, 'r');
+  await b.click('#radio input.en-input');
+  await b.keyboard.type("Let's go, wait and see!", { delay: 20 });
+  if ((await b.inputValue('#radio input.en-input')) !== "Let's go, wait and see!") throw new Error('typing into the radio box was blocked');
   await b.fill('#radio input.en-input', "Let's go!");
   await b.keyboard.press('Enter');
   await sleep(300);

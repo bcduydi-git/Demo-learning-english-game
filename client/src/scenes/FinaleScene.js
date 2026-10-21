@@ -26,7 +26,8 @@ export class FinaleScene extends Phaser.Scene {
     this.hintLevel = 0;
     this.beamShown = 0;
     this.lastBeamSent = 0;
-    this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,A,D');
+    this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,A,D', false);
+    this.input.keyboard.disableGlobalCapture();
     this.ui = h('div', { class: 'pass' });
     document.getElementById('ui').append(this.ui);
     this.events.once('shutdown', () => { this.ui.remove(); G.typing = false; stopSpeech(); });
@@ -320,14 +321,14 @@ export class FinaleScene extends Phaser.Scene {
     const ml = mastLane(b.t);
     this.mast.setVisible(ml !== null);
     if (ml !== null) this.mast.x = X0 + (ml + 0.5) * LANE_W;
-    this.bubble.setPosition(this.boat.x, this.boat.y - 30);
+    this.bubble.setPosition(this.boat.x, this.boat.y - 30).setVisible(this.bubble.text !== '');
 
     // beam angle: the beamer steers locally, everyone else follows the state
     const mineBeam = b.beamer === G.slot;
     if (mineBeam) {
       if (this.localBeam === undefined) this.localBeam = b.beam;
-      if (this.keys.LEFT.isDown || this.keys.A.isDown) this.localBeam = Math.max(-70, this.localBeam - 80 * dt);
-      if (this.keys.RIGHT.isDown || this.keys.D.isDown) this.localBeam = Math.min(70, this.localBeam + 80 * dt);
+      if (!G.busy && (this.keys.LEFT.isDown || this.keys.A.isDown)) this.localBeam = Math.max(-70, this.localBeam - 80 * dt);
+      if (!G.busy && (this.keys.RIGHT.isDown || this.keys.D.isDown)) this.localBeam = Math.min(70, this.localBeam + 80 * dt);
       this.beamShown = this.localBeam;
       if (time - this.lastBeamSent > 100 && Math.abs(this.localBeam - b.beam) > 0.5) {
         this.lastBeamSent = time;

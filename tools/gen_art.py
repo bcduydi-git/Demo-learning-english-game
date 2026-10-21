@@ -8,6 +8,7 @@ import json
 import math
 import os
 import random
+import sys
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -1150,9 +1151,12 @@ def main():
     save(rug(), 'props/rug.png')
     save(pip_sheet(), 'npc/pip.png')
     save(gull_sheet(), 'npc/gull.png')
+    # never overwrite the players' own character art unless asked (--characters)
+    force_chars = '--characters' in sys.argv
     for k in ('p1', 'p2'):
-        save(character_sheet(k), f'characters/{k}/walk.png')
-        save(portrait_person(k), f'characters/{k}/portrait.png')
+        for name, fn in (('walk.png', character_sheet), ('portrait.png', portrait_person)):
+            if force_chars or not os.path.exists(os.path.join(OUT, 'characters', k, name)):
+                save(fn(k), f'characters/{k}/{name}')
     save(portrait_person('captain'), 'portraits/captain.png')
     save(portrait_pip(), 'portraits/pip.png')
     save(portrait_keeper(), 'portraits/keeper.png')

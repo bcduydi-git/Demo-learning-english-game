@@ -10,7 +10,8 @@
     "start": "node server/index.js",
     "art": "python3 tools/gen_art.py",
     "test": "node --test tests/unit/*.test.js",
-    "e2e": "node tests/e2e/run.js"
+    "e2e": "node tests/e2e/playthrough.mjs",
+    "e2e:reconnect": "node tests/e2e/reconnect.mjs"
   },
   "engines": {
     "node": ">=18"
