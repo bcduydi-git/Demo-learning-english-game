@@ -1,0 +1,28 @@
+{
+  "name": "beacon-isle",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Beacon Isle - co-op English adventure demo (2 players, browser)",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "build": "vite build",
+    "start": "node server/index.js",
+    "art": "python3 tools/gen_art.py",
+    "test": "node --test tests/unit/*.test.js",
+    "e2e": "node tests/e2e/run.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@fontsource/be-vietnam-pro": "^5.2.0",
+    "@fontsource/vt323": "^5.2.0",
+    "phaser": "3.90.0",
+    "playwright-core": "^1.56.1",
+    "vite": "^6.3.0"
+  }
+}
