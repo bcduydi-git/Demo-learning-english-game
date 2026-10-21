@@ -50,7 +50,7 @@ export { settings };
 // Objectives shown in the tracker, derived from shared flags.
 export function objectives(s) {
   const f = (s && s.flags) || {};
-  if (!f.started || !f.intro_done) return [];
+  if (!f.started || !f.intro_done || (s.stage && s.stage !== 'world')) return [];
   if (!f.pip_called) {
     return [
       { en: 'Search the beach', vi: 'Khám phá bãi biển, tìm đồ dùng được', sub: [

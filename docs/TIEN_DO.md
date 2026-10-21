@@ -2,6 +2,18 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.2.0 — làm lại đồ hoạ và âm thanh (21/10/2026)
+
+Bạn nhận xét đồ hoạ bản 0.1 xấu. Lý do: bản đó do mình tự vẽ bằng code. Bản này:
+
+- Chuyển sang bộ **Ninja Adventure** của Pixel-boy, giấy phép **CC0**, lấy từ kho GitHub chính thức của Sparklin Labs. Bộ này gồm nền cỏ/cát/đất, vách đất, cây, nhà mái tranh, đá, nội thất, rương, nhân vật 16×16 có chân dung, nhạc và hiệu ứng âm thanh.
+- Những thứ bộ không có (hải đăng, tháp canh, khúc gỗ, xác thuyền, radio, cơn bão, bờ biển) được vẽ lại theo bảng màu và nét viền đen của bộ để đồng bộ.
+- Giao diện đổi theo hộp thoại của bộ: khung giấy sáng viền cam, chân dung trong khung tối, nút gỗ.
+- Màn hình chính dùng cảnh hòn đảo làm nền.
+- Trận Bão có khung cảnh mới: phòng đèn có cửa gỗ, biển đêm, sàn đá; các đám mây mang chữ trông như hộp thoại.
+- Nhạc nền thật cho từng khu vực (đảo, rừng sương, trận Bão, đêm, chiến thắng, màn hình chính, màn kết). Nhạc tự tổng hợp vẫn là phương án dự phòng.
+- Toàn bộ kiểm thử (luật chơi, chơi tự động trọn game với 2 trình duyệt, kết nối lại) chạy lại đều đạt.
+
 ## Phiên bản 0.1.0 — bản demo chơi được đầu tiên (21/10/2026)
 
 ### Nền tảng đã chọn và lý do
@@ -41,10 +53,10 @@ Kiểm thử tự động mở **2 trình duyệt Chromium độc lập** (hai h
 
 ### Tài nguyên tạm (cần/được phép thay)
 
-- **Toàn bộ hình ảnh** do script `tools/gen_art.py` tự vẽ (pixel art gốc, không lấy của ai). Hai nhân vật chính là hình tạm, xem `docs/THAY_HINH_NHAN_VAT.md`.
-- **Nhạc và hiệu ứng** được tổng hợp bằng code lúc chạy (Web Audio), không có file âm thanh ngoài.
+- **Hình ảnh**: từ bộ Ninja Adventure (CC0), cộng một số hình mình vẽ theo phong cách bộ (xem `docs/BAN_QUYEN.md`). Hai nhân vật chính là hình tạm lấy từ bộ, xem `docs/THAY_HINH_NHAN_VAT.md`.
+- **Nhạc và hiệu ứng chính**: từ bộ Ninja Adventure (CC0). Một số tiếng (bước chân, gõ phím, sấm, sóng) được tổng hợp bằng code.
 - **Giọng đọc**: giọng máy của trình duyệt. Có thể thay bằng file thu âm: đặt file vào `client/public/assets/voice/` kèm `manifest.json` dạng `{ "câu tiếng Anh y hệt": "ten-file.mp3" }`.
-- Môi trường làm việc của mình chặn các trang tài nguyên ngoài (Kenney, OpenGameArt...). Vì vậy chưa dùng bộ hình/âm thanh CC0 nào.
+- Mình chọn nhạc cho từng khu vực bằng cách phân tích nhịp độ và giọng trưởng/thứ, chưa nghe thử được. Nếu bài nào không hợp, đổi file trong `client/public/assets/audio/music/`.
 
 ### Giới hạn hiện tại
 

@@ -75,6 +75,13 @@ export class FinaleScene extends Phaser.Scene {
     // lighthouse silhouette with a sweeping beam
     const lx = W * 0.22;
     const ly = H * 0.6;
+    const rock = this.add.graphics();
+    rock.fillStyle(0x000000, 1);
+    rock.fillEllipse(lx, ly + 6, 300, 60);
+    rock.fillStyle(0x5d4a40, 1);
+    rock.fillEllipse(lx, ly + 6, 292, 52);
+    rock.fillStyle(0x3a7d2a, 1);
+    rock.fillEllipse(lx, ly - 2, 250, 30);
     this.add.image(lx, ly, 'lighthouse_on').setOrigin(0.5, 1).setScale(2);
     const beam = this.add.graphics().setBlendMode(Phaser.BlendModes.ADD);
     beam.fillStyle(0xffe7a0, 0.18);
@@ -138,7 +145,7 @@ export class FinaleScene extends Phaser.Scene {
     const box = h('div', { id: 'call', class: 'box' },
       h('img', { src: portraitUrl('captain') }),
       h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' } },
-        h('div', { class: 'name en', style: { fontSize: '24px', color: '#f2c14e' } }, `📻 Captain Marlow · ${mine ? 'hỏi bạn' : `hỏi ${nameOf(q.to)}`}`),
+        h('div', { class: 'name en', style: { fontSize: '24px', color: 'var(--accent)' } }, `📻 Captain Marlow · ${mine ? 'hỏi bạn' : `hỏi ${nameOf(q.to)}`}`),
         h('div', { class: 'q' }, qText, viEl),
         h('div', { class: 'row' },
           h('button', { class: 'btn small', onclick: () => play(1) }, '🔊'),
@@ -243,7 +250,7 @@ export class FinaleScene extends Phaser.Scene {
         input.value = '';
       };
       input.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') send(); });
-      const hint = h('div', { class: 'small hidden' }, 'Lệnh: ', ...BOAT_COMMANDS.map((c) => h('span', { class: 'en', style: { fontSize: '20px', marginRight: '10px', color: '#fff' } }, c.words[0])));
+      const hint = h('div', { class: 'small hidden' }, 'Lệnh: ', ...BOAT_COMMANDS.map((c) => h('span', { class: 'en', style: { fontSize: '20px', marginRight: '10px' } }, c.words[0])));
       const micNote = h('span', { class: 'small' });
       const mic = speechInputSupported() && settings.mic ? h('button', { class: 'btn', title: 'Nói lệnh tiếng Anh', onclick: async (e) => {
         const btn = e.currentTarget;

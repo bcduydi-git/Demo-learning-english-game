@@ -4,7 +4,7 @@
 
 ## Tóm tắt trải nghiệm
 
-Hai người dạt vào đảo sau bão → tìm đồ trên bãi biển → gặp vẹt **Pip** (vẹt của người gác đèn) → học dùng Radio → cùng nhấc khúc gỗ → đọc sổ của người gác đèn **Eleanor Marlow** → hai nhiệm vụ song song (thấu kính trong Rừng Sương, khôi phục điện) → mở cửa hải đăng bằng "lời của người gác đèn" → trận **The Storm** (gõ chữ) → gọi tàu cứu hộ **Aurora** (trả lời bằng lời của mình) → dẫn tàu qua vịnh tối → kết: thuyền trưởng là **cháu gái của Eleanor**; Eleanor mất tích 50 năm trước; ngoài khơi, nơi không có đảo, một **đốm sáng xanh** nháy "ba dài, ba ngắn" và Pip nói bằng giọng Eleanor: *"Eleanor says: come and find me."* → "To be continued: Chương 2 — Ngọn đèn xanh".
+Hai người dạt vào đảo sau bão → tìm đồ trên bãi biển → gặp vẹt **Pip** (vẹt của người gác đèn) → học dùng Radio → cùng nhấc khúc gỗ → đọc sổ của người gác đèn **Eleanor Marlow** → hai nhiệm vụ song song (thấu kính trong Rừng Sương, khôi phục điện) → mở cửa hải đăng bằng "lời của người gác đèn" → trận **The Storm** (gõ chữ) → gọi tàu cứu hộ **Aurora** (trả lời bằng lời của mình) → dẫn tàu qua vịnh tối → kết: thuyền trưởng là **cháu của Eleanor**; Eleanor mất tích 50 năm trước; ngoài khơi, nơi không có đảo, một **đốm sáng xanh** nháy "ba dài, ba ngắn" và Pip nói bằng giọng Eleanor: *"Eleanor says: come and find me."* → "To be continued: Chương 2 — Ngọn đèn xanh".
 
 Chi tiết gợi tò mò được gài từ trước: lá thư trong chai ("Something out at sea is watching it") và trang sổ kẹp dưới thấu kính ("The green light answered again tonight. Three long, three short. There is no island out there.").
 

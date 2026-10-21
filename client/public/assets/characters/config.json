@@ -1,5 +1,17 @@
 {
-  "_help": "Thay hình nhân vật: đặt walk.png (4 hàng: xuống, trái, phải, lên; mỗi hàng 4 khung bước đi) và portrait.png (ảnh vuông) vào thư mục p1/ hoặc p2/. Sửa frameWidth/frameHeight nếu khung hình không phải 32x32. scale = phóng to/thu nhỏ trong game.",
-  "p1": { "frameWidth": 32, "frameHeight": 32, "scale": 1, "framesPerRow": 4, "fps": 8 },
-  "p2": { "frameWidth": 32, "frameHeight": 32, "scale": 1, "framesPerRow": 4, "fps": 8 }
+  "_help": "Thay hình nhân vật: walk.png = lưới 4 hàng (xuống, trái, phải, lên) x 4 khung bước đi; portrait.png = ảnh vuông. Sửa frameWidth/frameHeight theo kích thước MỘT khung (mặc định 16x16 giống bộ Ninja Adventure). scale = phóng to/thu nhỏ trong game.",
+  "p1": {
+    "frameWidth": 16,
+    "frameHeight": 16,
+    "scale": 1,
+    "framesPerRow": 4,
+    "fps": 8
+  },
+  "p2": {
+    "frameWidth": 16,
+    "frameHeight": 16,
+    "scale": 1,
+    "framesPerRow": 4,
+    "fps": 8
+  }
 }

@@ -94,7 +94,7 @@ export const SCENES = {
   ],
 
   ending: [
-    { s: 'narr', vi: 'Con tàu Aurora cập bến an toàn. Một người phụ nữ mặc áo khoác đỏ bước xuống.' },
+    { s: 'narr', vi: 'Con tàu Aurora cập bến an toàn. Thuyền trưởng bước xuống cầu tàu.' },
     { s: 'captain', en: "You did great. I'm Captain Marlow, of the ship Aurora.", vi: 'Hai bạn giỏi lắm. Tôi là Thuyền trưởng Marlow, tàu Aurora.' },
     { s: 'p2', en: 'Marlow? Like Eleanor Marlow, the keeper?', vi: 'Marlow? Giống Eleanor Marlow, người gác đèn sao?', say: true },
     { s: 'captain', en: 'Eleanor was my grandmother. She left this island fifty years ago. Nobody ever found her.', vi: 'Eleanor là bà tôi. Bà rời hòn đảo này năm mươi năm trước. Không ai tìm thấy bà nữa.' },

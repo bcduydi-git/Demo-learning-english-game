@@ -1,6 +1,6 @@
 # Thay hình hai nhân vật chính
 
-Hình hiện tại là **hình tạm** do script vẽ. Bạn chỉ cần thay 4 file ảnh. Không phải sửa code.
+Hình hiện tại là **hình tạm** lấy từ bộ Ninja Adventure (CC0). Bạn chỉ cần thay 4 file ảnh. Không phải sửa code.
 
 ```
 client/public/assets/characters/
@@ -25,13 +25,13 @@ Một tấm ảnh **lưới 4 hàng × 4 cột**. Mỗi ô là một khung hình
 | 4 | đi **lên** (quay lưng) |
 
 - Cột 1 cũng là tư thế **đứng yên**. Cột 2 → 4 là các bước chân.
-- Kích thước mặc định mỗi ô **32 × 32 px**, tức cả ảnh 128 × 128 px. Nhân vật cao khoảng 26–28 px, **bàn chân chạm đáy ô** (chừa 2–3 px).
-- Ảnh khung khác (vd. 48×48 hoặc 64×64): sửa `frameWidth`, `frameHeight` trong `config.json`. Nếu nhân vật trông quá to, đặt `"scale": 0.5` (với ảnh 64×64).
+- Kích thước mặc định mỗi ô **16 × 16 px** (cả ảnh 64 × 64 px), đúng cỡ nhân vật của bộ Ninja Adventure nên đứng cạnh nhà, cây sẽ cân đối. **Bàn chân chạm đáy ô.**
+- Ảnh khung khác (vd. 32×32): sửa `frameWidth`, `frameHeight` trong `config.json`. Nhân vật 32×32 sẽ cao gấp đôi so với cảnh; nếu muốn nhỏ lại đặt `"scale": 0.5`.
 - Số khung mỗi hàng khác 4: sửa `framesPerRow`. Tốc độ bước chân: `fps`.
 
 ## 2. Chân dung (`portrait.png`)
 
-- Ảnh **vuông**, nền trong suốt, kiểu pixel art. Khuyên dùng 96×96 hoặc 128×128 px. Game phóng to sắc nét lên khoảng 192 px.
+- Ảnh **vuông**, kiểu pixel art, nền tối hoặc trong suốt (chân dung được đặt trong khung tối). Bản tạm là 38×38 px. Bạn có thể dùng 38×38, 76×76 hoặc 128×128 px; game phóng to sắc nét lên khoảng 190 px.
 - Nên vẽ từ ngực trở lên, mặt nhìn hơi về bên phải.
 - Ảnh này dùng ở hội thoại, sảnh chờ và thanh trạng thái.
 
@@ -39,11 +39,11 @@ Một tấm ảnh **lưới 4 hàng × 4 cột**. Mỗi ô là một khung hình
 
 Hình đi lại:
 
-> pixel art sprite sheet, top-down RPG character, 4 rows (walking down, left, right, up) x 4 columns walk cycle, each frame 32x32 pixels, transparent background, chibi proportions, [mô tả người: tóc, quần áo, phụ kiện], limited palette, crisp pixels, no anti-aliasing
+> pixel art sprite sheet, top-down RPG character in the style of "Ninja Adventure" by Pixel-boy, 4 rows (walking down, left, right, up) x 4 columns walk cycle, each frame 16x16 pixels, transparent background, chibi proportions, black 1px outline, [mô tả người: tóc, quần áo, phụ kiện], crisp pixels, no anti-aliasing
 
 Chân dung:
 
-> pixel art portrait, 128x128, bust shot, friendly expression, [mô tả người], transparent background, crisp pixels, matching a cozy island adventure game
+> pixel art faceset portrait, 38x38 (or 76x76), bust shot, friendly expression, [mô tả người], dark background, black outline, warm palette, crisp pixels, matching the "Ninja Adventure" asset pack
 
 AI thường tạo ảnh sai kích thước hoặc không thẳng lưới. Sau khi tạo, hãy cắt/chỉnh lại cho đúng lưới 4×4 bằng công cụ như Piskel, Aseprite hoặc LibreSprite. Nếu ảnh không đúng lưới, nhân vật sẽ bị "nhảy" khi đi.
 
@@ -52,8 +52,8 @@ AI thường tạo ảnh sai kích thước hoặc không thẳng lưới. Sau k
 - Chạy trên máy: thay file → chạy lại `CHOI_TREN_MAY_WINDOWS.bat` (hoặc `npm run build && npm start`) → tải lại trang.
 - Trên Render: đưa file mới lên GitHub (trên trang GitHub vào thư mục `client/public/assets/characters/p1` → **Add file → Upload files**). Render tự cập nhật sau vài phút.
 
-Màu áo của hai vai (cam và xanh ngọc) đang dùng trong giao diện. Giữ hai màu chủ đạo này thì giao diện vẫn khớp, nhưng không bắt buộc.
+Tên vai trong giao diện có màu cam (Thợ máy) và xanh ngọc (Điện đài viên). Nhân vật mới không cần theo màu này.
 
 ## Các hình tạm khác
 
-Mọi hình tạm khác nằm trong `client/public/assets/` (cây, nhà, hải đăng, vẹt Pip, chân dung NPC...). Mỗi hình là một file riêng. Thay bằng ảnh **cùng kích thước** là game nhận ngay. Lệnh `npm run art` vẽ lại các hình tạm này nhưng **không** đụng tới hình nhân vật trong `characters/` (trừ khi chạy `python3 tools/gen_art.py --characters`).
+Mọi hình khác nằm trong `client/public/assets/` (cây, nhà, hải đăng, vẹt Pip, chân dung NPC...). Mỗi hình là một file riêng. Thay bằng ảnh **cùng kích thước** là game nhận ngay. Lệnh `npm run art` dựng lại các hình này từ bộ Ninja Adventure nhưng **không** đụng tới hình nhân vật trong `characters/` (trừ khi chạy `python3 tools/build_art.py --characters`).

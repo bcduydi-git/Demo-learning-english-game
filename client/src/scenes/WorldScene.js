@@ -54,10 +54,13 @@ export class WorldScene extends Phaser.Scene {
 
     // --- decoration
     for (const d of map.deco) {
-      const key = d.type === 'tree' ? `tree${d.v}` : d.type === 'palm' ? `palm${d.v}` : `rock${d.v}`;
-      const s = this.add.image(d.x * T + 8, d.y * T + 15, key).setOrigin(0.5, 1);
+      const wide = d.type === 'tree' || d.type === 'pine' || d.type === 'boulder';
+      const key = { tree: 'tree0', pine: 'tree1', boulder: 'boulder', bush: 'bush', plant: `plant${d.v || 0}`, rock: `rock${d.v || 0}` }[d.type] || 'rock0';
+      const s = this.add.image(wide ? (d.x + 1) * T : d.x * T + 8, (d.y + 1) * T, key).setOrigin(0.5, 1);
       s.setDepth(s.y);
-      if (d.type !== 'rock') this.tweens.add({ targets: s, angle: { from: -1.2, to: 1.2 }, duration: 1800 + Math.random() * 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: Math.random() * 1000 });
+      if (d.type === 'tree' || d.type === 'pine' || d.type === 'plant') {
+        this.tweens.add({ targets: s, angle: { from: -0.8, to: 0.8 }, duration: 2000 + Math.random() * 1200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: Math.random() * 1500 });
+      }
     }
     // hedges (fog woods walls)
     for (let y = 0; y < this.H; y++) {
@@ -184,7 +187,7 @@ export class WorldScene extends Phaser.Scene {
     const c = this.cfg[slot] || {};
     const fh = c.frameHeight || 32;
     const s = this.add.sprite(0, 0, `char_${slot}`, 0);
-    s.setOrigin(0.5, (fh - 3) / fh);
+    s.setOrigin(0.5, (fh - 1) / fh);
     s.setScale(c.scale || 1);
     s.slot = slot;
     s.dir = 'down';
@@ -210,28 +213,29 @@ export class WorldScene extends Phaser.Scene {
       return s;
     };
     const M = this.mapData.objects.reduce((a, o) => { a[o.id] = o; return a; }, {});
-    add('wreck', 'wreck', M.wreck.x * T + 8, M.wreck.y * T + 16);
-    add('crate', 'crate', M.crate.x * T + 8, M.crate.y * T + 15);
-    add('bottle', 'bottle', M.bottle.x * T + 8, M.bottle.y * T + 14);
+    add('wreck', 'wreck', M.wreck.x * T + 8, (M.wreck.y + 1) * T + 2);
+    add('crate', 'crate', M.crate.x * T + 8, (M.crate.y + 1) * T);
+    add('bottle', 'bottle', M.bottle.x * T + 8, M.bottle.y * T + 13);
     this.tweens.add({ targets: this.objs.bottle, y: '-=2', angle: 8, duration: 1200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     add('log', 'log', M.log.x * T + 8, M.log.y * T + 16);
-    add('cottage', 'cottage', M.cottage.x * T + 8, (M.cottage.y + 1) * T);
-    add('shed', 'shed', M.shed.x * T + 8, (M.shed.y + 1) * T);
+    add('cottage', 'cottage', M.cottage.x * T, (M.cottage.y + 1) * T, 0, 1);
+    add('shed', 'shed', M.shed.x * T, (M.shed.y + 1) * T, 0, 1);
     add('lighthouse', 'lighthouse', M.lighthouse.x * T + 8, (M.lighthouse.y + 1) * T);
     this.objs.doorGlow = this.add.image(M.lighthouse.x * T + 8 + 12, M.lighthouse.y * T + 2, 'door_glow').setDepth(M.lighthouse.y * T + 20).setVisible(false).setScale(0.6);
     this.tweens.add({ targets: this.objs.doorGlow, alpha: 0.3, duration: 700, yoyo: true, repeat: -1 });
     add('tower', 'tower', (M.tower.x) * T, (M.tower.y + 1) * T);
-    for (const id of ['sign_beach', 'sign_woods', 'sign_tower']) add(id, 'sign', M[id].x * T + 8, M[id].y * T + 15);
-    add('lens', 'chest', M.lens.x * T + 8, M.lens.y * T + 15);
+    for (const id of ['sign_beach', 'sign_woods', 'sign_tower']) add(id, 'sign', M[id].x * T + 8, (M[id].y + 1) * T);
+    add('lens', 'chest', M.lens.x * T + 8, (M.lens.y + 1) * T);
     this.objs.lensGlow = this.add.image(M.lens.x * T + 8, M.lens.y * T - 6, 'lens').setDepth(M.lens.y * T + 20);
     this.tweens.add({ targets: this.objs.lensGlow, y: '-=3', duration: 900, yoyo: true, repeat: -1 });
-    add('rug', 'rug', M.rug.x * T + 8, M.rug.y * T + 24, 0.5, 1, -200);
-    add('journal', 'desk', M.journal.x * T + 16, M.journal.y * T + 16);
-    add('station', 'station', M.station.x * T + 16, M.station.y * T + 16);
-    add('bed', 'bed', M.bed.x * T + 16, M.bed.y * T + 32);
-    add('shelf', 'shelf', M.shelf.x * T + 16, M.shelf.y * T + 16);
+    add('rug', 'rug', M.rug.x * T + 8, M.rug.y * T + 8, 0.5, 0.5, -400);
+    add('journal', 'desk', (M.journal.x + 1) * T, (M.journal.y + 1) * T);
+    add('station', 'station', (M.station.x + 1) * T, (M.station.y + 1) * T);
+    add('bed', 'bed', (M.bed.x + 1) * T, (M.bed.y + 2) * T, 0.5, 1, -300);
+    add('shelf', 'shelf', (M.shelf.x + 1) * T, (M.shelf.y + 1) * T);
+    add('iplant', 'iplant', M.iplant.x * T + 8, (M.iplant.y + 1) * T);
     // smoke from the chimney once the power is back
-    this.smoke = this.add.particles(M.cottage.x * T + 8 + 20, (M.cottage.y + 1) * T - 78, 'soft', {
+    this.smoke = this.add.particles(M.cottage.x * T + 48, (M.cottage.y + 1) * T - 44, 'soft', {
       lifespan: 2600, speedY: { min: -14, max: -8 }, speedX: { min: 2, max: 8 }, scale: { start: 0.6, end: 2 }, alpha: { start: 0.5, end: 0 }, frequency: 400, tint: 0xdddddd,
     }).setDepth(9000);
     this.smoke.stop();
@@ -247,10 +251,10 @@ export class WorldScene extends Phaser.Scene {
         { en: 'LIGHTHOUSE — this way!', vi: 'Hải đăng — lối này!' }, { en: "KEEPER'S HOUSE", vi: 'Nhà người gác đèn' }, { en: 'Go up the hill.', vi: 'Đi lên đồi.' },
       ], { seen: ['go_up'] })),
       S('log', M.log.x, M.log.y + 1, 30, () => (f().log_done ? null : 'Nhấc khúc gỗ'), () => this.useLog()),
-      S('door', M.cottage.x, M.cottage.y + 1, 14, () => 'Vào nhà', () => this.warpInside()),
+      S('door', M.cottage.x + 1.5, M.cottage.y + 1, 14, () => 'Vào nhà', () => this.warpInside()),
       S('journal', M.journal.x + 0.5, M.journal.y + 1, 22, () => 'Đọc cuốn sổ', () => this.useJournal()),
       S('station', M.station.x + 0.5, M.station.y + 1, 22, () => (mine('p2') ? 'Dùng radio' : 'Xem radio'), () => this.useStation()),
-      S('shed', M.shed.x, M.shed.y + 1, 18, () => (f().power ? 'Máy phát (đang chạy)' : mine('p1') ? 'Vận hành máy phát' : 'Xem máy phát'), () => this.useShed()),
+      S('shed', M.shed.x + 1, M.shed.y + 1, 18, () => (f().power ? 'Máy phát (đang chạy)' : mine('p1') ? 'Vận hành máy phát' : 'Xem máy phát'), () => this.useShed()),
       S('tower', 22, 24, 18, () => (this.lookout ? 'Rời ống nhòm' : mine('p1') ? 'Nhìn bằng ống nhòm' : 'Leo tháp canh'), () => this.useTower()),
       S('sign_tower', M.sign_tower.x, M.sign_tower.y, 20, () => 'Đọc biển báo', () => openReader('Tháp canh', [
         { en: 'LOOKOUT TOWER', vi: 'Tháp canh' },
@@ -297,7 +301,7 @@ export class WorldScene extends Phaser.Scene {
       if (!first) { this.pip.setPosition(this.me.x + 120, this.me.y - 90); sfx('squawk'); }
     }
     // weather / time of day
-    const raining = !f.pip_met;
+    const raining = !f.pip_met && !this.inside;
     if (raining && !this.rain.emitting) this.rain.start();
     if (!raining && this.rain.emitting) this.rain.stop();
     let color = 0xb9c6dc;
@@ -531,6 +535,7 @@ export class WorldScene extends Phaser.Scene {
       const b = inside ? this.interior : this.islandBounds;
       const cam = this.cameras.main;
       for (const r of this.interiorFrame) r.setVisible(inside);
+      cam.setZoom(inside ? this.zoomInside : this.zoom);
       if (inside) {
         cam.removeBounds();
         cam.stopFollow();
@@ -540,6 +545,7 @@ export class WorldScene extends Phaser.Scene {
         if (!this.lookout) cam.startFollow(this.me, true, 0.12, 0.12);
       }
       ambience(inside ? 'indoor' : 'island');
+      if (G.state) this.applyState(G.state);
     }
   }
 
@@ -623,14 +629,14 @@ export class WorldScene extends Phaser.Scene {
     const online = s.players[partner()].connected;
     o.setVisible(otherHere);
     o.setAlpha(online ? 1 : 0.4);
-    this.nameMe.setPosition(this.me.x, this.me.y - 30);
-    this.nameOther.setPosition(o.x, o.y - 30).setVisible(otherHere);
-    this.bubbleOther.setPosition(o.x, o.y - 40).setVisible(otherHere && this.bubbleOther.text !== '');
+    this.nameMe.setPosition(this.me.x, this.me.y - 19);
+    this.nameOther.setPosition(o.x, o.y - 19).setVisible(otherHere);
+    this.bubbleOther.setPosition(o.x, o.y - 27).setVisible(otherHere && this.bubbleOther.text !== '');
 
     // --- Pip follows me
     if (this.pip.visible) {
-      const px = this.me.x + (this.me.dir === 'left' ? 14 : -14);
-      const py = this.me.y - 26 + Math.sin(time / 300) * 2;
+      const px = this.me.x + (this.me.dir === 'left' ? 12 : -12);
+      const py = this.me.y - 20 + Math.sin(time / 300) * 2;
       const dx = px - this.pip.x;
       const dy = py - this.pip.y;
       this.pip.x += dx * Math.min(1, dt * 3);

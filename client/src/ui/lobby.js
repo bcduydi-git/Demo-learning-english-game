@@ -4,7 +4,7 @@ import { h, root, clear, portraitUrl } from './dom.js';
 import { G, ROLE, DEFAULT_NAMES, nameOf, act } from '../ctx.js';
 import { settings, saveSettings, lastSession, loadSave, clearLastSession } from '../store.js';
 import { progressOf } from '../../../shared/logic.js';
-import { unlockAudio, sfx } from '../audio.js';
+import { unlockAudio, sfx, music } from '../audio.js';
 import { openSettings } from './settings.js';
 import { openHelp } from './help.js';
 
@@ -20,6 +20,9 @@ export function showLobby() {
     root().append(el);
   }
   el.classList.remove('hidden');
+  const startMusic = () => { unlockAudio(); if (lobbyVisible()) music('title'); };
+  window.addEventListener('pointerdown', startMusic, { once: true });
+  window.addEventListener('keydown', startMusic, { once: true });
   const params = new URLSearchParams(location.search);
   if (params.get('room') && view === 'home' && !G.net.room) view = 'join';
   render();
@@ -125,7 +128,7 @@ function roleCard(slot, taken) {
     onclick: () => { if (!taken) { selRole = slot; sfx('click'); render(); } },
   },
   h('img', { src: portraitUrl(slot) }),
-  h('div', {}, h('h3', {}, `${r.icon} ${r.title} `, h('span', { class: 'en', style: { fontSize: '20px', color: '#a9b0c8' } }, r.en)), h('p', {}, r.desc)));
+  h('div', {}, h('h3', {}, `${r.icon} ${r.title} `, h('span', { class: 'en', style: { fontSize: '20px', color: 'var(--muted)' } }, r.en)), h('p', {}, r.desc)));
 }
 
 function createView() {

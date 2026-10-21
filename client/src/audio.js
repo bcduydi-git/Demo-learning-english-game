@@ -27,6 +27,7 @@ function ensure() {
   const d = noiseBuf.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
   applyVolumes();
+  preloadSfx();
   return ctx;
 }
 
@@ -39,7 +40,7 @@ export function applyVolumes() {
   if (!ctx) return;
   const v = settings.vol;
   master.gain.value = settings.mute ? 0 : v.master;
-  musicBus.gain.value = v.music * 0.5;
+  musicBus.gain.value = v.music * 0.7;
   sfxBus.gain.value = v.sfx;
   ambBus.gain.value = v.amb;
 }
@@ -119,9 +120,48 @@ const SFX = {
   lift: () => { tone(200, 0.15, { vol: 0.1, type: 'triangle', slide: 1.5 }); },
 };
 
+// Recorded effects from the CC0 Ninja Adventure pack (assets/audio/sfx/*.mp3).
+// Anything not listed here, or not loaded yet, uses the synthesised version.
+const SFX_FILES = {
+  pickup: 'pickup', success: 'success', ui: 'ui', open: 'open', close: 'close', wrong: 'wrong',
+  fail: 'fail', door: 'secret', hum: 'power', zap: 'magic', hit: 'hit', heart: 'hit', click: 'ui', lift: 'power2',
+};
+const SFX_GAIN = { ui: 0.45, open: 0.5, close: 0.5, click: 0.35, wrong: 0.6, zap: 0.55, hit: 0.6, heart: 0.7 };
+const buffers = {};
+const loading = {};
+
+function loadBuffer(url) {
+  if (buffers[url] || loading[url]) return;
+  loading[url] = fetch(url)
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+    .then((b) => ctx.decodeAudioData(b))
+    .then((buf) => { buffers[url] = buf; return buf; })
+    .catch(() => null);
+}
+
+function preloadSfx() {
+  for (const f of new Set(Object.values(SFX_FILES))) loadBuffer(`assets/audio/sfx/${f}.mp3`);
+}
+
+function playBuffer(buf, bus, gain = 1, loop = false) {
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.loop = loop;
+  const g = ctx.createGain();
+  g.gain.value = gain;
+  src.connect(g).connect(bus);
+  src.start();
+  return { src, g };
+}
+
 export function sfx(name) {
-  if (!ensure() || !SFX[name]) return;
-  try { SFX[name](); } catch { /* ignore */ }
+  if (!ensure()) return;
+  const file = SFX_FILES[name];
+  const buf = file && buffers[`assets/audio/sfx/${file}.mp3`];
+  try {
+    if (buf) playBuffer(buf, sfxBus, SFX_GAIN[name] ?? 0.8);
+    else if (SFX[name]) SFX[name]();
+  } catch { /* ignore */ }
 }
 
 // ---------------------------------------------------------------- ambience
@@ -260,14 +300,42 @@ function bassNote(f, t, dur) {
   o.stop(t + dur + 0.05);
 }
 
+// Music: CC0 tracks from the Ninja Adventure pack, cross-faded. If a file
+// cannot be loaded, the small built-in sequencer plays instead.
+let track = null;
+
+function stopTrack(fade = 1.2) {
+  if (!track) return;
+  const t = track;
+  track = null;
+  try {
+    t.g.gain.setValueAtTime(t.g.gain.value, ctx.currentTime);
+    t.g.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + fade);
+    t.src.stop(ctx.currentTime + fade + 0.05);
+  } catch { /* ignore */ }
+}
+
 export function music(name) {
   if (!ensure() || name === songName) return;
   songName = name;
-  song = SONGS[name] || null;
-  step = 0;
-  nextTime = ctx.currentTime + 0.1;
+  stopTrack();
   clearInterval(seqTimer);
-  if (song) seqTimer = setInterval(schedule, 100);
+  song = null;
+  if (!name) return;
+  const url = `assets/audio/music/${name}.mp3`;
+  loadBuffer(url);
+  Promise.resolve(loading[url]).then((buf) => {
+    if (songName !== name) return;
+    if (buf) {
+      track = playBuffer(buf, musicBus, 0.0001, true);
+      track.g.gain.linearRampToValueAtTime(0.9, ctx.currentTime + 1.5);
+      return;
+    }
+    song = SONGS[name] || SONGS.island;
+    step = 0;
+    nextTime = ctx.currentTime + 0.1;
+    seqTimer = setInterval(schedule, 100);
+  });
 }
 
 // ---------------------------------------------------------------- voice

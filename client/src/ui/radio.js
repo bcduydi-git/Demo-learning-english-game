@@ -84,7 +84,7 @@ export function openRadio(prefill = '') {
 
   const log = h('div', { class: 'small', style: { maxHeight: '140px', overflow: 'auto', marginTop: '10px' } });
   const recent = (G.state.log || []).slice(-8).reverse();
-  for (const msg of recent) log.append(h('div', {}, h('b', {}, nameOf(msg.by) + ': '), h('span', { class: 'en', style: { fontSize: '19px', color: '#fff' } }, msg.text)));
+  for (const msg of recent) log.append(h('div', {}, h('b', {}, nameOf(msg.by) + ': '), h('span', { class: 'en', style: { fontSize: '19px' } }, msg.text)));
 
   m.body.append(
     h('p', { class: 'small' }, `Tin nhắn sẽ hiện trên màn hình ${nameOf(partner())} và được đọc to bằng giọng máy. Dùng khi không tiện nói, hoặc để luyện câu.`),

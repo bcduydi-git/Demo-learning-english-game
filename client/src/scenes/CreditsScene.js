@@ -41,7 +41,7 @@ export class CreditsScene extends Phaser.Scene {
     // boat leaving
     const boat = this.add.image(W * 0.3, H * 0.72 + 30, 'boat').setAngle(90).setScale(2);
     this.tweens.add({ targets: boat, x: W * 0.6, duration: 20000 });
-    music('night');
+    music('credits');
     ambience('island');
     sfx('success');
     this.cameras.main.fadeIn(1200, 0, 0, 0);

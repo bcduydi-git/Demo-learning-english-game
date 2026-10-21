@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { emit } from '../ctx.js';
 
-const PROPS = ['tree0', 'tree1', 'palm0', 'palm1', 'rock0', 'rock1', 'hedge0', 'hedge1', 'thorns', 'crate', 'crate_open', 'wreck', 'bottle', 'log',
+const PROPS = ['tree0', 'tree1', 'boulder', 'bush', 'plant0', 'plant1', 'iplant', 'rock0', 'rock1', 'hedge0', 'hedge1', 'thorns', 'crate', 'crate_open', 'wreck', 'bottle', 'log',
   'cottage', 'cottage_lit', 'shed', 'shed_on', 'lighthouse', 'lighthouse_on', 'door_glow', 'tower', 'sign', 'chest', 'chest_open', 'lens',
   'desk', 'station', 'station_on', 'bed', 'shelf', 'rug'];
 

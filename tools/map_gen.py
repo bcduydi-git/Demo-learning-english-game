@@ -223,68 +223,79 @@ def build(seed=7):
             for x in range(x0, x1 + 1):
                 g[y][x] = ch
 
-    block(24, 27, 28, 30)  # cottage
-    block(44, 31, 46, 33)  # generator shed
+    block(24, 28, 27, 30)  # cottage (64x48 sprite, door between x=25 and 26)
+    block(44, 32, 46, 33)  # generator hut (48x32)
     block(31, 5, 33, 9)    # lighthouse
     block(23, 21, 24, 22)  # watchtower legs
-    g[31][26] = ':'
+    for x in (25, 26):
+        g[31][x] = ':'
     g[34][45] = ':'
     g[10][32] = ':'
     # dock in the east bay
     for x in range(52, 56):
         g[25][x] = '='
 
-    # --- cottage interior (off-island) ---
-    ix0, iy0, ix1, iy1 = 64, 2, 74, 10
-    block(ix0 - 1, iy0 - 1, ix1 + 1, iy1 + 1, '%')
+    # --- cottage interior (off-island): 1-tile frame around a wooden floor ---
+    ix0, iy0, ix1, iy1 = 64, 3, 74, 10
+    block(ix0 - 1, iy0 - 2, ix1 + 1, iy1 + 1, '%')
     block(ix0, iy0, ix1, iy1, 'W')
-    block(ix0 + 1, iy0 + 2, ix1 - 1, iy1 - 1, '=')
+    block(ix0 + 1, iy0 + 1, ix1 - 1, iy1 - 1, '=')
     g[iy1][69] = '='  # doorway tile (exit trigger)
 
     # ground types before decoration (used by the art generator)
     base = [row[:] for row in g]
 
-    # --- decoration objects (trees, palms, rocks) ---
+    # --- decoration objects (trees, bushes, rocks) ---
     objects = []
-    occupied = set()
 
     def place(kind, x, y, **kw):
         objects.append(dict(type=kind, x=x, y=y, **kw))
-        occupied.add((x, y))
 
     reserved = set()
-    for (x, y) in [(29, 46), (34, 47), (26, 31), (45, 34), (32, 10), (22, 24), (40, 46), (16, 48), (48, 49)]:
+    for (x, y) in [(29, 46), (34, 47), (25, 31), (26, 31), (45, 34), (32, 10), (22, 24), (40, 46), (16, 48), (48, 50), (33, 42), (22, 27), (25, 24)]:
         for dy in range(-2, 3):
             for dx in range(-2, 3):
                 reserved.add((x + dx, y + dy))
 
-    for y in range(H):
-        for x in range(W):
-            if (x, y) in reserved:
+    def free(x, y, chars):
+        return inside(x, y) and g[y][x] in chars and (x, y) not in reserved
+
+    def near(x, y, chars, r=1):
+        return any(inside(x + dx, y + dy) and g[y + dy][x + dx] in chars for dy in range(-r, r + 1) for dx in range(-r, r + 1))
+
+    for y in range(2, H - 1):
+        for x in range(1, W - 2):
+            in_woods = 2 <= x <= 21 and 12 <= y <= 38
+            if in_woods:
                 continue
-            ch = g[y][x]
-            if ch == '"' and not (2 <= x <= 21 and 12 <= y <= 38):
-                near_path = any(g[y + dy][x + dx] in ':B' for dy in (-1, 0, 1) for dx in (-1, 0, 1) if inside(x + dx, y + dy))
-                if near_path:
+            if free(x, y, '"') and free(x + 1, y, '"') and not near(x, y, ':B=', 1) and not near(x + 1, y, ':B=', 1) \
+                    and inside(x, y - 1) and g[y - 1][x] not in 'TB' and g[y - 1][x + 1] not in 'TB':
+                r = rnd.random()
+                if r < 0.075:
+                    kind = 'pine' if (y < 16 or x > 46 or rnd.random() < 0.3) else 'tree'
+                    g[y][x] = g[y][x + 1] = 'T'
+                    place(kind, x, y)
                     continue
+                if r < 0.085:
+                    g[y][x] = g[y][x + 1] = 'o'
+                    place('boulder', x, y)
+                    continue
+            if free(x, y, '"') and not near(x, y, ':B=', 1):
                 r = rnd.random()
-                if r < 0.07:
-                    g[y][x] = 'T'
-                    place('tree', x, y, v=rnd.randint(0, 1))
-                elif r < 0.09:
+                if r < 0.02:
                     g[y][x] = 'o'
                     place('rock', x, y, v=rnd.randint(0, 1))
-            elif ch == '.':
+                elif r < 0.045:
+                    g[y][x] = 'o'
+                    place('bush', x, y)
+            elif free(x, y, '.') and not near(x, y, '~,', 1) and y < 58:
                 r = rnd.random()
-                water_near = any(g[y + dy][x + dx] in '~,' for dy in (-1, 0, 1) for dx in (-1, 0, 1) if inside(x + dx, y + dy))
-                if not water_near and r < 0.035 and y < 58:
-                    g[y][x] = 'T'
-                    place('palm', x, y, v=rnd.randint(0, 1))
-                elif not water_near and r < 0.05:
+                if r < 0.025:
+                    g[y][x] = 'o'
+                    place('plant', x, y, v=rnd.randint(0, 1))
+                elif r < 0.04:
                     g[y][x] = 'o'
                     place('rock', x, y, v=rnd.randint(0, 1))
-    # thin out trees that would block the meadow paths
-    # (they never sit on ':' because we skip near paths)
 
     # gameplay objects (tile coordinates)
     game = [
@@ -292,8 +303,8 @@ def build(seed=7):
         dict(type='crate', id='crate', x=40, y=46),
         dict(type='bottle', id='bottle', x=48, y=50),
         dict(type='log', id='log', x=31, y=40),
-        dict(type='cottage', id='cottage', x=26, y=30),
-        dict(type='shed', id='shed', x=45, y=33),
+        dict(type='cottage', id='cottage', x=24, y=30),
+        dict(type='shed', id='shed', x=44, y=33),
         dict(type='lighthouse', id='lighthouse', x=32, y=9),
         dict(type='tower', id='tower', x=23, y=22),
         dict(type='sign', id='sign_beach', x=33, y=42),
@@ -303,13 +314,14 @@ def build(seed=7):
         dict(type='desk', id='journal', x=66, y=4),
         dict(type='station', id='station', x=72, y=4),
         dict(type='bed', id='bed', x=72, y=7),
-        dict(type='shelf', id='shelf', x=68, y=3),
+        dict(type='shelf', id='shelf', x=68, y=4),
+        dict(type='plant', id='iplant', x=65, y=4),
         dict(type='rug', id='rug', x=69, y=7),
         dict(type='dock', id='dock', x=54, y=25),
     ]
     g[gy][gx] = 'B'
     # solid footprints of props
-    for (x0, y0, x1, y1) in [(14, 47, 18, 48), (40, 46, 40, 46), (66, 4, 67, 4), (72, 4, 73, 4), (72, 7, 73, 8), (68, 3, 69, 3)]:
+    for (x0, y0, x1, y1) in [(15, 48, 17, 48), (40, 46, 40, 46), (66, 4, 67, 4), (72, 4, 73, 4), (72, 7, 73, 8), (68, 4, 69, 4), (65, 4, 65, 4)]:
         block(x0, y0, x1, y1)
     # mark the sign tiles blocked
     for o in game:
@@ -328,7 +340,7 @@ def build(seed=7):
             interior=[ix0 - 1, iy0 - 1, ix1 + 1, iy1 + 1],
             maze_start=[ex + 2, ey],
             interior_spawn=[69, 9],
-            cottage_exit=[26, 32],
+            cottage_exit=[25.5, 32],
             lookout=[22, 24],
         ),
         traps=sorted([list(t) for t in traps]),

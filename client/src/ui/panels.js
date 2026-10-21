@@ -179,11 +179,11 @@ export function openDoor() {
   const m = openModal('🚪 Cửa hải đăng', { id: 'door', onClose: () => { doorModal = null; stopSpeech(); } });
   doorModal = m;
   const clue = G.slot === 'p1'
-    ? h('div', { class: 'col', style: { alignItems: 'center', padding: '10px', background: '#0b1620', borderRadius: '4px' } },
+    ? h('div', { class: 'col dark-panel', style: { alignItems: 'center', padding: '10px' } },
       h('div', { class: 'small' }, '🔦 Đèn lồng của bạn làm hiện ra dòng chữ phát sáng:'),
       h('div', { class: 'glow-text' }, mine.en),
       h('div', { class: 'small' }, 'Phần sau đã mờ hết. Có lẽ ai đó biết phần còn lại?'))
-    : h('div', { class: 'col', style: { alignItems: 'center', padding: '10px', background: '#0b1620', borderRadius: '4px' } },
+    : h('div', { class: 'col dark-panel', style: { alignItems: 'center', padding: '10px' } },
       h('div', { class: 'small' }, '📻 Radio của bạn bắt được tiếng thì thầm ở cửa:'),
       h('div', { class: 'row' },
         h('button', { class: 'btn gold', onclick: () => speak('...help is coming.', 'keeper', { rate: 0.85 }) }, '▶ Nghe'),
@@ -219,7 +219,7 @@ on('ev:door_result', (e) => {
   const correct = e.words.filter((w) => w.ok).length;
   if (doorModal) {
     clear(doorModal.result);
-    doorModal.result.append(h('span', { class: 'small' }, `Khoá kêu "cạch" — chưa đúng. ${correct}/${e.count} từ đúng vị trí: `), ...e.words.map((w) => h('span', { class: 'chip', style: { background: w.ok ? '#2f6b3a' : '#5a1f1f', cursor: 'default' } }, w.ok ? w.w : '___')));
+    doorModal.result.append(h('span', { class: 'small' }, `Khoá kêu "cạch" — chưa đúng. ${correct}/${e.count} từ đúng vị trí: `), ...e.words.map((w) => h('span', { class: 'chip', style: { background: w.ok ? '#bfe8a8' : '#ffd2c8', cursor: 'default' } }, w.ok ? w.w : '___')));
   } else if (e.by !== G.slot) {
     toast(`🚪 ${who} thử mở cửa: "${e.text}" — chưa đúng (${correct}/${e.count} từ).`);
   }

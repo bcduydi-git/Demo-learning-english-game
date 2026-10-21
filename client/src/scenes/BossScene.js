@@ -37,7 +37,7 @@ export class BossScene extends Phaser.Scene {
     this.flash = this.add.rectangle(0, 0, W, H, 0xffffff, 0).setOrigin(0).setDepth(50);
     this.storm = this.add.image(W / 2, 190, 'storm').setScale(2).setDepth(5);
     this.tweens.add({ targets: this.storm, y: 202, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
-    this.lampGlow = this.add.image(W / 2, H - 120, 'holeBig').setScale(3).setAlpha(0.25).setTint(0xffe7a0).setDepth(1);
+    this.lampGlow = this.add.image(W / 2, H - 120, 'holeBig').setScale(2.2).setAlpha(0.25).setTint(0xffd27a).setDepth(1).setBlendMode(Phaser.BlendModes.ADD);
     this.lamp = this.add.image(W / 2, H - 120, 'lamp1').setScale(2).setDepth(6);
     this.rain = this.add.particles(0, 0, 'dot', {
       x: { min: 0, max: W + 200 }, y: -10, lifespan: 1200, speedY: { min: 500, max: 650 }, speedX: -140, scaleX: 0.3, scaleY: 2.5,
@@ -113,22 +113,58 @@ export class BossScene extends Phaser.Scene {
     const g = this.bg;
     g.clear();
     const won = G.state && G.state.boss && G.state.boss.status === 'won';
-    const top = won ? 0x14284a : 0x10131f;
-    const bot = won ? 0x3a5a8a : 0x262a40;
+    const top = won ? 0x1d3566 : 0x0d1022;
+    const bot = won ? 0x6a7fb8 : 0x2b2d4e;
+    const seaY = H - 200;
     for (let i = 0; i < 24; i++) {
       const c = Phaser.Display.Color.Interpolate.ColorWithColor(Phaser.Display.Color.ValueToColor(top), Phaser.Display.Color.ValueToColor(bot), 23, i);
       g.fillStyle(Phaser.Display.Color.GetColor(c.r, c.g, c.b), 1);
-      g.fillRect(0, (H / 24) * i, W, H / 24 + 1);
+      g.fillRect(0, (seaY / 24) * i, W, seaY / 24 + 1);
     }
-    // lamp-room window frame
-    g.lineStyle(10, 0x2a2232, 1);
-    g.strokeRect(6, 6, W - 12, H - 12);
-    g.lineStyle(6, 0x2a2232, 0.9);
-    for (let i = 1; i < 4; i++) g.lineBetween((W / 4) * i, 0, (W / 4) * i, H - 80);
-    g.fillStyle(0x2a2232, 1);
-    g.fillRect(0, H - 80, W, 80);
-    g.fillStyle(0x3a3244, 1);
-    g.fillRect(0, H - 80, W, 6);
+    // stars (seeded so they do not jump on resize)
+    let seed = 7;
+    const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+    g.fillStyle(0xffffff, won ? 0.9 : 0.35);
+    for (let i = 0; i < 90; i++) g.fillRect(Math.floor(rnd() * W), Math.floor(rnd() * seaY * 0.8), 2, 2);
+    // the sea, with lines of waves
+    g.fillStyle(won ? 0x2c5a8c : 0x142a48, 1);
+    g.fillRect(0, seaY, W, H - seaY);
+    g.fillStyle(won ? 0x72c4e6 : 0x2f5d86, 0.6);
+    for (let i = 0; i < 40; i++) g.fillRect(Math.floor(rnd() * W), seaY + 6 + Math.floor(rnd() * 90), 10 + Math.floor(rnd() * 26), 2);
+    // lamp-room window frame: wooden mullions with black outlines (pack style)
+    const wood = 0xa8572a;
+    const woodL = 0xe08a3c;
+    const post = (x) => {
+      g.fillStyle(0x000000, 1);
+      g.fillRect(x - 9, 0, 18, H - 70);
+      g.fillStyle(wood, 1);
+      g.fillRect(x - 6, 0, 12, H - 70);
+      g.fillStyle(woodL, 1);
+      g.fillRect(x - 6, 0, 3, H - 70);
+    };
+    post(W / 4);
+    post((W * 3) / 4);
+    post(8);
+    post(W - 8);
+    g.fillStyle(0x000000, 1);
+    g.fillRect(0, 0, W, 16);
+    g.fillStyle(wood, 1);
+    g.fillRect(0, 0, W, 12);
+    // sill and stone floor
+    g.fillStyle(0x000000, 1);
+    g.fillRect(0, H - 76, W, 76);
+    g.fillStyle(woodL, 1);
+    g.fillRect(0, H - 73, W, 8);
+    g.fillStyle(wood, 1);
+    g.fillRect(0, H - 65, W, 5);
+    for (let y = H - 58; y < H; y += 14) {
+      for (let x = ((y / 14) % 2) * 20 - 20; x < W; x += 40) {
+        g.fillStyle(0x8a8079, 1);
+        g.fillRect(x + 1, y + 1, 37, 11);
+        g.fillStyle(0xb0a69c, 1);
+        g.fillRect(x + 1, y + 1, 37, 3);
+      }
+    }
   }
 
   // ------------------------------------------------------------ HUD / overlays
@@ -213,7 +249,7 @@ export class BossScene extends Phaser.Scene {
     if (!b) { this.showOverlay(null); G.typing = false; return; }
     this.drawHud(b);
     this.lamp.setTexture(b.lamp > 0 ? 'lamp1' : 'lamp0');
-    this.lampGlow.setAlpha(0.08 + 0.05 * b.lamp);
+    this.lampGlow.setAlpha(0.06 + 0.06 * b.lamp);
     const fighting = b.status === 'fight' || b.status === 'final';
     G.typing = fighting && !s.scene;
     if (s.scene) { this.showOverlay(null); return; }
@@ -360,7 +396,7 @@ export class BossScene extends Phaser.Scene {
     if (this.finalMode) {
       const target = BOSS.final[G.slot];
       el.innerHTML = '';
-      el.append(h('span', { style: { color: '#6ccf6a' } }, this.finalBuf), h('span', { style: { color: '#5a6690' } }, target.slice(this.finalBuf.length)));
+      el.append(h('span', { style: { color: '#3c8a2c' } }, this.finalBuf), h('span', { style: { color: '#b9a59c' } }, target.slice(this.finalBuf.length)));
       if (this.finalDoneLocal) el.append(h('div', { class: 'lbl' }, `✓ Xong! Chờ ${nameOf(partner())}...`));
       return;
     }
@@ -406,25 +442,35 @@ export class BossScene extends Phaser.Scene {
   makeCloudObj(c, ghost) {
     const cont = this.add.container(0, 0).setDepth(ghost ? 8 : 10);
     const label = c.recall ? c.vi : c.target;
-    const txt = this.add.text(0, -2, label, { fontFamily: c.recall ? 'Be Vietnam Pro' : 'VT323', fontSize: c.recall ? '17px' : '28px', color: '#ffffff', stroke: '#1a1020', strokeThickness: 4 }).setOrigin(0.5);
-    const w = Math.max(90, txt.width + 40);
+    const txt = this.add.text(0, -1, label, { fontFamily: c.recall ? 'Be Vietnam Pro' : 'VT323', fontSize: c.recall ? '17px' : '30px', color: '#3b2a2a', fontStyle: c.recall ? 'bold' : '' }).setOrigin(0.5);
+    const w = Math.max(96, txt.width + 44);
     const g = this.add.graphics();
-    g.fillStyle(ghost ? 0x3a3f58 : 0x4a4f6a, ghost ? 0.5 : 0.95);
-    g.fillRoundedRect(-w / 2, -22, w, 44, 20);
-    g.fillCircle(-w / 4, -20, 16);
-    g.fillCircle(w / 6, -24, 20);
-    g.lineStyle(3, 0x1a1020, ghost ? 0.4 : 1);
-    g.strokeRoundedRect(-w / 2, -22, w, 44, 20);
+    // storm cloud carrying the word: dark puffs around a paper label
+    g.fillStyle(0x000000, 1);
+    for (const [dx, dy, r] of [[-w / 2 + 8, -6, 18], [-w / 4, -22, 18], [w / 8, -26, 22], [w / 2 - 10, -8, 18]]) g.fillCircle(dx, dy, r + 3);
+    g.fillStyle(0x4a4f6a, 1);
+    for (const [dx, dy, r] of [[-w / 2 + 8, -6, 18], [-w / 4, -22, 18], [w / 8, -26, 22], [w / 2 - 10, -8, 18]]) g.fillCircle(dx, dy, r);
+    g.fillStyle(0x6d7393, 1);
+    g.fillCircle(-w / 4 - 4, -28, 7);
+    g.fillCircle(w / 8 - 6, -34, 8);
+    g.fillStyle(0x000000, 1);
+    g.fillRoundedRect(-w / 2 - 3, -21, w + 6, 42, 9);
+    g.fillStyle(0xb7604f, 1);
+    g.fillRoundedRect(-w / 2, -18, w, 36, 7);
+    g.fillStyle(0xffb66e, 1);
+    g.fillRoundedRect(-w / 2 + 2, -16, w - 4, 32, 6);
+    g.fillStyle(0xfbedea, 1);
+    g.fillRoundedRect(-w / 2 + 5, -13, w - 10, 26, 4);
     cont.add(g);
     cont.add(txt);
     if (c.recall && c.hint) {
-      cont.add(this.add.text(0, 30, c.hint, { fontFamily: 'VT323', fontSize: '22px', color: '#9fe8ff', stroke: '#1a1020', strokeThickness: 3 }).setOrigin(0.5));
+      cont.add(this.add.text(0, 32, c.hint, { fontFamily: 'VT323', fontSize: '24px', color: '#b4ffe0', stroke: '#000000', strokeThickness: 4 }).setOrigin(0.5));
     }
     if (!ghost) {
-      c.typed = this.add.text(0, c.recall ? 52 : 30, '', { fontFamily: 'VT323', fontSize: '22px', color: '#6ccf6a', stroke: '#1a1020', strokeThickness: 3 }).setOrigin(0.5);
+      c.typed = this.add.text(0, c.recall ? 54 : 32, '', { fontFamily: 'VT323', fontSize: '24px', color: '#8dff6a', stroke: '#000000', strokeThickness: 4 }).setOrigin(0.5);
       cont.add(c.typed);
     }
-    if (ghost) cont.setAlpha(0.55);
+    if (ghost) cont.setAlpha(0.5);
     return cont;
   }
 
@@ -531,7 +577,7 @@ export class BossScene extends Phaser.Scene {
     this.lightning();
     this.tweens.add({ targets: this.storm, alpha: 0, scale: 3, duration: 1800 });
     this.lampGlow.setAlpha(0.6);
-    this.tweens.add({ targets: this.lampGlow, scale: 9, duration: 2000 });
+    this.tweens.add({ targets: this.lampGlow, scale: 7, duration: 2000 });
     this.drawBg();
     G.typing = false;
   }
