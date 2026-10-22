@@ -276,9 +276,17 @@ loadRooms();
 server.listen(PORT, () => {
   log(`Beacon Isle server on http://localhost:${PORT}`);
   // addresses another computer on the same Wi-Fi can use
+  const lan = [];
   for (const list of Object.values(os.networkInterfaces())) {
-    for (const a of list || []) if (a.family === 'IPv4' && !a.internal) log(`  same Wi-Fi: http://${a.address}:${PORT}`);
+    for (const a of list || []) if (a.family === 'IPv4' && !a.internal) lan.push(`http://${a.address}:${PORT}`);
   }
+  console.log('');
+  console.log('  ==============================================================');
+  console.log(`   GAME DA CHAY!  May nay mo:  http://localhost:${PORT}`);
+  if (lan.length) console.log(`   May thu hai (cung Wi-Fi) mo:  ${lan.join('   hoac   ')}`);
+  console.log('   Giu cua so nay mo trong luc choi. Dong cua so = tat game.');
+  console.log('  ==============================================================');
+  console.log('');
 });
 
 for (const sig of ['SIGINT', 'SIGTERM']) {
