@@ -5,8 +5,26 @@ import { SCENES, BOSS, CALL, BAY, DOOR_HALVES, makeGenerator, generatorSequence,
 import { normalize, matchPhrase } from './phrases.js';
 
 export const SLOTS = ['p1', 'p2'];
+// Who each player is drawn as (independent of the role they chose).
+export const LOOKS = ['lac', 'tim'];
+export const DEFAULT_LOOK = { p1: 'lac', p2: 'tim' };
+export const LOOK_NAMES = { lac: 'Lắc', tim: 'Tím' };
 export const other = (slot) => (slot === 'p1' ? 'p2' : 'p1');
 export const SAVE_VERSION = 1;
+
+// Give a player the look they asked for. If the partner is already playing
+// that character, the newcomer gets the other one; the two never match.
+export function setLook(state, slot, look) {
+  if (!LOOKS.includes(look)) return;
+  const o = other(slot);
+  const rest = LOOKS.find((l) => l !== look);
+  if (state.players[o].connected && state.players[o].look === look) {
+    state.players[slot].look = rest;
+    return;
+  }
+  state.players[slot].look = look;
+  if (state.players[o].look === look) state.players[o].look = rest;
+}
 
 export function createState(room, rand = Math.random) {
   return {
@@ -15,8 +33,8 @@ export function createState(room, rand = Math.random) {
     createdAt: Date.now(),
     stage: 'world', // world | boss | finale | credits
     players: {
-      p1: { name: '', connected: false },
-      p2: { name: '', connected: false },
+      p1: { name: '', connected: false, look: DEFAULT_LOOK.p1 },
+      p2: { name: '', connected: false, look: DEFAULT_LOOK.p2 },
     },
     flags: {},
     scene: null, // { id, idx, ready: { p1, p2 } }
@@ -527,7 +545,10 @@ export function restoreState(save, room) {
   const keep = ['stage', 'flags', 'gen', 'learn', 'pos', 'log', 'call'];
   for (const k of keep) if (save[k] !== undefined) s[k] = save[k];
   for (const slot of SLOTS) {
-    if (save.players && save.players[slot]) s.players[slot].name = String(save.players[slot].name || '').slice(0, 16);
+    if (save.players && save.players[slot]) {
+      s.players[slot].name = String(save.players[slot].name || '').slice(0, 16);
+      if (LOOKS.includes(save.players[slot].look)) s.players[slot].look = save.players[slot].look;
+    }
   }
   s.genProgress = 0;
   s.flags = s.flags || {};

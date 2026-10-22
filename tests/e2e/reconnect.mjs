@@ -37,12 +37,10 @@ async function waitFor(p, fn, timeout = 20000) {
 try {
   await a.goto(URL);
   await a.click('text=Tạo phòng mới');
-  await a.fill('input[type=text]', 'Mai');
   await a.click('text=Tạo phòng ▶');
   await a.waitForSelector('.code');
   const code = (await a.textContent('.code')).trim();
   await b.goto(URL + '?room=' + code);
-  await b.fill('input[placeholder^="Tên"]', 'Khoa');
   await b.click('text=Vào phòng ▶');
   await waitFor(a, () => window.__beacon.G.state.players.p2.connected);
   await a.click('text=Bắt đầu ▶');
@@ -67,19 +65,17 @@ try {
   check(await waitFor(b, () => window.__beacon.G.net.status === 'online' && window.__beacon.G.state.players.p2.connected, 30000), 'B reconnects after server restart');
   const s = await st(a);
   check(s.room === code && s.flags.has_tools && s.flags.started, 'room rebuilt from the players\' saves with progress');
-  check(s.players.p1.name === 'Mai' && s.players.p2.name === 'Khoa', 'names kept');
+  check(s.players.p1.look === 'lac' && s.players.p2.look === 'tim', 'characters (Lắc / Tím) kept');
 
   // 3. a third browser cannot join a full room; can take over an offline seat
   const ctxC = await browser.newContext();
   const c = await ctxC.newPage();
   await c.goto(URL + '?room=' + code);
-  await c.fill('input[placeholder^="Tên"]', 'Lan');
   await c.click('text=Vào phòng ▶');
   check(await waitFor(c, () => /đủ 2 người/.test(document.querySelector('.err').textContent)), 'third player gets "room full"');
   await b.close();
   await waitFor(a, () => !window.__beacon.G.state.players.p2.connected);
   await c.goto(URL + '?room=' + code);
-  await c.fill('input[placeholder^="Tên"]', 'Khoa');
   await c.click('text=Vào phòng ▶');
   check(await waitFor(c, () => !!document.querySelector('button') && [...document.querySelectorAll('button')].some((x) => x.textContent.includes('Vào chỗ của'))), 'offered to take over the empty seat');
   await c.click('text=Vào chỗ của');

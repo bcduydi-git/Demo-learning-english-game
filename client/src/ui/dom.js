@@ -1,3 +1,4 @@
+import { lookOf } from '../ctx.js';
 // Minimal DOM helpers.
 
 export function h(tag, attrs = {}, ...children) {
@@ -24,7 +25,9 @@ export function clear(el) {
   return el;
 }
 
+// key: a player slot (p1/p2), a character (lac/tim) or an NPC portrait name
 export function portraitUrl(key) {
-  if (key === 'p1' || key === 'p2') return `assets/characters/${key}/portrait.png`;
+  if (key === 'p1' || key === 'p2') return `assets/characters/${lookOf(key)}/portrait.png`;
+  if (key === 'lac' || key === 'tim') return `assets/characters/${key}/portrait.png`;
   return `assets/portraits/${key}.png`;
 }

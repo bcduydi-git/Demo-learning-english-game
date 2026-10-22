@@ -129,7 +129,7 @@ import('./store.js').then(({ lastSession, loadSave, settings }) => {
   if (!last || params.get('room')) return;
   const save = loadSave(last.room);
   if (save && save.state && save.state.flags && save.state.flags.started && !save.state.flags.complete && Date.now() - save.savedAt < 6 * 3600e3) {
-    net.connect('join', { room: last.room, slot: last.slot, name: settings.name, save: save.state });
+    net.connect('join', { room: last.room, slot: last.slot, save: save.state });
   }
 });
 

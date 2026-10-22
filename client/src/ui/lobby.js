@@ -1,7 +1,7 @@
 // Title screen and session lobby (create / join / continue / wait for partner).
 
 import { h, root, clear, portraitUrl } from './dom.js';
-import { G, ROLE, DEFAULT_NAMES, nameOf, act } from '../ctx.js';
+import { G, ROLE, CHARACTERS, nameOf, act } from '../ctx.js';
 import { settings, saveSettings, lastSession, loadSave, clearLastSession } from '../store.js';
 import { progressOf } from '../../../shared/logic.js';
 import { unlockAudio, sfx, music } from '../audio.js';
@@ -44,10 +44,15 @@ function go(v) {
   render();
 }
 
-function nameInput(slotHint) {
-  const inp = h('input', { type: 'text', maxlength: 16, placeholder: `Tên của bạn (vd: ${DEFAULT_NAMES[slotHint] || 'Sky'})`, value: settings.name || '' });
-  inp.addEventListener('input', () => { settings.name = inp.value.trim(); saveSettings(); });
-  return inp;
+// "Who are you?" — Lắc or Tím. Separate from the role choice.
+function whoPicker(onPick) {
+  const card = (look) => h('div', {
+    class: `role who-card ${settings.look === look ? 'sel' : ''}`,
+    onclick: () => { settings.look = look; saveSettings(); sfx('click'); onPick(); },
+  },
+  h('img', { src: portraitUrl(look), class: 'face' }),
+  h('div', {}, h('h3', { class: 'en', style: { fontSize: '30px', margin: 0 } }, CHARACTERS[look].name)));
+  return h('div', { class: 'roles' }, card('lac'), card('tim'));
 }
 
 export function lobbyError(m) {
@@ -78,7 +83,7 @@ function render() {
   card.append(h('div', { class: 'err' }, error));
   if (takeover) {
     card.append(h('div', { class: 'row' },
-      h('button', { class: 'btn gold', onclick: () => { unlockAudio(); G.net.connect('join', { room: G.net.hello.room, name: settings.name, takeover: true, slot: takeover.slot, save: G.net.withSave(G.net.hello.room) }); takeover = null; error = 'Đang vào...'; render(); } }, `Vào chỗ của "${takeover.name || takeover.slot}"`),
+      h('button', { class: 'btn gold', onclick: () => { unlockAudio(); G.net.connect('join', { room: G.net.hello.room, takeover: true, slot: takeover.slot, save: G.net.withSave(G.net.hello.room) }); takeover = null; error = 'Đang vào...'; render(); } }, `Vào chỗ của "${takeover.name || takeover.slot}"`),
     ));
   }
 }
@@ -89,10 +94,11 @@ function homeView() {
   const save = last && loadSave(last.room);
   if (save && save.state && !(save.state.flags && save.state.flags.complete && Date.now() - save.savedAt > 864e5)) {
     const st = save.state;
-    const names = `${st.players.p1.name || DEFAULT_NAMES.p1} & ${st.players.p2.name || DEFAULT_NAMES.p2}`;
+    const nm = (slot) => st.players[slot].name || (CHARACTERS[st.players[slot].look] || {}).name || slot;
+    const names = `${nm('p1')} & ${nm('p2')}`;
     const when = new Date(save.savedAt).toLocaleString('vi-VN');
     wrap.append(h('div', { class: 'card' },
-      h('img', { src: portraitUrl(last.slot), style: { width: '56px', height: '56px', imageRendering: 'pixelated' } }),
+      h('img', { src: portraitUrl(st.players[last.slot].look || last.slot), class: 'face', style: { width: '56px', height: '56px' } }),
       h('div', { style: { flex: 1 } },
         h('div', { style: { fontWeight: 700 } }, `Tiếp tục phòng ${last.room}`),
         h('div', { class: 'small' }, `${names} · tiến độ ${progressOf(st)}% · lưu lúc ${when}`),
@@ -101,7 +107,7 @@ function homeView() {
         unlockAudio();
         error = 'Đang kết nối...';
         view = 'wait';
-        G.net.connect('join', { room: last.room, slot: last.slot, name: settings.name || st.players[last.slot].name, save: st });
+        G.net.connect('join', { room: last.room, slot: last.slot, save: st });
         render();
       } }, 'Tiếp tục ▶'),
     ));
@@ -114,7 +120,7 @@ function homeView() {
     h('button', { class: 'btn', onclick: () => openHelp() }, '? Cách chơi'),
   ));
   wrap.append(h('div', { class: 'lobby-help' },
-    h('p', {}, h('b', {}, '1.'), ' Một người bấm ', h('b', {}, 'Tạo phòng mới'), ', chọn vai, rồi gửi ', h('b', {}, 'mã phòng 4 chữ'), ' (hoặc đường link) cho người kia.'),
+    h('p', {}, h('b', {}, '1.'), ' Một người bấm ', h('b', {}, 'Tạo phòng mới'), ', chọn mình là Lắc hay Tím và chọn vai, rồi gửi ', h('b', {}, 'mã phòng 4 chữ'), ' (hoặc đường link) cho người kia.'),
     h('p', {}, h('b', {}, '2.'), ' Người kia mở cùng địa chỉ trang này trên máy của mình, bấm ', h('b', {}, 'Vào phòng'), ' và nhập mã.'),
     h('p', {}, h('b', {}, '3.'), ' Gọi thoại cho nhau bằng ứng dụng quen thuộc (Zalo, Messenger, Discord...). Game tự lưu; mất mạng thì tự kết nối lại.'),
   ));
@@ -127,26 +133,24 @@ function roleCard(slot, taken) {
     class: `role ${selRole === slot ? 'sel' : ''} ${taken ? 'taken' : ''}`,
     onclick: () => { if (!taken) { selRole = slot; sfx('click'); render(); } },
   },
-  h('img', { src: portraitUrl(slot) }),
-  h('div', {}, h('h3', {}, `${r.icon} ${r.title} `, h('span', { class: 'en', style: { fontSize: '20px', color: 'var(--muted)' } }, r.en)), h('p', {}, r.desc)));
+  h('div', { class: 'role-icon' }, r.icon),
+  h('div', {}, h('h3', {}, `${r.title} `, h('span', { class: 'en', style: { fontSize: '20px', color: 'var(--muted)' } }, r.en)), h('p', {}, r.desc)));
 }
 
 function createView() {
-  const name = nameInput(selRole);
   return h('div', { class: 'col' },
-    h('div', { class: 'row' }, h('b', {}, 'Tên hiển thị:'), name),
-    h('div', {}, h('b', {}, 'Chọn vai của bạn'), h('span', { class: 'small' }, ' — hai vai ngang nhau, mỗi người giữ thông tin và khả năng người kia không có.')),
+    h('div', {}, h('b', {}, 'Bạn là ai?')),
+    whoPicker(render),
+    h('div', {}, h('b', {}, 'Chọn vai'), h('span', { class: 'small' }, ' — hai vai ngang nhau, mỗi người giữ thông tin và khả năng người kia không có.')),
     h('div', { class: 'roles' }, roleCard('p1'), roleCard('p2')),
     h('div', { class: 'row' },
       h('button', { class: 'btn ghost', onclick: () => go('home') }, '← Quay lại'),
       h('span', { class: 'spacer' }),
       h('button', { class: 'btn gold', onclick: () => {
         unlockAudio();
-        settings.name = name.value.trim() || DEFAULT_NAMES[selRole];
-        saveSettings();
         error = 'Đang tạo phòng...';
         view = 'wait';
-        G.net.connect('create', { slot: selRole, name: settings.name });
+        G.net.connect('create', { slot: selRole, look: settings.look });
         render();
       } }, 'Tạo phòng ▶'),
     ),
@@ -156,23 +160,22 @@ function createView() {
 function joinView() {
   const params = new URLSearchParams(location.search);
   const code = h('input', { type: 'text', class: 'en-input', maxlength: 6, placeholder: 'MÃ', value: params.get('room') || '', style: { width: '160px', textTransform: 'uppercase', letterSpacing: '.3em' } });
-  const name = nameInput('p2');
   const go2 = () => {
     unlockAudio();
     const room = code.value.trim().toUpperCase();
     if (!room) { error = 'Nhập mã phòng mà người kia gửi cho bạn.'; render(); return; }
-    settings.name = name.value.trim() || '';
-    saveSettings();
     error = 'Đang vào phòng...';
     view = 'wait';
-    G.net.connect('join', { room, name: settings.name, save: G.net.withSave(room) });
+    G.net.connect('join', { room, look: settings.look, save: G.net.withSave(room) });
     render();
   };
   code.addEventListener('keydown', (e) => { if (e.key === 'Enter') go2(); });
+  const keep = code.value;
   return h('div', { class: 'col' },
     h('div', { class: 'row' }, h('b', {}, 'Mã phòng:'), code),
-    h('div', { class: 'row' }, h('b', {}, 'Tên hiển thị:'), name),
-    h('p', { class: 'small' }, 'Bạn sẽ nhận vai còn trống trong phòng.'),
+    h('div', {}, h('b', {}, 'Bạn là ai?')),
+    whoPicker(() => { const v = code.value || keep; render(); const c = el.querySelector('input.en-input'); if (c) c.value = v; }),
+    h('p', { class: 'small' }, 'Bạn sẽ nhận vai còn trống trong phòng. Nếu người kia đã chọn nhân vật này, bạn sẽ là nhân vật còn lại.'),
     h('div', { class: 'row' },
       h('button', { class: 'btn ghost', onclick: () => go('home') }, '← Quay lại'),
       h('span', { class: 'spacer' }),
@@ -206,7 +209,7 @@ function waitView() {
     return h('div', { class: 'player-slot' },
       h('img', { src: portraitUrl(slot) }),
       h('div', { style: { flex: 1 } },
-        h('div', {}, h('b', {}, p.name || (p.connected ? DEFAULT_NAMES[slot] : '— trống —')), me ? ' (bạn)' : ''),
+        h('div', {}, h('b', {}, p.connected ? nameOf(slot) : '— trống —'), me ? ' (bạn)' : ''),
         h('div', { class: 'small' }, `${ROLE[slot].icon} ${ROLE[slot].title}`),
       ),
       h('span', { class: `dot ${p.connected ? 'on' : ''}` }),

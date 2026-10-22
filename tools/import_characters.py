@@ -21,7 +21,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'tools', 'source_art', 'lac_tim.webp')
 OUT = os.path.join(ROOT, 'client', 'public', 'assets', 'characters')
 
-HEIGHT = 32  # character height in game pixels (a tile is 16)
+# The art keeps its own detail: the figure is ~46px tall inside a 32x64 frame
+# and the game draws it at half size (about 23 world pixels, ~1.5 tiles), so
+# it stands naturally next to the Ninja Adventure houses and trees.
+HEIGHT = 46
+FRAME_W, FRAME_H = 32, 64
+DISPLAY_SCALE = 0.5
 OUTLINE = (20, 16, 24, 255)
 
 # pose boxes in the source sheet: (rows), then (columns per row)
@@ -57,6 +62,14 @@ def shrink(img, h):
     out[..., :3] = rgb.clip(0, 255)
     out[..., 3] = np.where(al > 110, 255, 0)
     return Image.fromarray(out)
+
+
+def quantize(img, n=24):
+    """Snap the downscaled colours to a small palette so edges stay crisp."""
+    a = np.array(img)
+    rgb = Image.fromarray(a[..., :3]).quantize(colors=n, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).convert('RGB')
+    a[..., :3] = np.array(rgb)
+    return Image.fromarray(a)
 
 
 def add_outline(img):
@@ -163,10 +176,8 @@ def main():
     except Exception:
         cfg = {}
     for row, (look, name) in enumerate(LOOKS):
-        small = [add_outline(shrink(pose(im, row, c), HEIGHT)) for c in range(4)]  # down, left, right, up
-        fw = max(s.getbbox()[2] - s.getbbox()[0] for s in small) + 4
-        fh = HEIGHT + 4
-        fw += fw % 2
+        small = [add_outline(quantize(shrink(pose(im, row, c), HEIGHT))) for c in range(4)]  # down, left, right, up
+        fw, fh = FRAME_W, FRAME_H
         sheet = Image.new('RGBA', (fw * 4, fh * 4))
         for r, (spr, facing) in enumerate(zip(small, ['down', 'left', 'right', 'up'])):
             stand = bottom_center(spr, fw, fh)
@@ -176,7 +187,7 @@ def main():
         os.makedirs(d, exist_ok=True)
         sheet.save(os.path.join(d, 'walk.png'))
         portrait(im, row).save(os.path.join(d, 'portrait.png'))
-        cfg[look] = {'name': name, 'frameWidth': fw, 'frameHeight': fh, 'scale': 1, 'framesPerRow': 4, 'fps': 7}
+        cfg[look] = {'name': name, 'frameWidth': fw, 'frameHeight': fh, 'scale': DISPLAY_SCALE, 'framesPerRow': 4, 'fps': 7}
         print(look, 'frame', fw, 'x', fh)
     cfg['_help'] = ('Nhân vật: mỗi thư mục (lac, tim) có walk.png = lưới 4 hàng (xuống, trái, phải, lên) x 4 khung bước đi, '
                     'và portrait.png = chân dung vuông. frameWidth/frameHeight = kích thước MỘT khung. '

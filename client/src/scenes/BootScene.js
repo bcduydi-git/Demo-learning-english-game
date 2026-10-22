@@ -38,29 +38,40 @@ export class BootScene extends Phaser.Scene {
 
   create() {
     const cfg = this.cache.json.get('charcfg') || {};
-    for (const slot of ['p1', 'p2']) {
-      const c = cfg[slot] || {};
-      this.load.spritesheet(`char_${slot}`, `characters/${slot}/walk.png`, { frameWidth: c.frameWidth || 32, frameHeight: c.frameHeight || 32 });
+    const looks = Object.keys(cfg).filter((k) => !k.startsWith('_'));
+    for (const look of looks) {
+      const c = cfg[look];
+      this.load.spritesheet(`char_${look}`, `characters/${look}/walk.png`, { frameWidth: c.frameWidth || 32, frameHeight: c.frameHeight || 64 });
     }
     this.load.once('complete', () => {
-      for (const slot of ['p1', 'p2']) {
-        const c = cfg[slot] || {};
+      for (const look of looks) {
+        const c = cfg[look];
         const per = c.framesPerRow || 4;
         const fps = c.fps || 8;
         ['down', 'left', 'right', 'up'].forEach((dir, row) => {
-          this.anims.create({ key: `${slot}_walk_${dir}`, frames: this.anims.generateFrameNumbers(`char_${slot}`, { start: row * per, end: row * per + per - 1 }), frameRate: fps, repeat: -1 });
+          this.anims.create({ key: `${look}_walk_${dir}`, frames: this.anims.generateFrameNumbers(`char_${look}`, { start: row * per, end: row * per + per - 1 }), frameRate: fps, repeat: -1 });
         });
       }
       this.anims.create({ key: 'pip_idle', frames: this.anims.generateFrameNumbers('pip', { start: 0, end: 1 }), frameRate: 2, repeat: -1 });
       this.anims.create({ key: 'pip_fly', frames: this.anims.generateFrameNumbers('pip', { start: 2, end: 3 }), frameRate: 8, repeat: -1 });
       this.anims.create({ key: 'gull_fly', frames: this.anims.generateFrameNumbers('gull', { start: 0, end: 1 }), frameRate: 4, repeat: -1 });
       this.makeFogHole();
+      this.makeShadow();
       this.children.removeAll(true);
       this.registry.set('charcfg', cfg);
       this.registry.set('ready', true);
       emit('assets-ready');
     });
     this.load.start();
+  }
+
+  // soft shadow under the players' feet
+  makeShadow() {
+    const g = this.make.graphics({ add: false });
+    g.fillStyle(0x000000, 0.28);
+    g.fillEllipse(8, 3, 14, 5);
+    g.generateTexture('shadow', 16, 6);
+    g.destroy();
   }
 
   // soft round brush used to cut visibility holes in fog / darkness

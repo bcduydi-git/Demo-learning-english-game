@@ -2,6 +2,15 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.3.0 — Lắc và Tím (22/10/2026)
+
+- Hai nhân vật chính lấy từ ảnh bạn gửi: **Lắc** và **Tím**. Mỗi người chơi tự chọn mình là ai, tách riêng với việc chọn vai. Nếu hai người chọn trùng, người vào sau nhận nhân vật còn lại.
+- Hình đi lại: khung 32×64 giữ chi tiết ảnh gốc, vẽ bằng một nửa trong game (cao ≈ 23 điểm ảnh, 1,5 ô). Đã dựng thử 4 tỷ lệ cạnh cửa nhà, cây, NPC và chọn cách này.
+- Thêm bóng mờ dưới chân. Độ phóng to luôn là số chẵn để hình sắc nét. Sửa lỗi độ phóng to khi vào trong nhà.
+- Dáng đi được tạo tự động từ tư thế đứng (ảnh gốc chưa có khung bước đi).
+- Code chuyển sang repo **Demo-learning-english-game**.
+- Kiểm thử: 12/12 luật chơi, chơi tự động trọn game với 2 trình duyệt, kiểm thử kết nối lại — đều đạt.
+
 ## Phiên bản 0.2.0 — làm lại đồ hoạ và âm thanh (21/10/2026)
 
 Bạn nhận xét đồ hoạ bản 0.1 xấu. Lý do: bản đó do mình tự vẽ bằng code. Bản này:

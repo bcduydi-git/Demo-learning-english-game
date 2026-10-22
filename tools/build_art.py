@@ -525,12 +525,7 @@ def main():
     small_portraits()
     save(GA.gull_sheet(), 'npc/gull.png')
     save(faceset('14.png'), 'portraits/captain.png')
-    force = '--characters' in sys.argv
-    for slot, src in (('p1', '6.png'), ('p2', '25.png')):
-        for name, make in (('walk.png', lambda: pack_character(src)), ('portrait.png', lambda: faceset(src))):
-            path = os.path.join(OUT, 'characters', slot, name)
-            if force or not os.path.exists(path):
-                save(make(), f'characters/{slot}/{name}')
+    # the players' characters (Lắc, Tím) come from tools/import_characters.py
     GA.boss_sprites()
     GA.ui_bits()
     title_background()

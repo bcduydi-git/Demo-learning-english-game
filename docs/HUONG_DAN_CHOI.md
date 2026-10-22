@@ -13,12 +13,12 @@ Thời lượng một lượt chơi: khoảng 40–70 phút.
 
 ## Vào phiên chơi
 
-1. Người thứ nhất mở địa chỉ game → **Tạo phòng mới** → nhập tên → **chọn vai** → **Tạo phòng**.
+1. Người thứ nhất mở địa chỉ game → **Tạo phòng mới** → chọn mình là **Lắc** hay **Tím** → **chọn vai** → **Tạo phòng**.
    - 🔦 **Thợ máy**: có đèn lồng, hộp đồ nghề, ống nhòm.
    - 📻 **Điện đài viên**: có radio và tai nghe.
    - Hai vai ngang nhau: mỗi người sẽ có lúc giữ thông tin mà người kia không thấy/không nghe được.
 2. Màn hình hiện **mã phòng 4 chữ** (vd. `KQ7M`). Gửi mã đó, hoặc bấm **📋 Chép link mời** rồi gửi link, cho người kia.
-3. Người thứ hai mở cùng địa chỉ → **Vào phòng của bạn kia** → nhập mã và tên → **Vào phòng**. Người này tự nhận vai còn lại.
+3. Người thứ hai mở cùng địa chỉ → **Vào phòng của bạn kia** → nhập mã, chọn Lắc hay Tím → **Vào phòng**. Người này tự nhận vai còn lại (và nhân vật còn lại nếu chọn trùng).
 4. Khi cả hai chấm xanh đã sáng, bấm **Bắt đầu**.
 
 ## Tiếp tục buổi sau / mất mạng

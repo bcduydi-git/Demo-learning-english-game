@@ -101,6 +101,10 @@ input.en-input { font-family: var(--en); font-size: 26px; letter-spacing: .03em;
 .role.taken { opacity: .45; cursor: not-allowed; }
 .role img, .player-slot img, .who img { image-rendering: pixelated; background: var(--night); border: 2px solid var(--ink); border-radius: 3px; }
 .role img { width: 76px; height: 76px; }
+.role-icon { width: 64px; height: 64px; flex: none; display: flex; align-items: center; justify-content: center; font-size: 36px; background: var(--night); border: 2px solid var(--ink); border-radius: 4px; }
+.who-card { align-items: center; }
+/* the players' portraits are detailed art: scale them smoothly when shown small */
+img.face, .player-slot img, .who img { image-rendering: auto; }
 .role h3 { margin: 0 0 4px; font-size: 16px; }
 .role p { margin: 0; font-size: 13px; color: var(--muted); }
 .code { font-family: var(--en); font-size: 66px; color: var(--accent); letter-spacing: .25em; line-height: 1; }

@@ -19,6 +19,7 @@ function write(key, value) {
 
 export const DEFAULT_SETTINGS = {
   name: '',
+  look: 'lac', // which character this player is: lac | tim
   sub: 'always', // English subtitles: always | after (after listening) | tap
   vi: 'tap', // Vietnamese meaning: always | tap | off
   rate: 0.9, // voice speed
