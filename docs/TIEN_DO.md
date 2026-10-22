@@ -93,5 +93,5 @@ Kiểm thử tự động mở **2 trình duyệt Chromium độc lập** (hai h
 
 ### Cách tiếp tục làm việc ở phiên sau
 
-- Code nằm trên GitHub, nhánh `claude/adoring-lovelace-kk6mrk`. Mỗi mốc là một commit có mô tả.
+- Code nằm trên GitHub, repo `bcduydi-git/Demo-learning-english-game`, nhánh `main` (bản đang chạy trên Render). Thay đổi mới làm trên nhánh riêng rồi gộp vào `main` qua pull request. Mỗi mốc là một commit có mô tả.
 - Khi quay lại, chỉ cần nói "tiếp tục Beacon Isle" và gửi ghi chú chơi thử. Mình sẽ đọc `docs/TIEN_DO.md` này để nắm lại.
