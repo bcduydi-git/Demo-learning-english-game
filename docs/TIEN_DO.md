@@ -2,6 +2,23 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.4.0 — hình do ChatGPT vẽ (22/10/2026)
+
+- Lắc và Tím có dáng đi thật (4 khung mỗi hướng) thay cho dáng đi tạo tự động.
+- Chân dung mới: thuyền trưởng, bà gác đèn, Pip, cơn bão.
+- Hình mới: hải đăng (tắt/sáng), tháp canh, khúc gỗ, xác thuyền, radio (tắt/sáng), thấu kính, bóng đèn hải đăng, xuồng cứu hộ, đá ngầm, cột buồm trôi. Cơn bão có hoạt ảnh 4 khung trong màn đánh trùm.
+- Script mới `tools/import_gpt_art.py` chuyển ảnh gốc khổ lớn thành hình đúng cỡ. Đã xử lý các lỗi ChatGPT tự ghi trong `tools/source_art/DOC_TRUOC.md` (dư màu, mép mờ, sai tỉ lệ khung, hai bước nhấc cùng chân).
+- Kiểm thử: 12/12 luật chơi, chơi tự động trọn game với 2 trình duyệt, kiểm thử kết nối lại — đều đạt. Chưa thử trên 2 máy thật.
+
+## Phiên bản 0.3.0 — Lắc và Tím (22/10/2026)
+
+- Hai nhân vật chính lấy từ ảnh bạn gửi: **Lắc** và **Tím**. Mỗi người chơi tự chọn mình là ai, tách riêng với việc chọn vai. Nếu hai người chọn trùng, người vào sau nhận nhân vật còn lại.
+- Hình đi lại: khung 32×64 giữ chi tiết ảnh gốc, vẽ bằng một nửa trong game (cao ≈ 23 điểm ảnh, 1,5 ô). Đã dựng thử 4 tỷ lệ cạnh cửa nhà, cây, NPC và chọn cách này.
+- Thêm bóng mờ dưới chân. Độ phóng to luôn là số chẵn để hình sắc nét. Sửa lỗi độ phóng to khi vào trong nhà.
+- Dáng đi được tạo tự động từ tư thế đứng (ảnh gốc chưa có khung bước đi).
+- Code chuyển sang repo **Demo-learning-english-game**.
+- Kiểm thử: 12/12 luật chơi, chơi tự động trọn game với 2 trình duyệt, kiểm thử kết nối lại — đều đạt.
+
 ## Phiên bản 0.2.0 — làm lại đồ hoạ và âm thanh (21/10/2026)
 
 Bạn nhận xét đồ hoạ bản 0.1 xấu. Lý do: bản đó do mình tự vẽ bằng code. Bản này:
@@ -53,7 +70,7 @@ Kiểm thử tự động mở **2 trình duyệt Chromium độc lập** (hai h
 
 ### Tài nguyên tạm (cần/được phép thay)
 
-- **Hình ảnh**: từ bộ Ninja Adventure (CC0), cộng một số hình mình vẽ theo phong cách bộ (xem `docs/BAN_QUYEN.md`). Hai nhân vật chính là hình tạm lấy từ bộ, xem `docs/THAY_HINH_NHAN_VAT.md`.
+- **Hình ảnh**: từ bộ Ninja Adventure (CC0), cộng một số hình mình vẽ theo phong cách bộ (xem `docs/BAN_QUYEN.md`). Hai nhân vật chính, nhân vật phụ và các đồ vật chính do bạn cung cấp (ảnh gốc + ChatGPT), xem `docs/THAY_HINH_NHAN_VAT.md`.
 - **Nhạc và hiệu ứng chính**: từ bộ Ninja Adventure (CC0). Một số tiếng (bước chân, gõ phím, sấm, sóng) được tổng hợp bằng code.
 - **Giọng đọc**: giọng máy của trình duyệt. Có thể thay bằng file thu âm: đặt file vào `client/public/assets/voice/` kèm `manifest.json` dạng `{ "câu tiếng Anh y hệt": "ten-file.mp3" }`.
 - Mình chọn nhạc cho từng khu vực bằng cách phân tích nhịp độ và giọng trưởng/thứ, chưa nghe thử được. Nếu bài nào không hợp, đổi file trong `client/public/assets/audio/music/`.

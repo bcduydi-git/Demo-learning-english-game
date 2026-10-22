@@ -1,17 +1,19 @@
 {
-  "_help": "Thay hình nhân vật: walk.png = lưới 4 hàng (xuống, trái, phải, lên) x 4 khung bước đi; portrait.png = ảnh vuông. Sửa frameWidth/frameHeight theo kích thước MỘT khung (mặc định 16x16 giống bộ Ninja Adventure). scale = phóng to/thu nhỏ trong game.",
-  "p1": {
-    "frameWidth": 16,
-    "frameHeight": 16,
-    "scale": 1,
+  "_help": "Nhân vật: mỗi thư mục (lac, tim) có walk.png = lưới 4 hàng (xuống, trái, phải, lên) x 4 khung bước đi, và portrait.png = chân dung vuông. frameWidth/frameHeight = kích thước MỘT khung. Tạo lại: python3 tools/import_characters.py (chân dung) rồi python3 tools/import_gpt_art.py (bước đi, NPC, đồ vật)",
+  "lac": {
+    "name": "Lắc",
+    "frameWidth": 32,
+    "frameHeight": 64,
+    "scale": 0.5,
     "framesPerRow": 4,
-    "fps": 8
+    "fps": 7
   },
-  "p2": {
-    "frameWidth": 16,
-    "frameHeight": 16,
-    "scale": 1,
+  "tim": {
+    "name": "Tím",
+    "frameWidth": 32,
+    "frameHeight": 64,
+    "scale": 0.5,
     "framesPerRow": 4,
-    "fps": 8
+    "fps": 7
   }
 }

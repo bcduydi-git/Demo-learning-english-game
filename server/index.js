@@ -13,7 +13,7 @@ import crypto from 'node:crypto';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
-import { createState, restoreState, applyAction, tick, SLOTS, other } from '../shared/logic.js';
+import { createState, restoreState, applyAction, tick, setLook, SLOTS, other, LOOK_NAMES } from '../shared/logic.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -95,7 +95,7 @@ function pushEvents(room, ev) {
   if (ev && ev.length) broadcast(room, { t: 'ev', ev });
 }
 
-function attach(room, slot, ws, token, name) {
+function attach(room, slot, ws, token, name, look) {
   const old = room.sockets[slot];
   if (old && old !== ws) {
     send(old, { t: 'err', code: 'replaced', msg: 'Bạn đã mở game ở một tab/máy khác.' });
@@ -109,6 +109,7 @@ function attach(room, slot, ws, token, name) {
   const p = room.state.players[slot];
   p.connected = true;
   if (name) p.name = String(name).slice(0, 16);
+  if (look) setLook(room.state, slot, look);
   send(ws, { t: 'welcome', slot, room: room.code, state: room.state });
   pushState(room);
   log(`room ${room.code}: ${slot} (${p.name}) joined`);
@@ -128,7 +129,7 @@ function handleHello(ws, m) {
     const room = { code: useCode, state, tokens: {}, sockets: {}, dirty: true, lastActive: Date.now() };
     for (const s of SLOTS) state.players[s].connected = false;
     rooms.set(useCode, room);
-    return attach(room, slot, ws, token, name);
+    return attach(room, slot, ws, token, name, m.look);
   }
 
   // join / resume
@@ -160,14 +161,14 @@ function handleHello(ws, m) {
       const target = wanted && offline.includes(wanted) ? wanted : offline[0];
       if (!m.takeover) {
         return send(ws, {
-          t: 'err', code: 'takeover', slot: target, name: room.state.players[target].name,
-          msg: `Chỗ của "${room.state.players[target].name || target}" đang trống. Nếu đó là bạn (đổi máy/trình duyệt), bấm "Vào chỗ này".`,
+          t: 'err', code: 'takeover', slot: target, name: room.state.players[target].name || LOOK_NAMES[room.state.players[target].look] || target,
+          msg: `Chỗ của "${room.state.players[target].name || LOOK_NAMES[room.state.players[target].look] || target}" đang trống. Nếu đó là bạn (đổi máy/trình duyệt), bấm "Vào chỗ này".`,
         });
       }
       slot = target;
     }
   }
-  attach(room, slot, ws, token, name || room.state.players[slot].name);
+  attach(room, slot, ws, token, name || room.state.players[slot].name, m.look);
 }
 
 function handleMessage(ws, m) {

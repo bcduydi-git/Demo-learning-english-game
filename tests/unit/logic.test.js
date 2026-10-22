@@ -199,3 +199,24 @@ test('restore from a save keeps progress and resets timed parts', () => {
   assert.equal(r.boss.status, 'rules');
   assert.equal(r.players.p1.connected, false);
 });
+
+test('players pick Lắc or Tím; the two never match', async () => {
+  const { setLook } = await import('../../shared/logic.js');
+  const s = room();
+  assert.equal(s.players.p1.look, 'lac');
+  assert.equal(s.players.p2.look, 'tim');
+  // creator (alone) picks Tím: the empty seat becomes Lắc
+  s.players.p2.connected = false;
+  setLook(s, 'p1', 'tim');
+  assert.equal(s.players.p1.look, 'tim');
+  assert.equal(s.players.p2.look, 'lac');
+  // joiner asks for the character the creator already has: gets the other one
+  s.players.p2.connected = true;
+  setLook(s, 'p2', 'tim');
+  assert.equal(s.players.p2.look, 'lac');
+  assert.equal(s.players.p1.look, 'tim');
+  // looks survive a restore from a save
+  const r = restoreState(JSON.parse(JSON.stringify(s)), 'ROOM');
+  assert.equal(r.players.p1.look, 'tim');
+  assert.equal(r.players.p2.look, 'lac');
+});

@@ -2,7 +2,7 @@
 // partner sync and atmosphere.
 
 import Phaser from 'phaser';
-import { G, act, nameOf, partner, on, fill, settings } from '../ctx.js';
+import { G, act, nameOf, partner, on, fill, settings, lookOf } from '../ctx.js';
 import { net } from '../net.js';
 import { sfx, ambience, music, speak } from '../audio.js';
 import { setPrompt, toast, setPointer } from '../ui/hud.js';
@@ -184,12 +184,15 @@ export class WorldScene extends Phaser.Scene {
   }
 
   makePlayer(slot, isMe) {
-    const c = this.cfg[slot] || {};
-    const fh = c.frameHeight || 32;
-    const s = this.add.sprite(0, 0, `char_${slot}`, 0);
+    const look = lookOf(slot);
+    const c = this.cfg[look] || {};
+    const fh = c.frameHeight || 64;
+    const s = this.add.sprite(0, 0, `char_${look}`, 0);
     s.setOrigin(0.5, (fh - 1) / fh);
     s.setScale(c.scale || 1);
+    s.look = look;
     s.slot = slot;
+    s.shadow = this.add.image(0, 0, 'shadow');
     s.dir = 'down';
     s.isMe = isMe;
     return s;
@@ -198,8 +201,13 @@ export class WorldScene extends Phaser.Scene {
   onResize() {
     const w = this.scale.width;
     const h2 = this.scale.height;
-    this.zoom = Math.max(2, Math.min(5, Math.round(Math.min(w / 420, h2 / 250))));
-    if (!this.lookout) this.cameras.main.setZoom(this.zoom);
+    // Even zoom only: the players are drawn at half scale, so an even zoom
+    // keeps every one of their pixels a whole number of screen pixels (sharp).
+    const even = (z) => Math.max(2, 2 * Math.round(z / 2));
+    this.zoom = Math.min(8, even(Math.min(w / 320, h2 / 200)));
+    // the cottage interior (13x11 tiles) must fit on screen
+    this.zoomInside = Math.min(this.zoom, Math.max(2, 2 * Math.floor(Math.min(w / 210, h2 / 180) / 2)));
+    if (!this.lookout) this.cameras.main.setZoom(this.inside ? this.zoomInside : this.zoom);
     if (this.tint) this.tint.setSize(w, h2);
     for (const t of [this.nameMe, this.nameOther, this.bubbleOther]) if (t) t.setResolution(this.zoom + 1);
   }
@@ -221,7 +229,7 @@ export class WorldScene extends Phaser.Scene {
     add('cottage', 'cottage', M.cottage.x * T, (M.cottage.y + 1) * T, 0, 1);
     add('shed', 'shed', M.shed.x * T, (M.shed.y + 1) * T, 0, 1);
     add('lighthouse', 'lighthouse', M.lighthouse.x * T + 8, (M.lighthouse.y + 1) * T);
-    this.objs.doorGlow = this.add.image(M.lighthouse.x * T + 8 + 12, M.lighthouse.y * T + 2, 'door_glow').setDepth(M.lighthouse.y * T + 20).setVisible(false).setScale(0.6);
+    this.objs.doorGlow = this.add.image(M.lighthouse.x * T + 8, M.lighthouse.y * T + 2, 'door_glow').setDepth(M.lighthouse.y * T + 20).setVisible(false).setScale(0.6);
     this.tweens.add({ targets: this.objs.doorGlow, alpha: 0.3, duration: 700, yoyo: true, repeat: -1 });
     add('tower', 'tower', (M.tower.x) * T, (M.tower.y + 1) * T);
     for (const id of ['sign_beach', 'sign_woods', 'sign_tower']) add(id, 'sign', M[id].x * T + 8, (M[id].y + 1) * T);
@@ -597,6 +605,7 @@ export class WorldScene extends Phaser.Scene {
     this.animate(this.me, moving);
     this.me.moving = moving;
     this.me.setDepth(this.me.y);
+    this.me.shadow.setPosition(this.me.x, this.me.y - 1).setDepth(this.me.y - 2);
 
     // traps in the fog woods
     const tx = Math.floor(this.me.x / T);
@@ -629,14 +638,15 @@ export class WorldScene extends Phaser.Scene {
     const online = s.players[partner()].connected;
     o.setVisible(otherHere);
     o.setAlpha(online ? 1 : 0.4);
-    this.nameMe.setPosition(this.me.x, this.me.y - 19);
-    this.nameOther.setPosition(o.x, o.y - 19).setVisible(otherHere);
-    this.bubbleOther.setPosition(o.x, o.y - 27).setVisible(otherHere && this.bubbleOther.text !== '');
+    o.shadow.setPosition(o.x, o.y - 1).setDepth(o.y - 2).setVisible(otherHere);
+    this.nameMe.setPosition(this.me.x, this.me.y - 26);
+    this.nameOther.setPosition(o.x, o.y - 26).setVisible(otherHere);
+    this.bubbleOther.setPosition(o.x, o.y - 35).setVisible(otherHere && this.bubbleOther.text !== '');
 
     // --- Pip follows me
     if (this.pip.visible) {
       const px = this.me.x + (this.me.dir === 'left' ? 12 : -12);
-      const py = this.me.y - 20 + Math.sin(time / 300) * 2;
+      const py = this.me.y - 27 + Math.sin(time / 300) * 2;
       const dx = px - this.pip.x;
       const dy = py - this.pip.y;
       this.pip.x += dx * Math.min(1, dt * 3);
@@ -666,12 +676,12 @@ export class WorldScene extends Phaser.Scene {
   }
 
   animate(spr, moving) {
-    const key = `${spr.slot}_walk_${spr.dir}`;
+    const key = `${spr.look}_walk_${spr.dir}`;
     if (moving) {
       if (spr.anims.currentAnim?.key !== key || !spr.anims.isPlaying) spr.play(key, true);
     } else {
       spr.anims.stop();
-      const per = (this.cfg[spr.slot] && this.cfg[spr.slot].framesPerRow) || 4;
+      const per = (this.cfg[spr.look] && this.cfg[spr.look].framesPerRow) || 4;
       spr.setFrame(DIRS.indexOf(spr.dir) * per);
     }
   }

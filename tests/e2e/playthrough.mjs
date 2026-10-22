@@ -87,7 +87,7 @@ try {
   // ---------------------------------------------------------- lobby
   await a.goto(URL);
   await a.click('text=Tạo phòng mới');
-  await a.fill('input[type=text]', 'Mai');
+  await a.click('.who-card:has-text("Tím")');
   await a.click('text=Tạo phòng ▶');
   await a.waitForSelector('.code');
   const code = (await a.textContent('.code')).trim();
@@ -95,9 +95,12 @@ try {
   await b.goto(URL);
   await b.click('text=Vào phòng của bạn kia');
   await b.fill('input.en-input', code);
-  await b.fill('input[placeholder^="Tên"]', 'Khoa');
+  await b.click('.who-card:has-text("Tím")'); // already taken: B must become Lắc
   await b.click('text=Vào phòng ▶');
   await waitFor(a, () => window.__beacon.G.state.players.p2.connected);
+  const looks = await a.evaluate(() => [window.__beacon.G.state.players.p1.look, window.__beacon.G.state.players.p2.look]);
+  if (looks.join() !== 'tim,lac') throw new Error('character choice not applied: ' + looks);
+  log('characters: p1 =', looks[0], ', p2 =', looks[1]);
   await a.click('text=Bắt đầu ▶');
   await playScene(a, b, 'intro', [1, 2]);
 

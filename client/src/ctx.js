@@ -2,7 +2,7 @@
 
 import { settings } from './store.js';
 import { net } from './net.js';
-import { other } from '../../shared/logic.js';
+import { other, DEFAULT_LOOK, LOOK_NAMES } from '../../shared/logic.js';
 
 export const G = {
   net,
@@ -19,11 +19,19 @@ export const ROLE = {
   p2: { icon: '📻', title: 'Điện đài viên', en: 'The Radio Operator', desc: 'Có radio và tai nghe: nghe được sóng radio, lời nhắn ghi âm và tiếng thì thầm mà người kia không nghe được.' },
 };
 
-export const DEFAULT_NAMES = { p1: 'Sky', p2: 'River' };
+// The two player characters. Each player picks who they are in the lobby,
+// separately from the role (Thợ máy / Điện đài viên).
+export const CHARACTERS = { lac: { name: LOOK_NAMES.lac }, tim: { name: LOOK_NAMES.tim } };
+export const DEFAULT_NAMES = { p1: CHARACTERS[DEFAULT_LOOK.p1].name, p2: CHARACTERS[DEFAULT_LOOK.p2].name };
+
+export function lookOf(slot) {
+  const p = G.state && G.state.players[slot];
+  return (p && CHARACTERS[p.look] && p.look) || DEFAULT_LOOK[slot];
+}
 
 export function nameOf(slot) {
   const s = G.state;
-  return (s && s.players[slot] && s.players[slot].name) || DEFAULT_NAMES[slot];
+  return (s && s.players[slot] && s.players[slot].name) || CHARACTERS[lookOf(slot)].name;
 }
 
 export function partner() {
