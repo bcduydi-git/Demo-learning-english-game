@@ -10,9 +10,11 @@ Bạn làm một lần, sau đó cả hai chỉ cần mở một đường link 
 
 1. Đăng ký tài khoản tại **render.com** (có thể "Sign in with GitHub").
 2. Trên Render: **New +** → **Blueprint**.
-3. Kết nối GitHub và chọn repo `bcduydi-git/excel-duno`, nhánh `claude/adoring-lovelace-kk6mrk` (hoặc nhánh `main` sau khi bạn gộp code).
-4. Render đọc file `render.yaml` có sẵn → bấm **Apply / Deploy**. Đợi khoảng 3–5 phút đến khi trạng thái là **Live**.
-5. Mở link Render cung cấp → màn hình **BEACON ISLE** hiện ra là xong. Gửi link cho người kia.
+3. Kết nối GitHub và chọn repo `bcduydi-git/Demo-learning-english-game`, nhánh **`main`**. Ô **Blueprint Name** đặt gì cũng được (vd. `beacon-isle`).
+4. Render đọc file `render.yaml` có sẵn → bấm **Deploy Blueprint** (hoặc **Apply**). Đợi khoảng 3–5 phút, vào dịch vụ **beacon-isle**, đến khi trạng thái là **Live**.
+5. Mở link ở góc trên trang dịch vụ → màn hình **BEACON ISLE** hiện ra là xong. Gửi link cho người kia.
+
+Nếu Render báo không tìm thấy `render.yaml`: kiểm tra đã chọn đúng repo và nhánh `main`, rồi vào **Blueprints** → chọn Blueprint đó → **Manual Sync**. Nếu bước build báo lỗi đỏ, mở tab **Logs** và chụp màn hình phần lỗi.
 
 Điều cần biết về gói miễn phí của Render (theo tài liệu Render, có thể thay đổi):
 
@@ -21,7 +23,7 @@ Bạn làm một lần, sau đó cả hai chỉ cần mở một đường link 
 - Mỗi tháng có 750 giờ miễn phí, thừa cho 2–5 người chơi.
 - Mình chưa thể tự kiểm tra việc Render có đòi thẻ tín dụng khi đăng ký hay không. Nếu Render yêu cầu thẻ hoặc trả phí mà bạn không muốn, hãy dùng Cách B hoặc C.
 
-Cập nhật game: mỗi khi có code mới trên nhánh đã chọn, Render tự build lại (`autoDeploy`).
+Cập nhật game: mỗi khi có code mới được gộp vào nhánh `main`, Render tự build lại (`autoDeploy`). Mỗi lần build mất vài phút; trong lúc đó link vẫn chạy bản cũ.
 
 ---
 
