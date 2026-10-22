@@ -528,6 +528,9 @@ def main():
     # the players' characters (Lắc, Tím) come from tools/import_characters.py
     GA.boss_sprites()
     GA.ui_bits()
+    # the drawn art in tools/source_art replaces the placeholders above
+    import import_gpt_art
+    import_gpt_art.main()
     title_background()
     print('art written to', OUT)
 

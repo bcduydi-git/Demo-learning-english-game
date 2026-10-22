@@ -28,7 +28,7 @@ export class BootScene extends Phaser.Scene {
     this.load.image('prompt', 'ui/prompt.png');
     this.load.image('dot', 'ui/dot.png');
     this.load.image('soft', 'ui/soft.png');
-    this.load.image('storm', 'boss/storm.png');
+    this.load.spritesheet('storm', 'boss/storm.png', { frameWidth: 128, frameHeight: 96 });
     this.load.image('lamp0', 'boss/lamp0.png');
     this.load.image('lamp1', 'boss/lamp1.png');
     this.load.image('boat', 'boss/boat.png');
@@ -54,6 +54,7 @@ export class BootScene extends Phaser.Scene {
       }
       this.anims.create({ key: 'pip_idle', frames: this.anims.generateFrameNumbers('pip', { start: 0, end: 1 }), frameRate: 2, repeat: -1 });
       this.anims.create({ key: 'pip_fly', frames: this.anims.generateFrameNumbers('pip', { start: 2, end: 3 }), frameRate: 8, repeat: -1 });
+      this.anims.create({ key: 'storm_brew', frames: this.anims.generateFrameNumbers('storm', { start: 0, end: 3 }), frameRate: 4, repeat: -1 });
       this.anims.create({ key: 'gull_fly', frames: this.anims.generateFrameNumbers('gull', { start: 0, end: 1 }), frameRate: 4, repeat: -1 });
       this.makeFogHole();
       this.makeShadow();

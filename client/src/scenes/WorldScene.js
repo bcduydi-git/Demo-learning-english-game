@@ -229,7 +229,7 @@ export class WorldScene extends Phaser.Scene {
     add('cottage', 'cottage', M.cottage.x * T, (M.cottage.y + 1) * T, 0, 1);
     add('shed', 'shed', M.shed.x * T, (M.shed.y + 1) * T, 0, 1);
     add('lighthouse', 'lighthouse', M.lighthouse.x * T + 8, (M.lighthouse.y + 1) * T);
-    this.objs.doorGlow = this.add.image(M.lighthouse.x * T + 8 + 12, M.lighthouse.y * T + 2, 'door_glow').setDepth(M.lighthouse.y * T + 20).setVisible(false).setScale(0.6);
+    this.objs.doorGlow = this.add.image(M.lighthouse.x * T + 8, M.lighthouse.y * T + 2, 'door_glow').setDepth(M.lighthouse.y * T + 20).setVisible(false).setScale(0.6);
     this.tweens.add({ targets: this.objs.doorGlow, alpha: 0.3, duration: 700, yoyo: true, repeat: -1 });
     add('tower', 'tower', (M.tower.x) * T, (M.tower.y + 1) * T);
     for (const id of ['sign_beach', 'sign_woods', 'sign_tower']) add(id, 'sign', M[id].x * T + 8, (M[id].y + 1) * T);

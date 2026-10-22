@@ -35,7 +35,7 @@ export class BossScene extends Phaser.Scene {
     this.bg = this.add.graphics().setDepth(-100);
     this.drawBg();
     this.flash = this.add.rectangle(0, 0, W, H, 0xffffff, 0).setOrigin(0).setDepth(50);
-    this.storm = this.add.image(W / 2, 190, 'storm').setScale(2).setDepth(5);
+    this.storm = this.add.sprite(W / 2, 190, 'storm', 0).setScale(2).setDepth(5).play('storm_brew');
     this.tweens.add({ targets: this.storm, y: 202, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     this.lampGlow = this.add.image(W / 2, H - 120, 'holeBig').setScale(2.2).setAlpha(0.25).setTint(0xffd27a).setDepth(1).setBlendMode(Phaser.BlendModes.ADD);
     this.lamp = this.add.image(W / 2, H - 120, 'lamp1').setScale(2).setDepth(6);
