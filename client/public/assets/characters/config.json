@@ -1,0 +1,17 @@
+{
+  "_help": "Thay hình nhân vật: walk.png = lưới 4 hàng (xuống, trái, phải, lên) x 4 khung bước đi; portrait.png = ảnh vuông. Sửa frameWidth/frameHeight theo kích thước MỘT khung (mặc định 16x16 giống bộ Ninja Adventure). scale = phóng to/thu nhỏ trong game.",
+  "p1": {
+    "frameWidth": 16,
+    "frameHeight": 16,
+    "scale": 1,
+    "framesPerRow": 4,
+    "fps": 8
+  },
+  "p2": {
+    "frameWidth": 16,
+    "frameHeight": 16,
+    "scale": 1,
+    "framesPerRow": 4,
+    "fps": 8
+  }
+}
