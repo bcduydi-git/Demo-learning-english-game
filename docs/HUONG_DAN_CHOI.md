@@ -21,6 +21,8 @@ Thời lượng một lượt chơi: khoảng 40–70 phút.
 3. Người thứ hai mở cùng địa chỉ → **Vào phòng của bạn kia** → nhập mã, chọn Lắc hay Tím → **Vào phòng**. Người này tự nhận vai còn lại (và nhân vật còn lại nếu chọn trùng).
 4. Khi cả hai chấm xanh đã sáng, bấm **Bắt đầu**.
 
+**Đặt tên:** ô **Tên của bạn** (khi tạo/vào phòng) là tuỳ chọn; để trống thì dùng tên nhân vật (Lắc/Tím). Đổi lại bất cứ lúc nào ở phòng chờ hoặc trong game: **⚙ Cài đặt → Tên của bạn → Đổi tên**. Tên mới hiện ngay trên đầu nhân vật, trong lời thoại và ở máy người kia, và được giữ khi vào lại.
+
 ## Tiếp tục buổi sau / mất mạng
 
 - Game **tự lưu** liên tục, trên máy chủ và trong trình duyệt của cả hai người.

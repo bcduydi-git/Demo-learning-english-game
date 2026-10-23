@@ -5,7 +5,7 @@ import { openModal } from './modal.js';
 import { settings, saveSettings } from '../store.js';
 import { applyVolumes, englishVoices, speak, hasSpeech, speechInputSupported } from '../audio.js';
 import { BOSS_SPEED } from '../../../shared/content.js';
-import { emit } from '../ctx.js';
+import { emit, G, CHARACTERS, lookOf, setMyName } from '../ctx.js';
 
 function seg(options, get, set) {
   const wrap = h('div', { class: 'seg' });
@@ -33,8 +33,16 @@ export function openSettings() {
     ...voices.map((v) => h('option', { value: v.name, selected: settings.voiceName === v.name }, `${v.name} (${v.lang})`)),
   );
   vsel.addEventListener('change', () => { settings.voiceName = vsel.value; saveSettings(); });
+  const look = G.slot ? lookOf(G.slot) : settings.look;
+  const nameInp = h('input', { type: 'text', class: 'name-input', maxlength: 16, value: settings.name, placeholder: `Để trống = ${CHARACTERS[look].name}` });
+  const nameMsg = h('span', { class: 'small' });
+  const saveName = () => { const n = setMyName(nameInp.value); nameInp.value = n; nameMsg.textContent = `✓ Đã đổi thành "${n || CHARACTERS[look].name}"`; };
+  nameInp.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveName(); });
   m.body.append(
-    h('p', { class: 'small' }, 'Cài đặt này chỉ áp dụng cho máy của bạn — hai người có thể chọn mức hỗ trợ khác nhau.'),
+    h('h3', {}, 'Tên của bạn'),
+    h('div', { class: 'row' }, nameInp, h('button', { class: 'btn small', onclick: saveName }, 'Đổi tên'), nameMsg),
+    h('p', { class: 'small' }, 'Tên hiện trên đầu nhân vật, trong lời thoại và ở máy người kia. Để trống thì dùng tên nhân vật.'),
+    h('p', { class: 'small' }, 'Các cài đặt dưới đây chỉ áp dụng cho máy của bạn — hai người có thể chọn mức hỗ trợ khác nhau.'),
     h('h3', {}, 'Hỗ trợ tiếng Anh'),
     h('div', { class: 'form-grid' },
       h('div', {}, 'Phụ đề tiếng Anh', h('div', { class: 'small' }, 'cho lời thoại có giọng đọc')),

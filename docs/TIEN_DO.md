@@ -2,6 +2,12 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.4.1 — tự đặt tên (23/10/2026)
+
+- Tên người chơi không còn cố định là Lắc/Tím: mỗi người tự đặt tên khi tạo/vào phòng (tuỳ chọn), đổi lại được ở phòng chờ hoặc trong ⚙ Cài đặt. Để trống = tên nhân vật.
+- Tên mới cập nhật ngay cho cả hai máy (trên đầu nhân vật, lời thoại, bảng mục tiêu, trận Bão...) và được giữ khi mất mạng/vào lại.
+- Kiểm thử: 13/13 luật chơi (thêm bài đổi tên), thử đổi tên với 2 trình duyệt, chơi tự động trọn game, kiểm thử kết nối lại.
+
 ## Phiên bản 0.4.0 — hình do ChatGPT vẽ (22/10/2026)
 
 - Lắc và Tím có dáng đi thật (4 khung mỗi hướng) thay cho dáng đi tạo tự động.

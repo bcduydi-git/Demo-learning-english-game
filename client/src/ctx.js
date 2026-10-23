@@ -1,8 +1,8 @@
 // Shared client context: who am I, the latest state, small helpers.
 
-import { settings } from './store.js';
+import { settings, saveSettings } from './store.js';
 import { net } from './net.js';
-import { other, DEFAULT_LOOK, LOOK_NAMES } from '../../shared/logic.js';
+import { other, DEFAULT_LOOK, LOOK_NAMES, cleanName } from '../../shared/logic.js';
 
 export const G = {
   net,
@@ -32,6 +32,16 @@ export function lookOf(slot) {
 export function nameOf(slot) {
   const s = G.state;
   return (s && s.players[slot] && s.players[slot].name) || CHARACTERS[lookOf(slot)].name;
+}
+
+// The name this player wants to be called (empty = the character's name).
+// Remembered on this browser and, once in a room, shared with the partner.
+export function setMyName(name) {
+  settings.name = cleanName(name);
+  saveSettings();
+  if (net.hello) net.hello.name = settings.name; // reconnects must not bring back the old name
+  if (net.room && G.slot) net.act({ type: 'rename', name: settings.name });
+  return settings.name;
 }
 
 export function partner() {

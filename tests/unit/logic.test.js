@@ -220,3 +220,15 @@ test('players pick Lắc or Tím; the two never match', async () => {
   assert.equal(r.players.p1.look, 'tim');
   assert.equal(r.players.p2.look, 'lac');
 });
+
+test('players can rename themselves; names are cleaned and shared', () => {
+  const s = createState('NAME');
+  applyAction(s, 'p1', { type: 'rename', name: '  Duy   Đi\n<b>  ' });
+  assert.equal(s.players.p1.name, 'Duy Đi b');
+  applyAction(s, 'p2', { type: 'rename', name: 'Một cái tên rất là dài quá đi' });
+  assert.equal(s.players.p2.name.length, 16);
+  applyAction(s, 'p1', { type: 'rename', name: '' });
+  assert.equal(s.players.p1.name, '', 'empty name falls back to the character name');
+  const back = restoreState({ players: { p1: { name: 'An\u0007' }, p2: { name: 'Bình' } } }, 'NAME');
+  assert.deepEqual([back.players.p1.name, back.players.p2.name], ['An', 'Bình']);
+});

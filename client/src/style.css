@@ -80,6 +80,7 @@ input[type=text], textarea, select {
 }
 input[type=text]:focus { border-color: var(--accent); }
 input.en-input { font-family: var(--en); font-size: 26px; letter-spacing: .03em; }
+input.name-input { width: 200px; max-width: 100%; }
 
 /* ------------------------------------------------ lobby / title */
 #lobby {
