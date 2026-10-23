@@ -2,6 +2,13 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.5.0 — bản thử Chương 2: Máy phát tín hiệu (23/10/2026)
+
+- Thiết kế Chương 2 đã duyệt (bỏ mã Morse): `docs/CHUONG_2_THIET_KE.md`.
+- Đợt 1: thử thách **Máy phát tín hiệu**, chơi riêng từ phòng chờ hoặc sau màn kết chương 1. Một người đứng máy, một người cầm sổ tay tiếng Anh; 3 bộ phận (dây cáp, van áp suất, bàn phím chữ có từ đồng âm), 3 mức khó, máy ngẫu nhiên mỗi lần, đổi vai được, xem lại đáp án sau mỗi lượt.
+- Kiểm thử: 21 bài luật chơi (thêm 8 bài cho máy phát, gồm kiểm tra 1.200 cỗ máy ngẫu nhiên đều có đúng một đáp án), chơi tự động máy phát bằng 2 trình duyệt qua giao diện thật, chơi tự động trọn chương 1, kiểm thử kết nối lại.
+- Chưa có người thật chơi: thời gian và độ khó là ước lượng, cần bạn chơi thử rồi góp ý.
+
 ## Phiên bản 0.4.1 — tự đặt tên (23/10/2026)
 
 - Tên người chơi không còn cố định là Lắc/Tím: mỗi người tự đặt tên khi tạo/vào phòng (tuỳ chọn), đổi lại được ở phòng chờ hoặc trong ⚙ Cài đặt. Để trống = tên nhân vật.

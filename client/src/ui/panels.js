@@ -30,6 +30,10 @@ export function openReader(title, sentences, { paper = false, voice = 'narr', in
 export function showHint() {
   const s = G.state;
   if (!s || !s.flags.started) return;
+  if (s.stage === 'tx') {
+    toast('Pip: Người cầm sổ tay hỏi trước: "How many wires are there?". Từ nào nghe giống nhau thì hỏi "Could you spell that, please?"');
+    return;
+  }
   if (s.stage !== 'world') {
     toast(s.stage === 'boss' ? 'Pip: Gõ chữ trên đám mây trong làn của bạn! Đọc luật ở bảng trước trận.' : 'Pip: Trả lời thuyền trưởng bằng tiếng Anh. Bấm "Gợi ý" nếu bí nhé!');
     return;

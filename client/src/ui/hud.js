@@ -53,12 +53,14 @@ export function renderHud(state) {
   const p = partner();
   const online = state.players[p].connected;
   clear(whoEl);
+  // in the chapter 2 prototype the roles are "at the machine" / "with the manual"
+  const icon = (slot) => (state.stage === 'tx' && state.tx ? (state.tx.tech === slot ? '🔧' : '📘') : ROLE[slot].icon);
   whoEl.append(
     h('img', { src: portraitUrl(G.slot) }),
-    h('span', {}, h('b', {}, nameOf(G.slot)), ` ${ROLE[G.slot].icon}`),
+    h('span', {}, h('b', {}, nameOf(G.slot)), ` ${icon(G.slot)}`),
     h('span', { class: 'small' }, ' · '),
     h('img', { src: portraitUrl(p) }),
-    h('span', {}, h('b', {}, nameOf(p)), ` ${ROLE[p].icon} `),
+    h('span', {}, h('b', {}, nameOf(p)), ` ${icon(p)} `),
     h('span', { class: `dot ${online ? 'on' : ''}`, title: online ? 'đang online' : 'mất kết nối' }),
   );
   // banner

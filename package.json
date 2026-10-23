@@ -11,7 +11,8 @@
     "art": "python3 tools/build_art.py",
     "test": "node --test tests/unit/*.test.js",
     "e2e": "node tests/e2e/playthrough.mjs",
-    "e2e:reconnect": "node tests/e2e/reconnect.mjs"
+    "e2e:reconnect": "node tests/e2e/reconnect.mjs",
+    "e2e:tx": "node tests/e2e/transmitter.mjs"
   },
   "engines": {
     "node": ">=18"

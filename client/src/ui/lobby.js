@@ -240,6 +240,11 @@ function waitView() {
     !both && !started ? h('span', { class: 'small' }, `Đang chờ ${nameOf(G.slot === 'p1' ? 'p2' : 'p1')} vào phòng...`) : null,
     h('button', { class: 'btn gold', disabled: !both, onclick: () => { unlockAudio(); act({ type: 'start' }); } }, 'Bắt đầu ▶'),
   ));
+  wrap.append(h('div', { class: 'row tx-entry' },
+    h('div', { style: { flex: 1 } }, h('b', {}, '🧪 Bản thử Chương 2: Máy phát tín hiệu'),
+      h('div', { class: 'small' }, 'Thử thách phối hợp khó hơn (sổ tay kỹ thuật tiếng Anh, ~TOEIC 600). Chơi riêng, không ảnh hưởng tiến độ chương 1.')),
+    h('button', { class: 'btn teal', disabled: !both, onclick: () => { unlockAudio(); act({ type: 'tx_open' }); } }, 'Chơi thử ▶'),
+  ));
   if (!both) {
     wrap.append(h('details', { class: 'small' },
       h('summary', {}, 'Chỉ muốn thử một mình?'),

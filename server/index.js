@@ -253,7 +253,7 @@ setInterval(() => {
   }
 }, 25000);
 
-// time-driven game rules (boss final timer, rescue boat)
+// time-driven game rules (boss final timer, rescue boat, transmitter clock)
 let lastTick = Date.now();
 setInterval(() => {
   const now = Date.now();
@@ -261,7 +261,7 @@ setInterval(() => {
   lastTick = now;
   for (const room of rooms.values()) {
     const st = room.state;
-    if (st.stage !== 'boss' && st.stage !== 'finale') continue;
+    if (st.stage !== 'boss' && st.stage !== 'finale' && st.stage !== 'tx') continue;
     if (!SLOTS.some((s) => st.players[s].connected)) continue;
     const { ev, changed } = tick(st, dt, now);
     if (changed) {

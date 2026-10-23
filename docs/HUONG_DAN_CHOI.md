@@ -21,6 +21,8 @@ Thời lượng một lượt chơi: khoảng 40–70 phút.
 3. Người thứ hai mở cùng địa chỉ → **Vào phòng của bạn kia** → nhập mã, chọn Lắc hay Tím → **Vào phòng**. Người này tự nhận vai còn lại (và nhân vật còn lại nếu chọn trùng).
 4. Khi cả hai chấm xanh đã sáng, bấm **Bắt đầu**.
 
+**Bản thử Chương 2 — Máy phát tín hiệu:** ở phòng chờ (khi đủ 2 người) bấm **Chơi thử ▶** ở khung "Bản thử Chương 2", hoặc bấm nút này ở màn hình kết chương 1. Không ảnh hưởng tiến độ chương 1. Một người **đứng máy** (thấy máy, không có sổ tay), người kia **cầm sổ tay** tiếng Anh (không thấy máy). Gọi thoại, hỏi và tả cho nhau để gỡ 3 bộ phận trước khi hết giờ. Đừng nhìn màn hình của nhau!
+
 **Đặt tên:** ô **Tên của bạn** (khi tạo/vào phòng) là tuỳ chọn; để trống thì dùng tên nhân vật (Lắc/Tím). Đổi lại bất cứ lúc nào ở phòng chờ hoặc trong game: **⚙ Cài đặt → Tên của bạn → Đổi tên**. Tên mới hiện ngay trên đầu nhân vật, trong lời thoại và ở máy người kia, và được giữ khi vào lại.
 
 ## Tiếp tục buổi sau / mất mạng
