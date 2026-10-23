@@ -4,6 +4,7 @@
 import { SCENES, BOSS, CALL, BAY, DOOR_HALVES, makeGenerator, generatorSequence, parseBoatCommand } from './content.js';
 import { normalize, matchPhrase } from './phrases.js';
 import { newTx, txAction, txTick } from './transmitter.js';
+import { newC2, c2Action, c2SceneEnd, restoreC2 } from './ch2/index.js';
 
 export const SLOTS = ['p1', 'p2'];
 // Who each player is drawn as (independent of the role they chose).
@@ -38,7 +39,7 @@ export function createState(room, rand = Math.random) {
     v: SAVE_VERSION,
     room,
     createdAt: Date.now(),
-    stage: 'world', // world | boss | finale | credits | tx (chapter 2 prototype)
+    stage: 'world', // world | boss | finale | credits | ch2 (chapter 2) | tx (transmitter prototype)
     players: {
       p1: { name: '', connected: false, look: DEFAULT_LOOK.p1 },
       p2: { name: '', connected: false, look: DEFAULT_LOOK.p2 },
@@ -114,7 +115,9 @@ function endScene(state, id, ev) {
       state.stage = 'credits';
       f.complete = true;
       break;
-    default: break;
+    default:
+      c2SceneEnd(state, id);
+      break;
   }
 }
 
@@ -196,6 +199,9 @@ export function applyAction(state, slot, a, now = Date.now()) {
   if (a.type.startsWith('tx_') && a.type !== 'tx_open' && a.type !== 'tx_exit') {
     return state.stage === 'tx' ? txAction(state, slot, a) : ev;
   }
+  if (a.type.startsWith('c2_')) {
+    return state.stage === 'ch2' && !state.scene ? c2Action(state, slot, a, startScene) : ev;
+  }
 
   switch (a.type) {
     case 'start':
@@ -207,6 +213,18 @@ export function applyAction(state, slot, a, now = Date.now()) {
 
     case 'rename': // a player changes their display name (any time)
       state.players[slot].name = cleanName(a.name);
+      break;
+
+    case 'ch2_start': // chapter 2 begins (after chapter 1, or straight from the waiting room)
+      if (state.stage !== 'ch2') {
+        f.started = true;
+        f.ch2 = true;
+        state.stage = 'ch2';
+        state.scene = null;
+        state.sceneQueue = [];
+        state.c2 = state.c2 && state.c2.step ? state.c2 : newC2();
+        if (state.c2.step === 'coords' && !state.c2.seenIntro.c2) { state.c2.seenIntro.c2 = true; startScene(state, 'c2_intro'); }
+      }
       break;
 
     case 'tx_open': // chapter 2 prototype: the signal transmitter
@@ -577,6 +595,7 @@ export function restoreState(save, room) {
   const s = createState(room);
   if (!save || typeof save !== 'object') return s;
   const keep = ['stage', 'flags', 'gen', 'learn', 'pos', 'log', 'call', 'txReturn'];
+  if (save.c2) s.c2 = restoreC2(save.c2);
   for (const k of keep) if (save[k] !== undefined) s[k] = save[k];
   for (const slot of SLOTS) {
     if (save.players && save.players[slot]) {

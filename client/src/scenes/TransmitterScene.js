@@ -6,6 +6,7 @@ import Phaser from 'phaser';
 import { G, act, nameOf, partner, settings, on } from '../ctx.js';
 import { h, clear } from '../ui/dom.js';
 import { toast } from '../ui/hud.js';
+import { line } from '../ui/enline.js';
 import { music, ambience, sfx, speak } from '../audio.js';
 import {
   TX_LEVELS, TX_MODULES, TX_PENALTY_MS, WIRE_RULES, VALVES, SHIFTS, BAR_PER_TURN, KEY_COLUMNS, KEY_WORDS_VI, LIGHTS,
@@ -20,16 +21,6 @@ const mmss = (ms) => {
   const s = Math.max(0, Math.ceil(ms / 1000));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 };
-
-// An English line with its Vietnamese meaning, shown the way this player chose.
-function line(en, vi, cls = '') {
-  const viEl = vi && settings.vi !== 'off' ? h('div', { class: `vi ${settings.vi === 'always' ? '' : 'hidden'}` }, vi) : null;
-  const tools = h('span', { class: 'tools' },
-    h('button', { class: 'btn small', title: 'Nghe', onclick: () => speak(en, 'narr') }, '🔊'),
-    viEl && settings.vi === 'tap' ? h('button', { class: 'btn small', onclick: () => viEl.classList.toggle('hidden') }, 'VI') : null,
-  );
-  return h('div', { class: `tx-line ${cls}` }, h('div', { class: 'en-line' }, h('span', {}, en), tools), viEl);
-}
 
 export class TransmitterScene extends Phaser.Scene {
   constructor() {

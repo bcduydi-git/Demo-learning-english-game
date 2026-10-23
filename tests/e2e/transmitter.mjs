@@ -52,7 +52,7 @@ try {
   await waitFor(a, () => window.__beacon.G.state.players.p2.connected);
 
   // open the prototype from the waiting room
-  await a.click('text=Chơi thử ▶');
+  await a.click('button:has-text("🧪 Máy phát")');
   await waitFor(b, () => window.__beacon.G.state.stage === 'tx' && document.querySelector('.tx-setup'));
   await shot(b, 'setup');
   // B swaps roles and picks a level; both see it

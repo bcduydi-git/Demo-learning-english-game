@@ -12,7 +12,8 @@
     "test": "node --test tests/unit/*.test.js",
     "e2e": "node tests/e2e/playthrough.mjs",
     "e2e:reconnect": "node tests/e2e/reconnect.mjs",
-    "e2e:tx": "node tests/e2e/transmitter.mjs"
+    "e2e:tx": "node tests/e2e/transmitter.mjs",
+    "e2e:ch2": "node tests/e2e/chapter2.mjs"
   },
   "engines": {
     "node": ">=18"

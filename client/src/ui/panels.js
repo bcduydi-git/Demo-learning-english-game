@@ -3,6 +3,7 @@
 import { h, clear, portraitUrl } from './dom.js';
 import { openModal } from './modal.js';
 import { G, nameOf, partner, act, settings, fill, hintKey, on } from '../ctx.js';
+import { C2_HINT } from '../ch2/puzzles.js';
 import { generatorMessage, generatorSequence, DOOR_HALVES, HINTS, SCENES } from '../../../shared/content.js';
 import { speak, sfx, stopSpeech } from '../audio.js';
 import { toast } from './hud.js';
@@ -30,6 +31,11 @@ export function openReader(title, sentences, { paper = false, voice = 'narr', in
 export function showHint() {
   const s = G.state;
   if (!s || !s.flags.started) return;
+  if (s.stage === 'ch2' && s.c2) {
+    const pz = s.c2.pz;
+    toast(C2_HINT[pz ? pz.kind : 'end']);
+    return;
+  }
   if (s.stage === 'tx') {
     toast('Pip: Người cầm sổ tay hỏi trước: "How many wires are there?". Từ nào nghe giống nhau thì hỏi "Could you spell that, please?"');
     return;

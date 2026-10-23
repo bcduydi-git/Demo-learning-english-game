@@ -90,6 +90,16 @@ function noise(dur, { vol = 0.2, filter = 'lowpass', freq = 1200, q = 1, delay =
   src.stop(t + attack + dur + 0.05);
 }
 
+// Radio static that covers a word the player is not meant to hear.
+// Resolves after `ms`.
+export function staticNoise(ms) {
+  if (!ctx || settings.mute) return new Promise((r) => setTimeout(r, ms));
+  const dur = ms / 1000;
+  noise(dur, { vol: 0.16 * settings.vol.voice, filter: 'bandpass', freq: 1800, q: 0.6, bus: sfxBus });
+  noise(dur, { vol: 0.08 * settings.vol.voice, filter: 'highpass', freq: 3500, bus: sfxBus });
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 const SFX = {
   step: () => noise(0.05, { vol: 0.05, freq: 900 + Math.random() * 400, filter: 'bandpass', q: 2 }),
   blip: () => tone(660 + Math.random() * 60, 0.03, { vol: 0.04, type: 'square' }),

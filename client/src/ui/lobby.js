@@ -241,9 +241,10 @@ function waitView() {
     h('button', { class: 'btn gold', disabled: !both, onclick: () => { unlockAudio(); act({ type: 'start' }); } }, 'Bắt đầu ▶'),
   ));
   wrap.append(h('div', { class: 'row tx-entry' },
-    h('div', { style: { flex: 1 } }, h('b', {}, '🧪 Bản thử Chương 2: Máy phát tín hiệu'),
-      h('div', { class: 'small' }, 'Thử thách phối hợp khó hơn (sổ tay kỹ thuật tiếng Anh, ~TOEIC 600). Chơi riêng, không ảnh hưởng tiến độ chương 1.')),
-    h('button', { class: 'btn teal', disabled: !both, onclick: () => { unlockAudio(); act({ type: 'tx_open' }); } }, 'Chơi thử ▶'),
+    h('div', { style: { flex: 1 } }, h('b', {}, '🌊 Chương 2: Ngọn đèn xanh'),
+      h('div', { class: 'small' }, 'Thử thách phối hợp khó hơn (~TOEIC 600): mỗi người chỉ có một nửa thông tin. Nên chơi chương 1 trước.')),
+    h('button', { class: 'btn teal', disabled: !both, onclick: () => { unlockAudio(); act({ type: 'ch2_start' }); } }, 'Chương 2 ▶'),
+    h('button', { class: 'btn small', disabled: !both, title: 'Bản thử thử thách Máy phát tín hiệu', onclick: () => { unlockAudio(); act({ type: 'tx_open' }); } }, '🧪 Máy phát'),
   ));
   if (!both) {
     wrap.append(h('details', { class: 'small' },

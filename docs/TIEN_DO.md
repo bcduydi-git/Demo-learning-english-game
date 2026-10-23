@@ -2,6 +2,16 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.6.0 — Chương 2, Đợt 2: bốn thử thách đầu (23/10/2026)
+
+- Vào Chương 2 từ phòng chờ (nút **Chương 2 ▶**) hoặc ở màn hình kết chương 1. Tiến độ chương 2 được lưu, tải lại trang vẫn vào đúng chỗ.
+- Bản đồ trạm dạng sơ đồ phòng: bấm phòng để đi, phòng mở dần, mỗi phòng có giấy tờ tiếng Anh để đọc.
+- Bốn thử thách phối hợp, mỗi người một nửa thông tin, 3 mức khó, đề ngẫu nhiên: **Toạ độ trong tiếng nhiễu** (mỗi người nghe một nửa bản tin, số -teen/-ty, lời đính chính), **Hai cánh ngập nước** (van bên này đổi nước bên kia, mở cửa cùng lúc), **Ai giữ thẻ từ?** (lịch trực + email kiểu TOEIC Part 7 / dãy tủ và nhật ký cửa), **Căn chỉnh ăng-ten** (hai phía tấm kính, trái phải ngược nhau, đổi phía ở đĩa 2).
+- Cuối Đợt 2 có bảng kết quả và nút chơi thử Máy phát tín hiệu.
+- Hình nền phòng là hình tạm; danh sách hình cho ChatGPT: `docs/CHUONG_2_HINH_CAN_VE.md`.
+- Kiểm thử: 29 bài luật chơi (thêm các bài cho 4 thử thách và cả luồng chương 2, mỗi thử thách thử hàng trăm đề ngẫu nhiên), chơi tự động chương 2 bằng 2 trình duyệt qua giao diện thật (kiểm tra mỗi bên chỉ thấy phần của mình, làm sai bị tính lỗi, giải xong qua bước tiếp, tải lại trang giữ tiến độ), cộng các bài cũ của chương 1, máy phát, kết nối lại.
+- Chưa có người thật chơi: độ khó là ước lượng.
+
 ## Phiên bản 0.5.0 — bản thử Chương 2: Máy phát tín hiệu (23/10/2026)
 
 - Thiết kế Chương 2 đã duyệt (bỏ mã Morse): `docs/CHUONG_2_THIET_KE.md`.

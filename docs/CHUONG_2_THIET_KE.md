@@ -13,18 +13,37 @@ Tài liệu này không tiết lộ bí mật cốt truyện của chương 2 (p
 
 | # | Thử thách | Phối hợp | Tiếng Anh |
 |---|---|---|---|
-| 1 | Giải mã toạ độ trên tàu | Một người nghe toạ độ đọc lẫn tiếng nhiễu (số, đánh vần kiểu *Bravo, Delta*), người kia có hải đồ | Số, đánh vần, hỏi lại lịch sự |
-| 2 | Hai cánh trạm bị ngập | Van bên này đổi mực nước bên kia; đi luân phiên, hẹn thời điểm | *hold on until, after you, as soon as* |
-| 3 | Ai giữ thẻ từ? | Một người có lịch trực + email, người kia thấy phòng tủ đồ; suy luận chéo | Giờ giấc, *no later than, unless, except*, phủ định |
-| 4 | Căn chỉnh ăng-ten | Đứng hai phía mái vòm, trái/phải ngược nhau; tả hình và xếp lưới | Vị trí, hướng, hình dạng |
+| 1 | Toạ độ trong tiếng nhiễu (trên tàu) ✅ | Một người nghe toạ độ đọc lẫn tiếng nhiễu (số, đánh vần kiểu *Bravo, Delta*), người kia có hải đồ | Số, đánh vần, hỏi lại lịch sự |
+| 2 | Hai cánh trạm bị ngập ✅ | Van bên này đổi mực nước bên kia; đi luân phiên, hẹn thời điểm | *hold on until, after you, as soon as* |
+| 3 | Ai giữ thẻ từ? ✅ | Một người có lịch trực + email, người kia thấy phòng tủ đồ; suy luận chéo | Giờ giấc, *no later than, unless, except*, phủ định |
+| 4 | Căn chỉnh ăng-ten ✅ | Đứng hai phía mái vòm, trái/phải ngược nhau; tả hình và xếp lưới | Vị trí, hướng, hình dạng |
 | 5 | **Máy phát tín hiệu** ✅ bản thử | Một người đứng máy, một người cầm sổ tay | Câu điều kiện, đọc hiểu kỹ thuật, đánh vần |
 | 6 | Cao trào | Gỡ nhiều bộ phận cùng lúc, đổi vai giữa chừng, có luật cần nhớ câu đã học | Tự nhớ |
 
 ## Kế hoạch làm
 
-1. **Đợt 1 (xong, chờ chơi thử):** thử thách 5 — Máy phát tín hiệu, chơi riêng được từ phòng chờ hoặc sau màn kết chương 1.
-2. **Đợt 2:** thử thách 1–4, bản đồ trạm nghiên cứu, cốt truyện, danh sách hình cho ChatGPT vẽ.
-3. **Đợt 3:** cao trào, kết chương, sổ từ của chương, chơi thử trọn chương.
+1. **Đợt 1 (xong):** thử thách 5 — Máy phát tín hiệu, chơi riêng được (bản thử).
+2. **Đợt 2 (xong, chờ chơi thử):** thử thách 1–4, bản đồ trạm, cốt truyện. Hình nền các phòng đang là hình tạm vẽ bằng code; danh sách hình cho ChatGPT ở `docs/CHUONG_2_HINH_CAN_VE.md`.
+3. **Đợt 3:** phòng máy phát (đưa thử thách 5 vào truyện), cao trào, kết chương, sổ từ của chương.
+
+## Bản đồ trạm
+
+Trạm là một sơ đồ các phòng (bấm tên phòng để đi tới, phòng mở dần theo truyện). Mỗi phòng có giấy tờ, biển báo tiếng Anh để đọc (kèm nghĩa tiếng Việt, nghe được). Thử thách của bước hiện tại nằm ở một phòng (có dấu ★); một người mở là cả hai cùng vào màn chuẩn bị (chọn mức, đổi vai, sẵn sàng). Khi thử thách chạy, mỗi người tự đứng đúng chỗ của vai mình (vd. cánh Tây / cánh Đông).
+
+Chương 2 không đi lại tự do bằng phím như chương 1: phần chính là các thử thách phối hợp, nên dùng sơ đồ phòng cho nhanh. Nếu muốn đi lại như chương 1 thì làm thêm sau.
+
+## Chi tiết 4 thử thách của Đợt 2
+
+| Thử thách | Mức Dễ | Mức Vừa | Mức Hack não | Sai tối đa |
+|---|---|---|---|---|
+| 1. Toạ độ trong tiếng nhiễu | Có phụ đề phần mình nghe; người nhập nghe được hết các số | Mỗi người nghe một nửa; phụ đề chỉ hiện sau khi nghe hết một lượt; có lời đính chính | Không phụ đề; chia nửa khác; có đính chính | 4 / 2 / 2 |
+| 2. Hai cánh ngập nước | Mỗi van chỉ đổi một phòng bên kia | Van đổi hai phòng (giải lần lượt được) | Thêm: một van đổi cả nước bên mình | 5 / 3 / 3 |
+| 3. Ai giữ thẻ từ? | Một email đổi ca; tủ "ngay bên trái/phải" | Thêm email đề nghị bị từ chối, email nhiễu | Thêm email đính chính sau; gọi bằng tên riêng (phải tra lịch trực); "cách hai tủ" | 3 / 2 / 2 |
+| 4. Căn chỉnh ăng-ten | Lưới 4×4 | Lưới 5×5 | 5×5, mỗi công tắc đảo cả đèn phía trên | 4 / 2 / 2 |
+
+Mọi thử thách tạo đề ngẫu nhiên mỗi lần; làm sai quá số lần thì làm lại với đề mới. Bảng kết quả cuối Đợt 2 ghi mức, số lần sai, số lượt và thời gian mỗi thử thách.
+
+Nơi sửa: luật và đề — `shared/ch2/*.js`; lời thoại, phòng, giấy tờ — `shared/ch2/story.js`; giao diện — `client/src/scenes/Chapter2Scene.js`, `client/src/ch2/puzzles.js`; kiểm thử — `tests/unit/ch2*.test.js`, `tests/e2e/chapter2.mjs`.
 
 ## Thử thách 5 — Máy phát tín hiệu (bản thử)
 

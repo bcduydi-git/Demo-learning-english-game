@@ -9,7 +9,10 @@
 //           out loud to their partner (no scoring, honour system)
 //   phrase  phrase ids that this line introduces (marked "seen")
 
+import { CH2_SCENES } from './ch2/story.js';
+
 export const SCENES = {
+  ...CH2_SCENES,
   intro: [
     { s: 'narr', vi: 'Đêm qua, một cơn bão lớn đánh vỡ thuyền của hai bạn. Sóng đẩy cả hai dạt vào một hòn đảo lạ...' },
     { s: 'p2', en: 'Are you okay?', vi: 'Bạn ổn chứ?', say: true, phrase: ['are_you_ok'] },
