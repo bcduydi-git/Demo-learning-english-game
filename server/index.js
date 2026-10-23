@@ -13,7 +13,7 @@ import crypto from 'node:crypto';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
-import { createState, restoreState, applyAction, tick, setLook, SLOTS, other, LOOK_NAMES } from '../shared/logic.js';
+import { createState, restoreState, applyAction, tick, setLook, cleanName, SLOTS, other, LOOK_NAMES } from '../shared/logic.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -108,7 +108,7 @@ function attach(room, slot, ws, token, name, look) {
   ws._slot = slot;
   const p = room.state.players[slot];
   p.connected = true;
-  if (name) p.name = String(name).slice(0, 16);
+  if (name) p.name = cleanName(name);
   if (look) setLook(room.state, slot, look);
   send(ws, { t: 'welcome', slot, room: room.code, state: room.state });
   pushState(room);
@@ -118,7 +118,7 @@ function attach(room, slot, ws, token, name, look) {
 function handleHello(ws, m) {
   const token = String(m.token || '').slice(0, 64);
   if (!token) return send(ws, { t: 'err', code: 'bad', msg: 'Thiếu mã định danh.' });
-  const name = String(m.name || '').trim().slice(0, 16);
+  const name = cleanName(m.name);
   const code = cleanCode(m.room);
 
   if (m.mode === 'create') {

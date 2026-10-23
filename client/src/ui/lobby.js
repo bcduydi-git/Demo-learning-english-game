@@ -1,7 +1,7 @@
 // Title screen and session lobby (create / join / continue / wait for partner).
 
 import { h, root, clear, portraitUrl } from './dom.js';
-import { G, ROLE, CHARACTERS, nameOf, act } from '../ctx.js';
+import { G, ROLE, CHARACTERS, nameOf, act, setMyName } from '../ctx.js';
 import { settings, saveSettings, lastSession, loadSave, clearLastSession } from '../store.js';
 import { progressOf } from '../../../shared/logic.js';
 import { unlockAudio, sfx, music } from '../audio.js';
@@ -53,6 +53,16 @@ function whoPicker(onPick) {
   h('img', { src: portraitUrl(look), class: 'face' }),
   h('div', {}, h('h3', { class: 'en', style: { fontSize: '30px', margin: 0 } }, CHARACTERS[look].name)));
   return h('div', { class: 'roles' }, card('lac'), card('tim'));
+}
+
+// Optional display name. Empty = the chosen character's name (Lắc / Tím).
+function nameField() {
+  const inp = h('input', {
+    type: 'text', class: 'name-input', maxlength: 16, value: settings.name,
+    placeholder: `Để trống = ${CHARACTERS[settings.look].name}`,
+  });
+  inp.addEventListener('input', () => { settings.name = inp.value; saveSettings(); });
+  return h('div', { class: 'row' }, h('b', {}, 'Tên của bạn:'), inp, h('span', { class: 'small' }, 'tuỳ chọn, đổi lại được bất cứ lúc nào'));
 }
 
 export function lobbyError(m) {
@@ -107,7 +117,7 @@ function homeView() {
         unlockAudio();
         error = 'Đang kết nối...';
         view = 'wait';
-        G.net.connect('join', { room: last.room, slot: last.slot, save: st });
+        G.net.connect('join', { room: last.room, slot: last.slot, save: st, name: setMyName(settings.name) });
         render();
       } }, 'Tiếp tục ▶'),
     ));
@@ -141,6 +151,7 @@ function createView() {
   return h('div', { class: 'col' },
     h('div', {}, h('b', {}, 'Bạn là ai?')),
     whoPicker(render),
+    nameField(),
     h('div', {}, h('b', {}, 'Chọn vai'), h('span', { class: 'small' }, ' — hai vai ngang nhau, mỗi người giữ thông tin và khả năng người kia không có.')),
     h('div', { class: 'roles' }, roleCard('p1'), roleCard('p2')),
     h('div', { class: 'row' },
@@ -150,7 +161,7 @@ function createView() {
         unlockAudio();
         error = 'Đang tạo phòng...';
         view = 'wait';
-        G.net.connect('create', { slot: selRole, look: settings.look });
+        G.net.connect('create', { slot: selRole, look: settings.look, name: setMyName(settings.name) });
         render();
       } }, 'Tạo phòng ▶'),
     ),
@@ -166,7 +177,7 @@ function joinView() {
     if (!room) { error = 'Nhập mã phòng mà người kia gửi cho bạn.'; render(); return; }
     error = 'Đang vào phòng...';
     view = 'wait';
-    G.net.connect('join', { room, look: settings.look, save: G.net.withSave(room) });
+    G.net.connect('join', { room, look: settings.look, save: G.net.withSave(room), name: setMyName(settings.name) });
     render();
   };
   code.addEventListener('keydown', (e) => { if (e.key === 'Enter') go2(); });
@@ -175,6 +186,7 @@ function joinView() {
     h('div', { class: 'row' }, h('b', {}, 'Mã phòng:'), code),
     h('div', {}, h('b', {}, 'Bạn là ai?')),
     whoPicker(() => { const v = code.value || keep; render(); const c = el.querySelector('input.en-input'); if (c) c.value = v; }),
+    nameField(),
     h('p', { class: 'small' }, 'Bạn sẽ nhận vai còn trống trong phòng. Nếu người kia đã chọn nhân vật này, bạn sẽ là nhân vật còn lại.'),
     h('div', { class: 'row' },
       h('button', { class: 'btn ghost', onclick: () => go('home') }, '← Quay lại'),
@@ -216,6 +228,10 @@ function waitView() {
     );
   };
   wrap.append(h('div', { class: 'row' }, slotView('p1'), slotView('p2')));
+  const mine = h('input', { type: 'text', class: 'name-input', maxlength: 16, value: s.players[G.slot].name || '', placeholder: `Để trống = ${CHARACTERS[s.players[G.slot].look].name}` });
+  const save = () => { setMyName(mine.value); sfx('click'); };
+  mine.addEventListener('keydown', (e) => { if (e.key === 'Enter') save(); });
+  wrap.append(h('div', { class: 'row' }, h('b', {}, 'Tên của bạn:'), mine, h('button', { class: 'btn small', onclick: save }, 'Đổi tên')));
   const both = s.players.p1.connected && s.players.p2.connected;
   const started = s.flags && s.flags.started;
   wrap.append(h('div', { class: 'row' },

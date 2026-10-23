@@ -12,6 +12,12 @@ export const LOOK_NAMES = { lac: 'Lắc', tim: 'Tím' };
 export const other = (slot) => (slot === 'p1' ? 'p2' : 'p1');
 export const SAVE_VERSION = 1;
 
+// Player-chosen display name: short, single line. Empty = use the character's name.
+export const NAME_MAX = 16;
+export function cleanName(name) {
+  return String(name || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, NAME_MAX);
+}
+
 // Give a player the look they asked for. If the partner is already playing
 // that character, the newcomer gets the other one; the two never match.
 export function setLook(state, slot, look) {
@@ -192,6 +198,10 @@ export function applyAction(state, slot, a, now = Date.now()) {
         f.started = true;
         startScene(state, 'intro');
       }
+      break;
+
+    case 'rename': // a player changes their display name (any time)
+      state.players[slot].name = cleanName(a.name);
       break;
 
     case 'scene_next':
@@ -546,7 +556,7 @@ export function restoreState(save, room) {
   for (const k of keep) if (save[k] !== undefined) s[k] = save[k];
   for (const slot of SLOTS) {
     if (save.players && save.players[slot]) {
-      s.players[slot].name = String(save.players[slot].name || '').slice(0, 16);
+      s.players[slot].name = cleanName(save.players[slot].name);
       if (LOOKS.includes(save.players[slot].look)) s.players[slot].look = save.players[slot].look;
     }
   }
