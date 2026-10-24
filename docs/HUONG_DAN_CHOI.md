@@ -68,7 +68,8 @@ Mỗi máy chọn riêng, không ảnh hưởng người kia:
 - **Nghĩa tiếng Việt**: Luôn hiện / Bấm để xem / Tắt.
 - **Tốc độ giọng đọc**: Bình thường / Hơi chậm / Chậm.
 - **Tốc độ thử thách gõ chữ**: Thư thả / Vừa / Thử thách.
-- Âm lượng nhạc, hiệu ứng, tiếng sóng gió, giọng đọc; chọn giọng tiếng Anh.
+- Âm lượng nhạc, hiệu ứng, tiếng sóng gió, giọng đọc.
+- **Giọng nhân vật**: mỗi nhân vật có giọng riêng, máy tự chia. Muốn đổi thì chọn giọng khác cho nhân vật đó và bấm 🔊 Thử. ↺ Chia lại tự động để về như cũ.
 
 Gợi ý: người mới học nên dùng "Phụ đề: Luôn hiện, Nghĩa: Bấm để xem". Người khá hơn thử "Phụ đề: Hiện sau khi nghe".
 
@@ -77,7 +78,7 @@ Gợi ý: người mới học nên dùng "Phụ đề: Luôn hiện, Nghĩa: B�
 | Hiện tượng | Cách xử lý |
 |---|---|
 | Không nghe thấy giọng đọc | Bấm vào trang một lần (trình duyệt chặn âm thanh trước khi bạn bấm). Kiểm tra ⚙ → Giọng đọc, thử nút 🔊 Thử. Trên Windows nên dùng Edge hoặc Chrome. |
-| Giọng đọc nghe "máy" | ⚙ → Giọng tiếng Anh: chọn giọng có chữ *Natural* / *Online* / *Google*. |
+| Giọng đọc nghe "máy", hoặc nhiều nhân vật nghe giống nhau | Máy có ít giọng tiếng Anh (Chrome trên Windows chỉ khoảng 6). Mở game bằng **Microsoft Edge**: có hàng chục giọng *Natural* hay hơn hẳn. Hoặc ⚙ → Giọng nhân vật: tự chọn giọng cho từng người. |
 | Kẹt ở một đoạn hội thoại | Dòng chỉ chuyển khi **cả hai** bấm Tiếp. Xem dòng "Đang chờ ...". |
 | "Không tìm thấy phòng" | Kiểm tra mã. Nếu là phòng cũ, bấm **Tiếp tục** trên máy đã từng chơi phòng đó để dựng lại. |
 | Màn hình đứng hoặc lỗi lạ | Tải lại trang (F5). Game tự vào lại phòng. |

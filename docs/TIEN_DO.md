@@ -2,6 +2,14 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 1.0.1 — mỗi nhân vật một giọng (24/10/2026)
+
+- Trước đây hầu hết nhân vật đọc cùng một giọng. Giờ máy chia giọng riêng cho từng nhân vật (Lắc, Tím, người gác đèn, thuyền trưởng, Pip, người dẫn, cơn bão) từ các giọng tiếng Anh có trên máy, đúng giới tính khi có thể.
+- Lời của người chơi đọc theo **nhân vật** (Lắc giọng nam, Tím giọng nữ), không theo người vào trước hay sau. Thuyền trưởng đổi sang giọng nam.
+- Máy ít giọng (Chrome trên Windows chỉ có khoảng 6): nhân vật nào phải dùng chung giọng thì được đổi cao độ và tốc độ cho khác.
+- ⚙ Cài đặt → **Giọng nhân vật**: chọn giọng cho từng nhân vật (hoặc Tự động), có nút 🔊 Thử và ↺ Chia lại tự động. Cài đặt này chỉ áp dụng cho máy của bạn.
+- Kiểm thử: thêm 5 bài cho việc chia giọng (danh sách giọng của Chrome Windows, Edge, Mac, máy chỉ có 2 giọng, không có giọng nào).
+
 ## Phiên bản 1.0.0 — game hoàn chỉnh (24/10/2026)
 
 - Đủ 3 chương, đủ hình: thêm hình nền 6 phòng chương 3 (ChatGPT vẽ, đã kiểm tra theo quy tắc), giờ cả 15 phòng chương 2–3 đều có hình thật.

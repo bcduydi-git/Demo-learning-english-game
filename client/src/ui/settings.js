@@ -3,7 +3,8 @@
 import { h } from './dom.js';
 import { openModal } from './modal.js';
 import { settings, saveSettings } from '../store.js';
-import { applyVolumes, englishVoices, speak, hasSpeech, speechInputSupported } from '../audio.js';
+import { applyVolumes, englishVoices, speak, hasSpeech, speechInputSupported, voiceCast, resetVoiceCast } from '../audio.js';
+import { CAST } from '../voices.js';
 import { BOSS_SPEED } from '../../../shared/content.js';
 import { emit, G, CHARACTERS, lookOf, setMyName } from '../ctx.js';
 
@@ -27,12 +28,6 @@ function slider(key) {
 
 export function openSettings() {
   const m = openModal('Cài đặt', { id: 'settings' });
-  const voices = englishVoices();
-  const vsel = h('select', {},
-    h('option', { value: '' }, 'Tự chọn giọng hay nhất'),
-    ...voices.map((v) => h('option', { value: v.name, selected: settings.voiceName === v.name }, `${v.name} (${v.lang})`)),
-  );
-  vsel.addEventListener('change', () => { settings.voiceName = vsel.value; saveSettings(); });
   const look = G.slot ? lookOf(G.slot) : settings.look;
   const nameInp = h('input', { type: 'text', class: 'name-input', maxlength: 16, value: settings.name, placeholder: `Để trống = ${CHARACTERS[look].name}` });
   const nameMsg = h('span', { class: 'small' });
@@ -63,11 +58,62 @@ export function openSettings() {
       h('div', {}, 'Hiệu ứng'), slider('sfx'),
       h('div', {}, 'Môi trường (sóng, gió)'), slider('amb'),
       h('div', {}, 'Giọng đọc tiếng Anh'), slider('voice'),
-      h('div', {}, 'Giọng tiếng Anh'),
-      hasSpeech()
-        ? h('div', { class: 'row' }, vsel, h('button', { class: 'btn small', onclick: () => speak('Hello! Can you hear me?', 'narr') }, '🔊 Thử'))
-        : h('div', { class: 'small' }, 'Trình duyệt không có giọng đọc. Phụ đề sẽ luôn hiện.'),
     ),
+    h('h3', {}, 'Giọng nhân vật'),
+    hasSpeech() ? castSection() : h('p', { class: 'small' }, 'Trình duyệt không có giọng đọc. Phụ đề sẽ luôn hiện.'),
     h('p', { class: 'small' }, 'Phím tắt: M = tắt/bật tiếng · Esc = đóng bảng · H = gợi ý.'),
   );
 }
+
+const SAMPLE = {
+  lac: "Hi, I'm Lac. Let's fix this together!",
+  tim: "Hi, I'm Tim. Can you read the code to me?",
+  keeper: 'Keep the light burning, whatever happens.',
+  captain: 'This is the captain speaking. Do you copy?',
+  pip: 'Squawk! Hello! Hello!',
+  narr: 'Welcome to Beacon Isle.',
+  storm: 'You cannot stop me.',
+};
+
+// one row per character: voice select (automatic or a fixed voice) + test
+function castSection() {
+  const wrap = h('div');
+  const draw = () => {
+    wrap.innerHTML = '';
+    const voices = englishVoices();
+    const cast = voiceCast();
+    const names = new Set(Object.values(cast).map((c) => c.voice && c.voice.name).filter(Boolean));
+    const grid = h('div', { class: 'form-grid' });
+    for (const [who, c] of Object.entries(CAST)) {
+      const now = cast[who];
+      const chosen = (settings.voices || {})[who] || (who === 'narr' && settings.voiceName) || '';
+      const sel = h('select', { style: { width: '300px', maxWidth: '100%' } },
+        h('option', { value: '' }, `Tự động${!chosen && now.voice ? ` — ${short(now.voice.name)}` : ''}`),
+        ...voices.map((v) => h('option', { value: v.name, selected: chosen === v.name }, `${short(v.name)} (${v.lang})`)),
+      );
+      sel.addEventListener('change', () => {
+        settings.voices = { ...(settings.voices || {}), [who]: sel.value };
+        if (who === 'narr') settings.voiceName = '';
+        saveSettings();
+        resetVoiceCast();
+        draw();
+        speak(SAMPLE[who], who);
+      });
+      grid.append(
+        h('div', {}, c.label, now.shared ? h('div', { class: 'small' }, 'dùng chung giọng, đã đổi cao độ') : null),
+        h('div', { class: 'row' }, sel, h('button', { class: 'btn small', onclick: () => speak(SAMPLE[who], who) }, '🔊 Thử')),
+      );
+    }
+    wrap.append(
+      h('p', { class: 'small' }, `Máy này có ${voices.length} giọng tiếng Anh, đang dùng ${names.size} giọng khác nhau. `
+        + (voices.length < 7 ? 'Ít giọng quá thì vài nhân vật phải dùng chung (đã đổi cao độ cho khác). Mở game bằng Microsoft Edge sẽ có nhiều giọng "Natural" hay hơn.' : '')),
+      grid,
+      h('div', { class: 'row', style: { marginTop: '6px' } },
+        h('button', { class: 'btn small', onclick: () => { settings.voices = {}; settings.voiceName = ''; saveSettings(); resetVoiceCast(); draw(); } }, '↺ Chia lại tự động')),
+    );
+  };
+  draw();
+  return wrap;
+}
+
+const short = (name) => name.replace(/^Microsoft\s+/i, '').replace(/\s*-\s*English.*$/i, '').replace(/\s*Online\s*\(Natural\)/i, ' (Natural)');
