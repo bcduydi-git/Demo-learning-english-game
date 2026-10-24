@@ -2,7 +2,7 @@
 // Same line format as chapter 1 (see content.js), same room map engine as
 // chapter 2 (see shared/ch2/index.js).
 
-export const TITLE = { vi: 'CHƯƠNG 3 · NGỌN HẢI ĐĂNG CHÌM', en: 'The Sunken Light' };
+export const TITLE = { vi: 'CHƯƠNG 3 · NGỌN HẢI ĐĂNG CHÌM', en: 'The Sunken Light', map: 'Bản đồ ngọn hải đăng' };
 
 export const CH3_SCENES = {
   c3_intro: [

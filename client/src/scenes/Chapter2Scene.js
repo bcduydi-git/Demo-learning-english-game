@@ -251,7 +251,7 @@ export class Chapter2Scene extends Phaser.Scene {
       }, h('span', { class: 'n' }, open ? r.vi : (r.locked ? '🔒 ' + r.vi : '🔒')),
       h('span', { class: 'who' }, ...here.map((p) => h('img', { src: portraitUrl(p), title: nameOf(p) })))));
     }
-    return h('div', { class: 'box c2-mapbox' }, h('div', { class: 'small' }, `🗺 Bản đồ trạm${busy ? ' · đang làm thử thách' : ' · bấm phòng để đi'}`), map);
+    return h('div', { class: 'box c2-mapbox' }, h('div', { class: 'small' }, `🗺 ${this.C.TITLE.map}${busy ? ' · đang làm thử thách' : ' · bấm phòng để đi'}`), map);
   }
 
   roomPanel(c2) {

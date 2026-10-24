@@ -39,7 +39,7 @@ Làm xong mỗi hình thì đưa file PNG, rồi làm tiếp đến hết. Cuố
 ## Tình trạng
 
 - Chương 2: ✅ đủ 9 hình (đã ghép vào game).
-- Chương 3: chưa có (6 hình), lưu vào `tools/source_art/ch3/`.
+- Chương 3: ✅ đủ 6 hình (đã ghép vào game).
 
 ## Sau khi có hình
 
