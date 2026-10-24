@@ -67,8 +67,12 @@ export class Chapter2Scene extends Phaser.Scene {
     this.bg = this.add.container(0, 0).setDepth(-10);
     const key = `c2room_${room}`;
     if (this.textures.exists(key)) {
-      const img = this.add.image(W / 2, H / 2, key);
-      img.setScale(Math.max(W / img.width, H / img.height));
+      // fill the screen; a whole-number zoom keeps every art pixel square,
+      // unless it would crop too much of the picture on this screen
+      const img = this.add.image(Math.round(W / 2), Math.round(H / 2), key);
+      const cover = Math.max(W / img.width, H / img.height);
+      const whole = Math.ceil(cover);
+      img.setScale(whole / cover <= 1.12 ? whole : cover);
       this.bg.add(img);
       return;
     }

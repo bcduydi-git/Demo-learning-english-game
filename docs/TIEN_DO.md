@@ -2,6 +2,12 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.8.1 — hình nền chương 2 (24/10/2026)
+
+- 9 phòng chương 2 có hình nền thật (ChatGPT vẽ, đã kiểm tra theo quy tắc: 16:9, pixel art phẳng 64 màu, không người, không chữ, có đèn xanh, chừa chỗ cho bảng chữ và bản đồ).
+- Script `tools/import_room_art.py`: đưa ảnh về đúng cỡ điểm ảnh gốc (384×216, không mất chi tiết, nhẹ hơn) và tự thêm vào danh sách phòng có hình. Game phóng to theo bội số nguyên cho sắc nét, trừ khi việc đó cắt mất quá nhiều trên màn hình nhỏ.
+- Chương 3 vẫn dùng hình tạm cho tới khi có hình.
+
 ## Phiên bản 0.8.0 — Chương 3, chương cuối (24/10/2026)
 
 - **Chương 3 — Ngọn Hải Đăng Chìm**, 4 thử thách mới với cơ chế khác chương 2: Cửa sổ thuỷ triều (đọc bảng số liệu), Nhật ký rách (xếp văn bản theo từ nối, kiểu TOEIC Part 6), Bánh răng thấu kính (chiều quay, số vòng, bản thiết kế cũ), Đèn hiệu cho tàu (cao trào: tả tàu ↔ tra sổ quy tắc, đổi vai giữa chừng, cùng bấm LIGHT). Kết thúc câu chuyện, màn hình THE END, Sổ từ chương 3.

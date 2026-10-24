@@ -1,4 +1,14 @@
 {
-  "_help": "Ảnh nền các phòng chương 2: đặt <phòng>.png (vd. hub.png) vào thư mục này rồi thêm tên phòng vào danh sách rooms.",
-  "rooms": []
+  "_help": "Ảnh nền các phòng chương 2 và 3 (bản thu về đúng cỡ điểm ảnh). Tạo lại từ tools/source_art/ch2|ch3/: python3 tools/import_room_art.py — script tự thêm tên phòng vào danh sách rooms.",
+  "rooms": [
+    "bridge",
+    "dock",
+    "dome",
+    "east",
+    "hub",
+    "lockers",
+    "office",
+    "transmitter",
+    "west"
+  ]
 }
