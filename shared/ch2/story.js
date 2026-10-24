@@ -1,7 +1,7 @@
 // Chapter 2 — "The Green Light": dialogue, rooms and the notes players can
 // read. Same line format as chapter 1 (see content.js).
 
-export const TITLE = { vi: 'CHƯƠNG 2 · NGỌN ĐÈN XANH', en: 'The Green Light' };
+export const TITLE = { vi: 'CHƯƠNG 2 · NGỌN ĐÈN XANH', en: 'The Green Light', map: 'Bản đồ trạm' };
 
 export const CH2_SCENES = {
   c2_intro: [

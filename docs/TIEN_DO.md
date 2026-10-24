@@ -2,6 +2,14 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 1.0.0 — game hoàn chỉnh (24/10/2026)
+
+- Đủ 3 chương, đủ hình: thêm hình nền 6 phòng chương 3 (ChatGPT vẽ, đã kiểm tra theo quy tắc), giờ cả 15 phòng chương 2–3 đều có hình thật.
+- Bản đồ chương 3 ghi đúng "Bản đồ ngọn hải đăng" (trước đó sót chữ "Bản đồ trạm").
+- README cập nhật: tóm tắt 3 chương, tài liệu thiết kế, các lệnh kiểm thử.
+- Kiểm thử: 37 bài luật chơi; chơi tự động chương 1, chương 2, chương 3, bản thử Máy phát và kết nối lại đều đạt.
+- Vẫn chưa có người thật chơi trọn: độ khó, thời gian chương 2–3 là ước lượng.
+
 ## Phiên bản 0.8.1 — hình nền chương 2 (24/10/2026)
 
 - 9 phòng chương 2 có hình nền thật (ChatGPT vẽ, đã kiểm tra theo quy tắc: 16:9, pixel art phẳng 64 màu, không người, không chữ, có đèn xanh, chừa chỗ cho bảng chữ và bản đồ).
