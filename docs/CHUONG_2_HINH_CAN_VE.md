@@ -36,6 +36,11 @@ CHƯƠNG 3 (một ngọn hải đăng cổ bị nghiêng, nửa dưới ngập n
 Làm xong mỗi hình thì đưa file PNG, rồi làm tiếp đến hết. Cuối cùng liệt kê lại tên các file.
 ```
 
+## Tình trạng
+
+- Chương 2: ✅ đủ 9 hình (đã ghép vào game).
+- Chương 3: chưa có (6 hình), lưu vào `tools/source_art/ch3/`.
+
 ## Sau khi có hình
 
-Đưa các file vào `tools/source_art/ch2/` trên nhánh đang làm (hoặc gửi trong chat). Mình sẽ thu nhỏ về đúng cỡ, đặt vào `client/public/assets/ch2/rooms/` và thêm tên phòng vào `manifest.json` trong thư mục đó; phòng nào có hình thì game tự dùng hình đó thay hình tạm.
+Đưa các file vào `tools/source_art/ch2/` hoặc `tools/source_art/ch3/` trên nhánh đang làm (hoặc gửi trong chat), rồi chạy `python3 tools/import_room_art.py`: script đưa ảnh về đúng cỡ điểm ảnh, đặt vào `client/public/assets/ch2/rooms/` và thêm tên phòng vào `manifest.json`; phòng nào có hình thì game tự dùng hình đó thay hình tạm.
