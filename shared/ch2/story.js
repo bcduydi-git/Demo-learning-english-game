@@ -1,6 +1,8 @@
 // Chapter 2 — "The Green Light": dialogue, rooms and the notes players can
 // read. Same line format as chapter 1 (see content.js).
 
+export const TITLE = { vi: 'CHƯƠNG 2 · NGỌN ĐÈN XANH', en: 'The Green Light' };
+
 export const CH2_SCENES = {
   c2_intro: [
     { s: 'narr', vi: 'Tàu Aurora rẽ sóng về phía đốm sáng xanh. Đã gần nửa đêm.' },
@@ -120,7 +122,7 @@ export const LINKS = [['dock', 'hub'], ['hub', 'west'], ['hub', 'east'], ['hub',
 // The order of the chapter: each step is a puzzle in a room.
 export const STEPS = [
   { id: 'coords', room: 'bridge', title: 'Position in the static', vi: 'Toạ độ trong tiếng nhiễu', intro: null, done: 'c2_arrive', open: ['bridge'] },
-  { id: 'flood', room: 'hub', title: 'Two flooded wings', vi: 'Hai cánh trạm ngập nước', intro: 'c2_flood_intro', done: 'c2_flood_done', open: ['dock', 'hub'] },
+  { id: 'flood', room: 'hub', title: 'Two flooded wings', vi: 'Hai cánh trạm ngập nước', intro: 'c2_flood_intro', done: 'c2_flood_done', open: ['dock', 'hub'], spawn: 'dock' },
   { id: 'keycard', room: 'office', title: 'Who has the keycard?', vi: 'Ai giữ thẻ từ?', intro: 'c2_keycard_intro', done: 'c2_keycard_done', open: ['dock', 'hub', 'west', 'east', 'office', 'lockers'] },
   { id: 'antenna', room: 'dome', title: 'Aligning the antenna', vi: 'Căn chỉnh ăng-ten', intro: 'c2_antenna_intro', done: 'c2_antenna_done', open: ['dock', 'hub', 'west', 'east', 'office', 'lockers', 'dome'] },
   { id: 'machine', room: 'transmitter', title: 'The signal transmitter', vi: 'Máy phát tín hiệu', intro: 'c2_machine_intro', done: 'c2_machine_done', open: ['dock', 'hub', 'west', 'east', 'office', 'lockers', 'dome', 'transmitter'] },
@@ -154,7 +156,7 @@ export const ROLE_INFO = {
 };
 
 // Words worth keeping from chapter 2, by puzzle (shown in the chapter's word book)
-export const CH2_WORDS = {
+export const WORDS = {
   coords: [['latitude', 'vĩ độ'], ['longitude', 'kinh độ'], ['grid square', 'ô lưới'], ['correction', 'lời đính chính'], ['vessel', 'tàu thuyền'], ['approach', 'tiến lại gần']],
   flood: [['valve', 'van'], ['hatch', 'cửa khoang'], ['water level', 'mực nước'], ['twice', 'hai lần'], ['overflow', 'tràn'], ['at the same time', 'cùng một lúc']],
   keycard: [['shift', 'ca làm việc'], ['swap', 'đổi cho nhau'], ['cover (a shift)', 'làm thay (ca)'], ['on duty', 'đang trực'], ['reminder', 'lời nhắc'], ['after all', 'rốt cuộc thì (không như dự định)'], ["I'm afraid...", 'e rằng... (từ chối lịch sự)'], ['name tag', 'bảng tên']],

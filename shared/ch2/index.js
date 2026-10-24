@@ -1,29 +1,44 @@
-// Chapter 2 flow: walk between the station's rooms, open the puzzle of the
-// current step, play it, then the next step opens. Story scenes use the same
-// shared dialogue system as chapter 1 (startScene is passed in to avoid a
+// Chapter flow for chapters 2 and 3 (state.c2 holds the chapter being
+// played): walk between the rooms, open the puzzle of the current step,
+// play it, then the next step opens. Story scenes use the same shared
+// dialogue system as chapter 1 (startScene is passed in to avoid a
 // circular import).
 
 import { newPuzzle, puzzleAction, puzzleTick } from './puzzle.js';
-import { STEPS, ROLE_ROOM, LINKS } from './story.js';
+import * as CH2 from './story.js';
+import * as CH3 from '../ch3/story.js';
 
-export const stepOf = (c2) => STEPS.find((s) => s.id === c2.step) || STEPS[STEPS.length - 1];
+export const CHAPTERS = { 2: CH2, 3: CH3 };
+export const ALL_ROLE_INFO = { ...CH2.ROLE_INFO, ...CH3.ROLE_INFO };
+export const chapterOf = (c2) => CHAPTERS[(c2 && c2.chapter) || 2];
+export const stepOf = (c2) => { const S = chapterOf(c2).STEPS; return S.find((s) => s.id === c2.step) || S[S.length - 1]; };
 export const isOpen = (c2, room) => stepOf(c2).open.includes(room);
 
-export function newC2(level = 'normal') {
+export function newC2(level = 'normal', chapter = 2) {
+  const first = CHAPTERS[chapter].STEPS[0];
   return {
-    step: 'coords',
+    chapter,
+    step: first.id,
     level,
-    rooms: { p1: 'bridge', p2: 'bridge' },
-    pz: newPuzzle('coords', null, level),
+    rooms: { p1: first.room, p2: first.room },
+    pz: newPuzzle(first.id, null, level),
     open: false, // puzzle panel shown to both players
     seenIntro: {},
     results: {},
   };
 }
 
-// rooms next to each other on the map (you can only walk to a neighbour)
-export function neighbours(room) {
-  return LINKS.filter((l) => l.includes(room)).map((l) => (l[0] === room ? l[1] : l[0]));
+// Switch the room to another chapter; the one being left is parked so its
+// progress comes back later. Returns true if the chapter was new.
+export function enterChapter(state, chapter) {
+  const cur = state.c2;
+  if (cur && (cur.chapter || 2) === chapter) return false;
+  state.parked = state.parked || {};
+  if (cur) state.parked[cur.chapter || 2] = cur;
+  const back = state.parked[chapter];
+  delete state.parked[chapter];
+  state.c2 = back || newC2(cur ? cur.level : 'normal', chapter);
+  return !back;
 }
 
 export function c2Action(state, slot, a, startScene) {
@@ -57,7 +72,7 @@ export function c2Action(state, slot, a, startScene) {
       for (const e of out) {
         if (e.e === 'pz_start') {
           pz.startedAt = Date.now();
-          for (const [role, s] of Object.entries(pz.roles)) c2.rooms[s] = ROLE_ROOM[pz.kind][role];
+          for (const [role, s] of Object.entries(pz.roles)) c2.rooms[s] = chapterOf(c2).ROLE_ROOM[pz.kind][role];
           c2.level = pz.level;
         }
         if (e.e === 'pz_done') {
@@ -73,12 +88,13 @@ export function c2Action(state, slot, a, startScene) {
   return ev;
 }
 
-// called when a chapter 2 scene ends; returns true if it handled it
+// called when a chapter 2/3 scene ends; returns true if it handled it
 export function c2SceneEnd(state, id) {
   const c2 = state.c2;
   if (!c2) return false;
+  const STEPS = chapterOf(c2).STEPS;
   const i = STEPS.findIndex((s) => s.done === id);
-  if (i < 0) return id.startsWith('c2_');
+  if (i < 0) return id.startsWith('c2_') || id.startsWith('c3_');
   const next = STEPS[i + 1];
   c2.step = next.id;
   c2.open = false;
@@ -86,7 +102,7 @@ export function c2SceneEnd(state, id) {
   if (next.id !== 'end') {
     // everyone walks to where the next puzzle starts (the story moves on)
     for (const s of ['p1', 'p2']) if (!next.open.includes(c2.rooms[s])) c2.rooms[s] = next.open[next.open.length - 1];
-    if (id === 'c2_arrive') { c2.rooms.p1 = 'dock'; c2.rooms.p2 = 'dock'; }
+    if (next.spawn) { c2.rooms.p1 = next.spawn; c2.rooms.p2 = next.spawn; }
   }
   return true;
 }
@@ -94,7 +110,7 @@ export function c2SceneEnd(state, id) {
 // a room rebuilt from a save: a running puzzle goes back to its setup screen
 export function restoreC2(saved) {
   if (!saved || typeof saved !== 'object') return null;
-  const c2 = { ...newC2(), ...saved };
+  const c2 = { ...newC2('normal', saved.chapter || 2), ...saved };
   if (c2.pz && c2.pz.status === 'run') c2.pz = newPuzzle(c2.pz.kind, c2.pz);
   return c2;
 }

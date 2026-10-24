@@ -12,6 +12,9 @@ import { levels, ROOMS as WROOMS, HATCH_WINDOW_MS } from '../../../shared/ch2/fl
 import { DAYS, full, LOCKERS } from '../../../shared/ch2/keycard.js';
 import { viewOf } from '../../../shared/ch2/antenna.js';
 import { recallOf, SEND_WINDOW_MS } from '../../../shared/ch2/finale.js';
+import { fmt as fmtTime, DAY, SPRING } from '../../../shared/ch3/tide.js';
+import { TURNS, DIRS } from '../../../shared/ch3/gears.js';
+import { codeBook, RECOGNISE, COLOURS, dutyOf, LIGHT_WINDOW_MS } from '../../../shared/ch3/beacon.js';
 import { TX_PHRASES } from '../../../shared/transmitter.js';
 import { platePanel, moduleBox, wiresBody, valvesBody, keypadBody, wiresManual, valvesManual, keypadManual, glossaryPage, manualBook } from './machineui.js';
 
@@ -65,6 +68,49 @@ PHRASES.a = [
   ['On three: one, two, three, send!', 'Đếm đến ba: một, hai, ba, gửi!'],
 ];
 PHRASES.b = PHRASES.a;
+PHRASES.tables = [
+  ['What is the earliest time we can leave?', 'Giờ sớm nhất mình có thể đi là mấy giờ?'],
+  ['At two o\'clock the water is only two point four metres.', 'Lúc hai giờ nước chỉ cao hai phẩy bốn mét.'],
+  ['How long does the crossing take?', 'Vượt rạn mất bao lâu?'],
+  ['There is a notice: add zero point three metres.', 'Có thông báo: cộng thêm không phẩy ba mét.'],
+];
+PHRASES.chart = [
+  ['We need at least three metres of water.', 'Mình cần nước sâu ít nhất ba mét.'],
+  ["We can't leave before eleven.", 'Mình không thể đi trước mười một giờ.'],
+  ['The crossing takes two hours.', 'Vượt rạn mất hai tiếng.'],
+  ['Is the water deep enough the whole time?', 'Nước có đủ sâu suốt cả lúc đó không?'],
+];
+PHRASES.left = [
+  ['My strip starts with "However".', 'Mảnh của mình bắt đầu bằng "However".'],
+  ['I think this one comes first.', 'Mình nghĩ mảnh này đứng đầu.'],
+  ['What does your strip say?', 'Mảnh của bạn viết gì?'],
+  ['"It" must mean the signal, so it goes after that.', '"It" chắc là chỉ tín hiệu, nên nó đứng sau mảnh đó.'],
+];
+PHRASES.right = PHRASES.left;
+PHRASES.diagram = [
+  ['How many teeth does the crank gear have?', 'Bánh răng tay quay có bao nhiêu răng?'],
+  ['The lens must turn once, clockwise.', 'Thấu kính phải quay một vòng, theo chiều kim đồng hồ.'],
+  ['Turn the crank three times anticlockwise.', 'Quay tay quay ba vòng ngược chiều kim đồng hồ.'],
+  ['Which gear was replaced?', 'Bánh răng nào đã được thay?'],
+];
+PHRASES.crank = [
+  ['The crank gear has twelve teeth.', 'Bánh răng tay quay có mười hai răng.'],
+  ['Gear D was replaced. It has thirty teeth now.', 'Bánh răng D đã được thay. Giờ nó có ba mươi răng.'],
+  ['Which way should I turn it?', 'Mình nên quay chiều nào?'],
+  ['How many turns?', 'Mấy vòng?'],
+];
+PHRASES.lookout = [
+  ['I can see a long ship with containers.', 'Mình thấy một con tàu dài chở công-te-nơ.'],
+  ['It is flying a blue flag.', 'Nó treo cờ xanh dương.'],
+  ['It is zero point eight nautical miles away.', 'Nó cách đây không phẩy tám hải lý.'],
+  ['Visibility is one point five kilometres.', 'Tầm nhìn là một phẩy năm ki-lô-mét.'],
+];
+PHRASES.keeper = [
+  ['What kind of ship is it?', 'Đó là loại tàu gì?'],
+  ['How far away is it?', 'Nó cách bao xa?'],
+  ['What colour is its flag?', 'Cờ của nó màu gì?'],
+  ['Sending: green, one long flash.', 'Đang phát: xanh lá, một chớp dài.'],
+];
 
 // ------------------------------------------------------------ 1. coords
 async function playBroadcast(ctx) {
@@ -337,7 +383,168 @@ function finaleView(ctx) {
   return out;
 }
 
-export const VIEWS = { coords: coordsView, flood: floodView, keycard: keycardView, antenna: antennaView, machine: machineView, finale: finaleView };
+// ------------------------------------------------------------ ch3 · tide
+function tideView(ctx) {
+  const { d, role, ui } = ctx;
+  if (role === 'tables') {
+    const max = Math.max(...d.table.map((x) => x.h));
+    const rows = d.table.map((x) => h('tr', {}, h('td', { class: 'en' }, fmtTime(x.t)), h('td', { class: 'en' }, `${x.h.toFixed(1)} m`),
+      h('td', {}, h('div', { class: 'c3-bar', style: { width: `${(x.h / max) * 100}%` } }))));
+    return [
+      h('div', { class: 'box c2-card' }, h('h4', {}, '🌊 Tide table — North Reef (today)'),
+        h('p', { class: 'small' }, 'Water height above the reef, measured every ' + (d.step === 30 ? '30 minutes' : 'hour') + '.'),
+        h('table', { class: 'tx-table c3-tide' }, h('tr', {}, h('th', {}, 'Time'), h('th', {}, 'Height'), h('th', {}, '')), ...rows)),
+      h('div', { class: 'box c2-card' },
+        d.notice ? h('div', { class: 'c2-warn' }, line(`HARBOUR NOTICE: Spring tide today. Add ${SPRING} m to every height in the table.`, `THÔNG BÁO CẢNG: Hôm nay triều cường. Cộng thêm ${SPRING} m vào mọi mực nước trong bảng.`)) : null,
+        h('p', {}, `${nameOf(partner())} có phiếu tuyến đường và là người chọn giờ khởi hành. Hỏi họ tàu cần nước sâu bao nhiêu và vượt rạn mất bao lâu.`),
+        d.tries.length ? h('div', { class: 'small' }, 'Đã thử (sai): ', d.tries.map(fmtTime).join(' · ')) : null),
+    ];
+  }
+  const r = d.route;
+  const opts = [];
+  for (let t = DAY[0]; t <= DAY[1]; t += d.step) opts.push(t);
+  const sel = ui.time ?? r.leave;
+  const select = h('select', { onchange: (e) => { ui.time = Number(e.target.value); } }, ...opts.map((t) => h('option', { value: t, selected: t === sel }, fmtTime(t))));
+  return [
+    h('div', { class: 'box c2-card' }, h('h4', {}, '🗺 Route card — Aurora'),
+      line(`The Aurora needs at least ${r.min.toFixed(1)} m of water to cross the reef safely.`, `Aurora cần nước sâu ít nhất ${r.min.toFixed(1)} m để vượt rạn an toàn.`),
+      line(`The crossing takes ${r.cross === 60 ? 'one hour' : r.cross === 90 ? 'an hour and a half' : 'two hours'}, and the water must stay deep enough throughout.`, `Vượt rạn mất ${r.cross / 60} giờ, và nước phải đủ sâu suốt cả thời gian đó.`),
+      line(`The ship can leave no earlier than ${fmtTime(r.leave)}.`, `Tàu không thể rời đi sớm hơn ${fmtTime(r.leave)}.`),
+      line(`It must reach the far side no later than ${fmtTime(r.arrive)} (before dark).`, `Tàu phải tới bờ bên kia không muộn hơn ${fmtTime(r.arrive)} (trước khi trời tối).`)),
+    h('div', { class: 'box c2-card' }, h('h4', {}, '⏱ Giờ khởi hành'),
+      h('p', { class: 'small' }, `Chọn giờ SỚM NHẤT có thể. ${nameOf(partner())} có bảng thuỷ triều.`),
+      h('div', { class: 'row' }, select, h('button', { class: 'btn gold', onclick: () => ctx.send('depart', { time: ui.time ?? r.leave }) }, 'Khởi hành ▶')),
+      d.tries.length ? h('div', { class: 'small' }, 'Đã thử (sai): ', d.tries.map(fmtTime).join(' · ')) : null),
+  ];
+}
+
+// ------------------------------------------------------------ ch3 · diary
+function diaryView(ctx) {
+  const { d, role, ui, pz } = ctx;
+  const own = (st) => st.owner === role;
+  const reveal = (st) => {
+    if (own(st)) return st.en;
+    if (pz.level === 'easy') return st.en;
+    if (pz.level === 'normal') return `${st.en.split(' ')[0]} …`;
+    return '▒▒▒ (mảnh của bạn kia)';
+  };
+  const hand = d.strips.filter((st) => own(st) && !d.slots.includes(st.id));
+  const pick = ui.pick && d.strips.find((x) => x.id === ui.pick && own(x)) ? ui.pick : null;
+  const board = h('div', { class: 'c3-board' }, ...d.slots.map((id, i) => {
+    const st = id && d.strips.find((x) => x.id === id);
+    return h('div', {
+      class: `c3-slot ${st ? (own(st) ? 'mine' : 'theirs') : 'empty'} ${pick && st && st.id === pick ? 'sel' : ''}`,
+      onclick: () => {
+        if (pick) { ctx.send('place', { strip: pick, slot: i }); ui.pick = null; return; }
+        if (st && own(st)) { ui.pick = st.id; sfx('click'); ctx.redraw(); }
+      },
+    }, h('span', { class: 'n en' }, String(i + 1)), h('span', { class: 'txt' }, st ? reveal(st) : 'trống — chọn một mảnh của bạn rồi bấm vào đây'),
+    st && own(st) ? h('button', { class: 'btn small', onclick: (e) => { e.stopPropagation(); ctx.send('remove', { strip: st.id }); } }, '↩') : null);
+  }));
+  const handEl = h('div', { class: 'c3-hand' }, ...hand.map((st) => h('div', { class: `c3-strip ${pick === st.id ? 'sel' : ''}`, onclick: () => { ui.pick = pick === st.id ? null : st.id; sfx('click'); ctx.redraw(); } },
+    line(st.en, st.vi))));
+  return [
+    h('div', { class: 'box c2-card c2-wide' }, h('h4', {}, `📜 ${d.title} — bảng chung (${d.slots.filter(Boolean).length}/${d.slots.length})`),
+      h('p', { class: 'small' }, pz.level === 'hard' ? 'Mức Hack não: bạn không thấy chữ trên mảnh của người kia. Hãy đọc to mảnh của mình.' : pz.level === 'normal' ? 'Bạn chỉ thấy chữ đầu tiên trên mảnh của người kia. Hãy đọc to mảnh của mình.' : 'Đọc to mảnh của mình cho người kia nghe.'),
+      board,
+      h('div', { class: 'row' },
+        h('button', { class: 'btn gold', disabled: d.slots.some((x) => !x), onclick: () => ctx.send('check') }, 'Kiểm tra thứ tự ▶'),
+        d.lastRight != null ? h('span', { class: 'small' }, `Lần kiểm tra trước: đúng ${d.lastRight}/${d.slots.length} vị trí`) : null)),
+    h('div', { class: 'box c2-card c2-wide' }, h('h4', {}, `✋ Mảnh của bạn chưa xếp (${hand.length})`),
+      hand.length ? handEl : h('p', { class: 'small' }, 'Bạn đã xếp hết mảnh của mình. Muốn đổi chỗ: bấm một mảnh trên bảng rồi bấm ô khác.')),
+  ];
+}
+
+// ------------------------------------------------------------ ch3 · gears
+function gearsView(ctx) {
+  const { d, role, ui } = ctx;
+  if (role === 'diagram') {
+    const g = d.gears.map((x, i) => {
+      const isIn = i === 0;
+      const isLens = i === d.gears.length - 1;
+      const rep = d.replaced && d.replaced.gear === i ? d.replaced : null;
+      let teeth;
+      if (isIn) teeth = '?';
+      else if (x.compound) teeth = `big ${x.big} · small ${rep && rep.part === 'small' ? rep.old : x.small}`;
+      else teeth = String(rep ? rep.old : x.teeth);
+      return h('div', { class: `c3-gear ${x.compound ? 'compound' : ''}` },
+        h('div', { class: 'en big' }, x.name), h('div', { class: 'small' }, isIn ? 'CRANK GEAR (size: see tag)' : isLens ? 'LENS GEAR' : x.compound ? 'COMPOUND (two wheels, one axle)' : 'gear'),
+        h('div', { class: 'en' }, `${teeth} teeth`));
+    });
+    const chain = [];
+    g.forEach((el, i) => { chain.push(el); if (i < g.length - 1) chain.push(h('span', { class: 'c3-mesh' }, '⟷')); });
+    return [
+      h('div', { class: 'box c2-card c2-wide' }, h('h4', {}, '📐 Blueprint (drawn in 1962)'), h('div', { class: 'c3-chain' }, ...chain),
+        line('Gears that touch turn in opposite directions.', 'Hai bánh răng chạm nhau thì quay ngược chiều nhau.'),
+        line('When a gear with more teeth is turned by a smaller one, it turns fewer times.', 'Khi bánh răng nhiều răng được bánh nhỏ hơn kéo, nó quay ít vòng hơn.'),
+        d.gears.some((x) => x.compound) ? line('A compound gear has two wheels on one axle: the big wheel is driven, the small wheel drives the next gear. Both wheels turn together.', 'Bánh răng kép có hai bánh trên cùng một trục: bánh lớn bị kéo, bánh nhỏ kéo bánh tiếp theo. Cả hai quay cùng nhau.') : null),
+      h('div', { class: 'box c2-card' }, h('h4', {}, '🎯 Lens target'),
+        h('div', { class: 'c2-clue en' }, `The lens must turn ${d.target.turns === 0.5 ? 'half a turn' : d.target.turns === 1 ? 'one full turn' : d.target.turns === 1.5 ? 'one and a half turns' : `${d.target.turns} full turns`}, ${DIRS[d.target.dir]} (seen from the front).`),
+        h('p', { class: 'small' }, `${nameOf(partner())} đứng ở tay quay và có phiếu bảo trì: hỏi họ cỡ bánh răng tay quay và bánh răng nào đã được thay.`)),
+    ];
+  }
+  const rep = d.replaced;
+  const g0 = d.gears[0];
+  const tag = [line(`Crank gear (A): ${g0.teeth} teeth.`, `Bánh răng tay quay (A): ${g0.teeth} răng.`)];
+  if (rep) {
+    const real = d.gears[rep.gear][rep.part];
+    tag.push(line(`Gear ${d.gears[rep.gear].name}${rep.part === 'small' ? ' (small wheel)' : ''} was replaced last year: it now has ${real} teeth, not ${rep.old}.`, `Bánh răng ${d.gears[rep.gear].name}${rep.part === 'small' ? ' (bánh nhỏ)' : ''} đã được thay năm ngoái: giờ có ${real} răng, không phải ${rep.old}.`));
+  }
+  return [
+    h('div', { class: 'box c2-card' }, h('h4', {}, '🏷 Maintenance tag'), ...tag,
+      h('p', { class: 'small' }, `${nameOf(partner())} có bản thiết kế và biết thấu kính phải quay thế nào.`)),
+    h('div', { class: 'box c2-card' }, h('h4', {}, '⚙ The crank'),
+      h('div', { class: 'seg' }, ...Object.entries(DIRS).map(([k, v]) => h('button', { class: (ui.dir || 'cw') === k ? 'on' : '', onclick: () => { ui.dir = k; ctx.redraw(); } }, `${k === 'cw' ? '↻' : '↺'} ${v}`))),
+      h('div', { class: 'seg', style: { marginTop: '6px' } }, ...TURNS.map((t) => h('button', { class: ui.turns === t ? 'on' : '', onclick: () => { ui.turns = t; ctx.redraw(); } }, `${t} turn${t === 1 ? '' : 's'}`))),
+      h('div', { class: 'row', style: { marginTop: '8px' } }, h('button', { class: 'btn gold', disabled: ui.turns == null, onclick: () => ctx.send('crank', { turns: ui.turns, dir: ui.dir || 'cw' }) }, 'Quay ▶'),
+        d.tries.length ? h('span', { class: 'small' }, 'Đã thử (sai): ', d.tries.map((x) => `${x.turns} ${x.dir === 'cw' ? '↻' : '↺'}`).join(' · ')) : null)),
+  ];
+}
+
+// ------------------------------------------------------------ ch3 · beacon
+function beaconView(ctx) {
+  const { d, role, ui, pz } = ctx;
+  const duty = dutyOf(d, role);
+  const n = d.ships.length;
+  const progress = h('div', { class: 'c2-wide c2-phases' }, ...d.ships.map((_, i) => h('span', { class: `ph ${d.cur === i ? 'now' : ''} ${d.cur > i ? 'ok' : ''}` }, `${d.cur > i ? '✓ ' : ''}Tàu ${i + 1}${i === d.swapAt ? ' (đổi vai)' : ''}`)),
+    h('span', { class: `ph ${d.cur >= n ? 'now' : ''}` }, 'Cùng bấm LIGHT'));
+  if (d.cur >= n) {
+    const waitP = ui.partnerLight && performance.now() - ui.partnerLight < LIGHT_WINDOW_MS;
+    return [progress, h('div', { class: 'box c2-card c2-wide c2-send' },
+      h('p', {}, `Mọi con tàu đã an toàn! Hai bạn cùng bấm LIGHT (cách nhau không quá ${LIGHT_WINDOW_MS / 1000} giây) để thắp sáng ngọn hải đăng.`),
+      h('button', { class: 'btn gold c2-sendbtn', onclick: () => ctx.send('light') }, d.light[role] ? 'LIGHT lại' : 'LIGHT ▶'),
+      h('div', { class: 'small' }, waitP ? `⏳ ${nameOf(partner())} vừa bấm LIGHT! Bấm ngay!` : `${nameOf(partner())}: chưa bấm`))];
+  }
+  const ship = d.ships[d.cur];
+  const swapNote = d.cur === d.swapAt ? h('div', { class: 'c2-warn' }, '🔄 Đã đổi vai! Giờ bạn ' + (duty === 'lookout' ? 'quan sát tàu.' : 'phát đèn.')) : null;
+  if (duty === 'lookout') {
+    return [progress, h('div', { class: 'box c2-card' }, h('h4', {}, `🔭 Ống nhòm — tàu ${d.cur + 1}/${n}`), swapNote,
+      h('div', { class: 'c2-clue' }, line(ship.desc, null)),
+      h('table', { class: 'tx-table' },
+        h('tr', {}, h('th', {}, 'Flag'), h('td', { class: 'en' }, ship.flag)),
+        h('tr', {}, h('th', {}, 'Distance'), h('td', { class: 'en' }, `${ship.distance} nautical miles`)),
+        h('tr', {}, h('th', {}, 'Visibility'), h('td', { class: 'en' }, `${ship.visibility} km`))),
+      h('p', { class: 'small' }, `Bạn không có sổ quy tắc. Tả cho ${nameOf(partner())} nghe bằng tiếng Anh: con tàu trông thế nào, cờ màu gì, cách bao xa, tầm nhìn bao nhiêu.`))];
+  }
+  const seq = ui.seq || (ui.seq = []);
+  return [progress,
+    h('div', { class: 'box c2-card' }, h('h4', {}, '📕 Light code book'), swapNote,
+      ...codeBook(pz.level).map((r) => line(r.en, r.vi, 'rule')),
+      h('h4', {}, 'How to recognise ships'), ...RECOGNISE.map((r) => line(r.en, r.vi))),
+    h('div', { class: 'box c2-card' }, h('h4', {}, `💡 The lamp — tàu ${d.cur + 1}/${n}`),
+      h('p', { class: 'small' }, `Bạn không thấy tàu: hỏi ${nameOf(partner())}.`),
+      h('div', { class: 'seg' }, ...COLOURS.map((c) => h('button', { class: `${(ui.colour || 'white') === c ? 'on' : ''}`, onclick: () => { ui.colour = c; ctx.redraw(); } }, c))),
+      h('div', { class: 'c3-seq en' }, seq.length ? seq.map((f) => (f === 'L' ? '▬' : '•')).join(' ') : '(chưa có chớp)'),
+      h('div', { class: 'row' },
+        h('button', { class: 'btn small', onclick: () => { seq.push('S'); ctx.redraw(); } }, '• short'),
+        h('button', { class: 'btn small', onclick: () => { seq.push('L'); ctx.redraw(); } }, '▬ long'),
+        h('button', { class: 'btn small', onclick: () => { seq.pop(); ctx.redraw(); } }, '↩ undo'),
+        h('button', { class: 'btn small', onclick: () => { ui.seq = []; ctx.redraw(); } }, 'clear')),
+      h('div', { class: 'row', style: { marginTop: '8px' } }, h('button', { class: 'btn gold', onclick: () => { ctx.send('signal', { colour: ui.colour || 'white', flashes: [...seq] }); ui.seq = []; } }, 'Phát đèn ▶'))),
+  ];
+}
+
+export const VIEWS = { coords: coordsView, flood: floodView, keycard: keycardView, antenna: antennaView, machine: machineView, finale: finaleView, tide: tideView, diary: diaryView, gears: gearsView, beacon: beaconView };
 
 // Pip's hint (H key) for each step
 export const C2_HINT = {
@@ -345,5 +552,9 @@ export const C2_HINT = {
   flood: 'Pip: Hỏi mực nước và số trên cửa bên kia trước! Rồi tính xem van nào cần xoay mấy vòng.',
   keycard: 'Pip: Đêm nào? Hỏi nhật ký cửa! Ai đổi ca? Đọc kỹ email cuối cùng!',
   antenna: 'Pip: Trái của bạn là phải của người kia! Đếm từ một phía thống nhất!',
-  end: 'Pip: Phòng máy phát! Sắp mở rồi!',
+  end: 'Pip: Giỏi lắm! Giỏi lắm!',
+  tide: 'Pip: Nước phải đủ sâu SUỐT lúc vượt rạn! Không chỉ lúc đi!',
+  diary: 'Pip: Tìm mảnh mở đầu trước! However, As a result, Finally: đọc từ nối!',
+  gears: 'Pip: Chạm nhau là quay ngược chiều! Phiếu bảo trì mới hơn bản thiết kế!',
+  beacon: 'Pip: Tả tàu trước! Rồi cờ, khoảng cách, tầm nhìn!',
 };

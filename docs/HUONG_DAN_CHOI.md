@@ -23,6 +23,8 @@ Thời lượng một lượt chơi: khoảng 40–70 phút.
 
 **Chương 2 — Ngọn đèn xanh:** ở phòng chờ (khi đủ 2 người) bấm **Chương 2 ▶**, hoặc bấm nút này ở màn hình kết chương 1. Bấm tên phòng trên bản đồ để đi; phòng có dấu ★ là nơi có thử thách tiếp theo. Chương có 6 thử thách; mỗi thử thách chia đôi thông tin: gọi thoại và nói tiếng Anh với nhau. Mỗi thử thách chọn mức khó và đổi vai được. Hai thử thách cuối có đồng hồ đếm ngược. Nút **📖 Sổ từ chương 2** trong mỗi phòng để ôn từ vựng.
 
+**Chương 3 — Ngọn Hải Đăng Chìm (chương cuối):** bấm **Chương 3 ▶** ở phòng chờ hoặc ở cuối chương 2. Cách chơi giống chương 2 (bản đồ phòng, mỗi người một nửa thông tin), 4 thử thách mới. Mỗi chương lưu tiến độ riêng.
+
 **Bản thử Máy phát tín hiệu:** ở phòng chờ bấm **🧪 Máy phát**, hoặc nút ở cuối Đợt 2 của chương 2. Không ảnh hưởng tiến độ chương 1. Một người **đứng máy** (thấy máy, không có sổ tay), người kia **cầm sổ tay** tiếng Anh (không thấy máy). Gọi thoại, hỏi và tả cho nhau để gỡ 3 bộ phận trước khi hết giờ. Đừng nhìn màn hình của nhau!
 
 **Đặt tên:** ô **Tên của bạn** (khi tạo/vào phòng) là tuỳ chọn; để trống thì dùng tên nhân vật (Lắc/Tím). Đổi lại bất cứ lúc nào ở phòng chờ hoặc trong game: **⚙ Cài đặt → Tên của bạn → Đổi tên**. Tên mới hiện ngay trên đầu nhân vật, trong lời thoại và ở máy người kia, và được giữ khi vào lại.

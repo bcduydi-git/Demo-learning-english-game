@@ -61,3 +61,11 @@ Phòng máy phát (nhật ký cuối ký tên "E.M.": *đọc to sổ tay cho ng
 | Hai cánh ngập | Cánh Tây: mực nước + số trên cửa của mình, van đổ nước sang cánh Đông | Cánh Đông: ngược lại | Phải hỏi số liệu bên kia rồi tính; mức Hack não có van ảnh hưởng cả bên mình; hai cửa mở trong 4 giây |
 | Thẻ từ | Văn phòng: lịch trực mặc định + email (đổi ca, nhắc quy định, bảng tên rơi) | Phòng tủ đồ: 8 tủ, bảng tên, nhật ký cửa | Email đề nghị đổi ca bị từ chối; mức Hack não có email đính chính sau, gọi bằng tên riêng, vị trí "cách hai tủ" |
 | Ăng-ten | Phía Bắc: đĩa 1 cầm bản đồ sao, đĩa 2 bật công tắc | Phía Nam: ngược lại | Trái/phải ngược nhau; mức Hack não mỗi công tắc đảo cả đèn phía trên (chỉ người bật biết) |
+
+---
+
+# Chương 3 — Ngọn Hải Đăng Chìm (CÓ TIẾT LỘ)
+
+Aurora vượt Rạn Bắc (thuỷ triều) → ngọn hải đăng nghiêng, nửa ngập nước → trên cầu thang là các trang nhật ký của Eleanor (đề ngẫu nhiên một trong ba: những ngày ở Halcyon năm 1974 và tín hiệu lạ; lịch sử Ngọn Hải Đăng Chìm và "người giữ đèn chính là tôi"; lá thư gửi cháu kể đêm bà chèo ra thắp đèn cứu một thuyền đánh cá và không thể bỏ ngọn đèn nữa) → sửa bánh răng, thấu kính quay lại → gặp Eleanor trong phòng đèn: bà còn sống, đã một mình giữ đèn 50 năm → bão tới, các con tàu lao về rạn đá → **Đèn hiệu cho tàu** → kết: tàu cuối an toàn; Eleanor: "For fifty years I did this alone. Tonight, I did not have to."; thuyền trưởng đón bà về nhà; bà trao chìa khoá cho hai người chơi và hỏi họ có quay lại không; Pip ở lại: *"Pip stays! Pip keeps the light!"* → **THE END**.
+
+Chi tiết gài: ảnh cũ trong phòng người gác đèn "Me and Pip, Beacon Isle" (Pip là vẹt của Eleanor từ hồi trẻ); lịch năm nay ngày nào cũng ghi "light OK"; sổ đèn "47 tàu được dẫn qua, 0 tàu gặp nạn".

@@ -399,6 +399,24 @@ input[type=range] { width: 160px; accent-color: var(--orange); }
 .c2-send { text-align: center; }
 .c2-sendbtn { font-size: 28px; padding: 12px 40px; }
 .c2-runhead .tx-clock { font-size: 38px; }
+.c3-tide td { padding: 2px 8px; }
+.c3-bar { height: 10px; background: linear-gradient(90deg, #5fb8ff, #2f6fd6); border: 1px solid var(--ink); border-radius: 3px; min-width: 4px; }
+.c3-board { display: flex; flex-direction: column; gap: 5px; margin: 6px 0; }
+.c3-slot { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border: 2px solid var(--ink); border-radius: 5px; cursor: pointer; font-size: 15px; min-height: 38px; }
+.c3-slot.empty { background: #f0ebe2; color: var(--muted); border-style: dashed; font-size: 13px; }
+.c3-slot.mine { background: #fffaf6; }
+.c3-slot.theirs { background: #e3eef7; color: #2a3a4a; cursor: default; }
+.c3-slot.sel, .c3-strip.sel { box-shadow: 0 0 0 3px var(--gold); }
+.c3-slot .n { font-size: 22px; width: 22px; text-align: right; flex: none; }
+.c3-slot .txt { flex: 1; }
+.c3-hand { display: flex; flex-direction: column; gap: 6px; }
+.c3-strip { padding: 4px 8px; border: 2px solid var(--ink); border-radius: 5px; background: #fff3d6; cursor: pointer; }
+.c3-chain { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; }
+.c3-gear { text-align: center; padding: 8px 10px; border: 3px solid var(--ink); border-radius: 50%; background: #e9edf1; min-width: 104px; min-height: 104px; display: flex; flex-direction: column; justify-content: center; }
+.c3-gear.compound { border-style: double; border-width: 6px; }
+.c3-gear .big { font-size: 30px; line-height: 1; }
+.c3-mesh { font-size: 22px; }
+.c3-seq { font-size: 32px; min-height: 40px; padding: 4px 10px; margin: 8px 0; background: #1b2230; color: #ffd27a; border: 2px solid var(--ink); border-radius: 5px; letter-spacing: .1em; }
 @media (max-width: 1100px) { .c2-top { top: 64px; max-width: 96vw; } .c2-mapbox { top: 130px; } }
 @media (max-width: 860px) { .c2-cols { flex-direction: column; } .c2-cols .tx-phrases { width: auto; } .c2-mapbox { width: 94vw; } .c2-roombox { width: auto; right: 12px; } .c2-lockers { grid-template-columns: repeat(4, 1fr); } }
 

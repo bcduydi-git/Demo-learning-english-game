@@ -1,6 +1,6 @@
-# Chương 2 — hình cần vẽ (gửi ChatGPT)
+# Chương 2 và 3 — hình cần vẽ (gửi ChatGPT)
 
-Hiện các phòng của chương 2 dùng hình nền tạm vẽ bằng code (nền tối, cửa sổ, ánh đèn xanh). Muốn đẹp hơn, nhờ ChatGPT vẽ 9 hình nền dưới đây. Không cần vẽ nhân vật mới: chương 2 dùng lại chân dung đã có (Lắc, Tím, thuyền trưởng, bà gác đèn, Pip).
+Hiện các phòng của chương 2 và 3 dùng hình nền tạm vẽ bằng code. Muốn đẹp hơn, nhờ ChatGPT vẽ 15 hình nền dưới đây (9 phòng chương 2, 6 phòng chương 3). Không cần vẽ nhân vật mới: dùng lại chân dung đã có (Lắc, Tím, thuyền trưởng, bà gác đèn, Pip).
 
 ## Prompt dán cho ChatGPT
 
@@ -24,6 +24,14 @@ DANH SÁCH:
 - lockers.png — phòng tủ đồ: một dãy 8 tủ kim loại, ghế băng, hộp đồ thất lạc.
 - dome.png — mái vòm ăng-ten: trần kính lộ trời sao, tấm kính lớn đặt đứng giữa phòng có lưới đèn tròn, hai đĩa ăng-ten.
 - transmitter.png — phòng máy phát: cỗ máy lớn nhiều dây cáp màu, đồng hồ áp suất, bàn phím, đèn báo.
+
+CHƯƠNG 3 (một ngọn hải đăng cổ bị nghiêng, nửa dưới ngập nước, giữa biển; bão đang tan):
+- deck.png — boong tàu Aurora lúc rạng sáng, biển động, xa xa rạn đá.
+- landing.png — bãi đá trơn dưới chân ngọn hải đăng nghiêng, sóng vỗ, một chiếc xuồng nhỏ buộc vào cọc.
+- stairs.png — cầu thang xoắn bằng sắt bên trong tháp, tường đá ẩm, giấy vương trên bậc.
+- keeperroom.png — căn phòng nhỏ ấm áp của người gác đèn: giường, lịch trên tường, ảnh cũ, chiếc radio cũ.
+- gearroom.png — phòng bánh răng: nhiều bánh răng đồng to nhỏ ăn khớp, một tay quay lớn.
+- lantern.png — phòng đèn trên đỉnh: ngọn đèn lớn với thấu kính Fresnel, cửa kính nhìn ra biển bão và vài con tàu xa.
 
 Làm xong mỗi hình thì đưa file PNG, rồi làm tiếp đến hết. Cuối cùng liệt kê lại tên các file.
 ```
