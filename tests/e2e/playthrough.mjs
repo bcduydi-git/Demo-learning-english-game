@@ -234,6 +234,8 @@ try {
   await playScene(a, b, 'door_open');
 
   // ---------------------------------------------------------- enter together
+  // both screens must have closed the dialogue, or the key only advances it
+  for (const p of [a, b]) await waitFor(p, () => !window.__beacon.G.state.scene && !document.querySelector('#dialogue:not(.hidden) .next'));
   await press(a, 'e');
   await sleep(300);
   await press(b, 'e');

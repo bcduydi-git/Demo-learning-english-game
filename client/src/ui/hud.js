@@ -2,6 +2,7 @@
 
 import { h, root, clear, portraitUrl } from './dom.js';
 import { G, nameOf, partner, objectives, settings, ROLE } from '../ctx.js';
+import { ROLE_INFO } from '../../../shared/ch2/story.js';
 import { PHRASE_BY_ID } from '../../../shared/phrases.js';
 import { toggleMute, speak, sfx } from '../audio.js';
 import { openRadio } from './radio.js';
@@ -53,12 +54,22 @@ export function renderHud(state) {
   const p = partner();
   const online = state.players[p].connected;
   clear(whoEl);
+  // in the chapter 2 prototype the roles are "at the machine" / "with the manual"
+  const icon = (slot) => {
+    if (state.stage === 'tx' && state.tx) return state.tx.tech === slot ? '🔧' : '📘';
+    if (state.stage === 'ch2') {
+      const pz = state.c2 && state.c2.pz;
+      const role = pz && pz.status === 'run' && Object.keys(pz.roles).find((r) => pz.roles[r] === slot);
+      return role ? ROLE_INFO[role].icon : '';
+    }
+    return ROLE[slot].icon;
+  };
   whoEl.append(
     h('img', { src: portraitUrl(G.slot) }),
-    h('span', {}, h('b', {}, nameOf(G.slot)), ` ${ROLE[G.slot].icon}`),
+    h('span', {}, h('b', {}, nameOf(G.slot)), ` ${icon(G.slot)}`),
     h('span', { class: 'small' }, ' · '),
     h('img', { src: portraitUrl(p) }),
-    h('span', {}, h('b', {}, nameOf(p)), ` ${ROLE[p].icon} `),
+    h('span', {}, h('b', {}, nameOf(p)), ` ${icon(p)} `),
     h('span', { class: `dot ${online ? 'on' : ''}`, title: online ? 'đang online' : 'mất kết nối' }),
   );
   // banner

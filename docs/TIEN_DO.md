@@ -2,6 +2,31 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.7.0 — Chương 2 hoàn chỉnh (24/10/2026)
+
+- Thử thách 5 **Máy phát tín hiệu** vào truyện (phòng máy phát của trạm, có đồng hồ đếm ngược, làm sai bị trừ giờ).
+- Thử thách 6 **Tín hiệu cuối cùng** (cao trào): hai máy, mỗi người làm một máy và cầm sổ tay máy bên kia; lượt 1 một người làm, lượt 2 đổi vai, lượt 3 cả hai cùng lúc (một người gõ câu tiếng Anh tự nhớ vào khoá giọng nói, người kia có gợi ý), cuối cùng cùng bấm SEND.
+- Đoạn kết chương 2 và móc nối Chương 3. Bảng kết quả 6 thử thách. **Sổ từ chương 2** (nút trong mỗi phòng và ở màn hình cuối).
+- Màn hình máy phát dùng chung cho bản thử, phòng máy phát và cao trào.
+- Kiểm thử: 31 bài luật chơi (thêm bài cho máy phát trong truyện, đồng hồ, cao trào và cả chương 2 sáu bước); chơi tự động trọn chương 2 bằng 2 trình duyệt; chương 1, bản thử máy phát, kết nối lại vẫn đạt.
+
+## Phiên bản 0.6.0 — Chương 2, Đợt 2: bốn thử thách đầu (23/10/2026)
+
+- Vào Chương 2 từ phòng chờ (nút **Chương 2 ▶**) hoặc ở màn hình kết chương 1. Tiến độ chương 2 được lưu, tải lại trang vẫn vào đúng chỗ.
+- Bản đồ trạm dạng sơ đồ phòng: bấm phòng để đi, phòng mở dần, mỗi phòng có giấy tờ tiếng Anh để đọc.
+- Bốn thử thách phối hợp, mỗi người một nửa thông tin, 3 mức khó, đề ngẫu nhiên: **Toạ độ trong tiếng nhiễu** (mỗi người nghe một nửa bản tin, số -teen/-ty, lời đính chính), **Hai cánh ngập nước** (van bên này đổi nước bên kia, mở cửa cùng lúc), **Ai giữ thẻ từ?** (lịch trực + email kiểu TOEIC Part 7 / dãy tủ và nhật ký cửa), **Căn chỉnh ăng-ten** (hai phía tấm kính, trái phải ngược nhau, đổi phía ở đĩa 2).
+- Cuối Đợt 2 có bảng kết quả và nút chơi thử Máy phát tín hiệu.
+- Hình nền phòng là hình tạm; danh sách hình cho ChatGPT: `docs/CHUONG_2_HINH_CAN_VE.md`.
+- Kiểm thử: 29 bài luật chơi (thêm các bài cho 4 thử thách và cả luồng chương 2, mỗi thử thách thử hàng trăm đề ngẫu nhiên), chơi tự động chương 2 bằng 2 trình duyệt qua giao diện thật (kiểm tra mỗi bên chỉ thấy phần của mình, làm sai bị tính lỗi, giải xong qua bước tiếp, tải lại trang giữ tiến độ), cộng các bài cũ của chương 1, máy phát, kết nối lại.
+- Chưa có người thật chơi: độ khó là ước lượng.
+
+## Phiên bản 0.5.0 — bản thử Chương 2: Máy phát tín hiệu (23/10/2026)
+
+- Thiết kế Chương 2 đã duyệt (bỏ mã Morse): `docs/CHUONG_2_THIET_KE.md`.
+- Đợt 1: thử thách **Máy phát tín hiệu**, chơi riêng từ phòng chờ hoặc sau màn kết chương 1. Một người đứng máy, một người cầm sổ tay tiếng Anh; 3 bộ phận (dây cáp, van áp suất, bàn phím chữ có từ đồng âm), 3 mức khó, máy ngẫu nhiên mỗi lần, đổi vai được, xem lại đáp án sau mỗi lượt.
+- Kiểm thử: 21 bài luật chơi (thêm 8 bài cho máy phát, gồm kiểm tra 1.200 cỗ máy ngẫu nhiên đều có đúng một đáp án), chơi tự động máy phát bằng 2 trình duyệt qua giao diện thật, chơi tự động trọn chương 1, kiểm thử kết nối lại.
+- Chưa có người thật chơi: thời gian và độ khó là ước lượng, cần bạn chơi thử rồi góp ý.
+
 ## Phiên bản 0.4.1 — tự đặt tên (23/10/2026)
 
 - Tên người chơi không còn cố định là Lắc/Tím: mỗi người tự đặt tên khi tạo/vào phòng (tuỳ chọn), đổi lại được ở phòng chờ hoặc trong ⚙ Cài đặt. Để trống = tên nhân vật.

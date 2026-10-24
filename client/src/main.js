@@ -20,8 +20,10 @@ import { WorldScene } from './scenes/WorldScene.js';
 import { BossScene } from './scenes/BossScene.js';
 import { FinaleScene } from './scenes/FinaleScene.js';
 import { CreditsScene } from './scenes/CreditsScene.js';
+import { TransmitterScene } from './scenes/TransmitterScene.js';
+import { Chapter2Scene } from './scenes/Chapter2Scene.js';
 
-const STAGE_SCENE = { world: 'World', boss: 'Boss', finale: 'Finale', credits: 'Credits' };
+const STAGE_SCENE = { world: 'World', boss: 'Boss', finale: 'Finale', credits: 'Credits', tx: 'Transmitter', ch2: 'Chapter2' };
 let ready = false;
 let currentScene = null;
 
@@ -31,7 +33,7 @@ const game = new Phaser.Game({
   pixelArt: true,
   backgroundColor: '#0b0e1a',
   scale: { mode: Phaser.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
-  scene: [BootScene, WorldScene, BossScene, FinaleScene, CreditsScene],
+  scene: [BootScene, WorldScene, BossScene, FinaleScene, CreditsScene, TransmitterScene, Chapter2Scene],
 });
 G.game = game;
 

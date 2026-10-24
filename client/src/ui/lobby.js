@@ -240,6 +240,12 @@ function waitView() {
     !both && !started ? h('span', { class: 'small' }, `Đang chờ ${nameOf(G.slot === 'p1' ? 'p2' : 'p1')} vào phòng...`) : null,
     h('button', { class: 'btn gold', disabled: !both, onclick: () => { unlockAudio(); act({ type: 'start' }); } }, 'Bắt đầu ▶'),
   ));
+  wrap.append(h('div', { class: 'row tx-entry' },
+    h('div', { style: { flex: 1 } }, h('b', {}, '🌊 Chương 2: Ngọn đèn xanh'),
+      h('div', { class: 'small' }, 'Thử thách phối hợp khó hơn (~TOEIC 600): mỗi người chỉ có một nửa thông tin. Nên chơi chương 1 trước.')),
+    h('button', { class: 'btn teal', disabled: !both, onclick: () => { unlockAudio(); act({ type: 'ch2_start' }); } }, 'Chương 2 ▶'),
+    h('button', { class: 'btn small', disabled: !both, title: 'Bản thử thử thách Máy phát tín hiệu', onclick: () => { unlockAudio(); act({ type: 'tx_open' }); } }, '🧪 Máy phát'),
+  ));
   if (!both) {
     wrap.append(h('details', { class: 'small' },
       h('summary', {}, 'Chỉ muốn thử một mình?'),
