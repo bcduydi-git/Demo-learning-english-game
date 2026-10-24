@@ -26,7 +26,8 @@ export const DEFAULT_SETTINGS = {
   boss: 'normal', // relaxed | normal | hard
   vol: { master: 0.8, music: 0.45, sfx: 0.8, voice: 1, amb: 0.6 },
   mute: false,
-  voiceName: '',
+  voiceName: '', // (old) narrator voice
+  voices: {}, // character -> voice name chosen by the player ('' = automatic)
   mic: true, // show the "speak" button where speech input is supported
 };
 

@@ -5,6 +5,8 @@
 // speech engine.
 
 import { settings, saveSettings } from './store.js';
+import { lookOf } from './ctx.js';
+import { CAST, allocate } from './voices.js';
 
 let ctx = null;
 let master, musicBus, sfxBus, ambBus;
@@ -349,25 +351,19 @@ export function music(name) {
 }
 
 // ---------------------------------------------------------------- voice
-const VOICE_STYLE = {
-  p1: { pitch: 1.15, rate: 1, pref: ['female', 'zira', 'aria', 'jenny', 'samantha', 'google us english', 'libby', 'sonia'] },
-  p2: { pitch: 0.95, rate: 1, pref: ['guy', 'david', 'ryan', 'daniel', 'google uk english male', 'alex', 'male'] },
-  pip: { pitch: 1.9, rate: 1.08, pref: ['google us english', 'samantha', 'zira', 'aria'] },
-  keeper: { pitch: 0.95, rate: 0.92, pref: ['sonia', 'libby', 'google uk english female', 'hazel', 'susan', 'female', 'karen', 'moira'] },
-  captain: { pitch: 1.0, rate: 0.98, pref: ['jenny', 'michelle', 'aria', 'google us english', 'female', 'samantha'] },
-  storm: { pitch: 0.2, rate: 0.82, pref: ['guy', 'david', 'daniel', 'male'] },
-  narr: { pitch: 1, rate: 1, pref: [] },
-  radio: { pitch: 1, rate: 1, pref: [] },
-};
-
+// Each character has its own voice, shared out per machine (see voices.js).
+// Speakers 'p1'/'p2' are player slots: they speak with their character's voice.
 let voices = [];
+let cast = null;
 let manifest = null;
 let currentAudio = null;
 const synth = window.speechSynthesis || null;
 
 function loadVoices() {
   if (!synth) return;
-  voices = synth.getVoices().filter((v) => /^en(-|_|$)/i.test(v.lang));
+  const list = synth.getVoices().filter((v) => /^en(-|_|$)/i.test(v.lang));
+  if (list.length !== voices.length || list.some((v, i) => v !== voices[i])) cast = null;
+  voices = list;
 }
 if (synth) {
   loadVoices();
@@ -385,24 +381,27 @@ export function hasSpeech() {
   return !!synth;
 }
 
-function pickVoice(style) {
+function overrides() {
+  const o = { ...(settings.voices || {}) };
+  if (!o.narr && settings.voiceName) o.narr = settings.voiceName; // older setting
+  return o;
+}
+
+// -> { character: { voice, pitch, rate, shared, fixed } }
+export function voiceCast() {
   if (!voices.length) loadVoices();
-  if (!voices.length) return null;
-  if (settings.voiceName && style !== 'p1' && style !== 'p2' && style !== 'keeper' && style !== 'captain') {
-    const v = voices.find((x) => x.name === settings.voiceName);
-    if (v) return v;
-  }
-  const prefs = (VOICE_STYLE[style] || VOICE_STYLE.narr).pref;
-  const score = (v) => {
-    const n = v.name.toLowerCase();
-    let s = 0;
-    if (/natural|online|neural|premium|enhanced/.test(n)) s += 5;
-    if (/^en-us/i.test(v.lang)) s += 1;
-    prefs.forEach((p, i) => { if (n.includes(p)) s += 10 - i * 0.5; });
-    if (settings.voiceName && v.name === settings.voiceName) s += 3;
-    return s;
-  };
-  return [...voices].sort((a, b) => score(b) - score(a))[0];
+  if (!cast) cast = allocate(voices, overrides());
+  return cast;
+}
+
+// call after changing settings.voices
+export function resetVoiceCast() {
+  cast = null;
+}
+
+function characterOf(style) {
+  if (style === 'p1' || style === 'p2') return lookOf(style);
+  return CAST[style] ? style : 'narr';
 }
 
 export function stopSpeech() {
@@ -430,8 +429,8 @@ export function speak(text, style = 'narr', { rate = 1 } = {}) {
     }
     if (!synth) return resolve();
     const u = new SpeechSynthesisUtterance(text.replace(/\.\.\./g, ', '));
-    const st = VOICE_STYLE[style] || VOICE_STYLE.narr;
-    const v = pickVoice(style);
+    const st = voiceCast()[characterOf(style)];
+    const v = st.voice;
     if (v) u.voice = v;
     u.lang = v ? v.lang : 'en-US';
     u.pitch = st.pitch;
