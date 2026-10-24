@@ -388,6 +388,17 @@ input[type=range] { width: 160px; accent-color: var(--orange); }
 .c2-grid .cell.click:hover { filter: brightness(1.4); }
 .c2-compass { display: flex; justify-content: space-between; gap: 6px; }
 .c2-warn { background: #fff0c8; border: 2px solid var(--gold); border-radius: 5px; padding: 6px 8px; font-size: 14px; }
+.c2-wide { grid-column: 1 / -1; }
+.c2-phases { display: flex; gap: 6px; flex-wrap: wrap; }
+.c2-phases .ph { padding: 4px 10px; font-size: 13px; border: 2px solid var(--ink); border-radius: 12px; background: #fffaf6; color: var(--muted); }
+.c2-phases .ph.now { background: var(--gold); color: #2a1a10; font-weight: 700; }
+.c2-phases .ph.ok { background: #cfeec4; color: var(--text); }
+.c2-waiting { color: var(--muted); font-style: italic; font-size: 14px; }
+.c2-clue { font-size: 18px; padding: 8px 10px; background: #fff3d6; border: 2px solid var(--gold); border-radius: 5px; margin: 4px 0; }
+.c2-clue.en { font-size: 26px; letter-spacing: .05em; }
+.c2-send { text-align: center; }
+.c2-sendbtn { font-size: 28px; padding: 12px 40px; }
+.c2-runhead .tx-clock { font-size: 38px; }
 @media (max-width: 1100px) { .c2-top { top: 64px; max-width: 96vw; } .c2-mapbox { top: 130px; } }
 @media (max-width: 860px) { .c2-cols { flex-direction: column; } .c2-cols .tx-phrases { width: auto; } .c2-mapbox { width: 94vw; } .c2-roombox { width: auto; right: 12px; } .c2-lockers { grid-template-columns: repeat(4, 1fr); } }
 

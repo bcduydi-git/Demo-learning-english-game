@@ -3,7 +3,7 @@
 // shared dialogue system as chapter 1 (startScene is passed in to avoid a
 // circular import).
 
-import { newPuzzle, puzzleAction } from './puzzle.js';
+import { newPuzzle, puzzleAction, puzzleTick } from './puzzle.js';
 import { STEPS, ROLE_ROOM, LINKS } from './story.js';
 
 export const stepOf = (c2) => STEPS.find((s) => s.id === c2.step) || STEPS[STEPS.length - 1];
@@ -97,4 +97,8 @@ export function restoreC2(saved) {
   const c2 = { ...newC2(), ...saved };
   if (c2.pz && c2.pz.status === 'run') c2.pz = newPuzzle(c2.pz.kind, c2.pz);
   return c2;
+}
+
+export function c2Tick(state, dt) {
+  return state.c2 ? puzzleTick(state.c2.pz, dt) : { ev: [], changed: false };
 }

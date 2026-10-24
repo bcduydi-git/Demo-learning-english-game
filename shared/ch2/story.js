@@ -51,6 +51,34 @@ export const CH2_SCENES = {
     { s: 'keeper', en: 'Repair the transmitter. Then you will know where I am.', vi: 'Hãy sửa máy phát. Khi đó các bạn sẽ biết tôi ở đâu.' },
     { s: 'captain', en: "That's her voice. That's really her voice.", vi: 'Đó là giọng bà ấy. Đúng là giọng bà ấy.' },
     { s: 'pip', en: 'Eleanor says: hurry!', vi: 'Eleanor nói: nhanh lên!', voice: 'keeper' },
+    { s: 'narr', vi: 'Cửa phòng máy phát đã mở khoá. Hãy tới đó.' },
+  ],
+  c2_machine_intro: [
+    { s: 'p2', en: "The transmitter is in here. It's covered in warning lights.", vi: 'Máy phát ở đây rồi. Đèn cảnh báo sáng khắp nơi.', say: true },
+    { s: 'p1', en: "There's a manual on the desk. One of us reads, and the other one works.", vi: 'Có một cuốn sổ tay trên bàn. Một người đọc, người kia làm.', say: true },
+    { s: 'narr', vi: 'Người đứng máy thấy máy nhưng không có sổ tay. Người cầm sổ tay không thấy máy. Có đồng hồ đếm ngược; làm sai bị trừ giờ.' },
+  ],
+  c2_machine_done: [
+    { s: 'narr', vi: 'Máy phát rung lên. Trên màn hình hiện ra những dòng chữ xanh: một lời nhắn chưa phát xong.' },
+    { s: 'keeper', en: 'If you are hearing this, the transmitter works again. Send my last signal, and I will answer.', vi: 'Nếu các bạn nghe được điều này, máy phát đã chạy lại. Hãy gửi tín hiệu cuối cùng của tôi, và tôi sẽ trả lời.' },
+    { s: 'captain', en: "A storm is coming in fast. You'll have to send it now, before it hits the station!", vi: 'Một cơn bão đang ập tới rất nhanh. Các bạn phải gửi ngay, trước khi nó đánh vào trạm!' },
+    { s: 'pip', en: 'Hurry! Hurry!', vi: 'Nhanh lên! Nhanh lên!' },
+  ],
+  c2_finale_intro: [
+    { s: 'narr', vi: 'Bão kéo tới. Điện chập chờn. Cả máy chính và máy dự phòng đều phải chạy thì tín hiệu mới đi được.' },
+    { s: 'p1', en: "You take the backup unit. I'll take the main one.", vi: 'Bạn lo máy dự phòng. Mình lo máy chính.', say: true },
+    { s: 'p2', en: "And we read each other's manuals. Keep talking to me!", vi: 'Và mình đọc sổ tay cho nhau. Cứ nói chuyện với mình nhé!', say: true },
+    { s: 'narr', vi: 'Mỗi người làm một máy và cầm sổ tay của máy bên kia. Lượt 1: máy chính. Lượt 2: đổi, máy dự phòng. Lượt 3: cả hai cùng lúc. Cuối cùng: cùng bấm SEND.' },
+  ],
+  c2_ending: [
+    { s: 'narr', vi: 'Tín hiệu vút lên bầu trời giông bão. Ngoài khơi, đốm sáng xanh nháy đáp lại. Rồi radio lên tiếng: lần này không phải băng ghi âm.' },
+    { s: 'keeper', en: 'I hear you. I hear you both. Thank you.', vi: 'Tôi nghe thấy rồi. Tôi nghe thấy cả hai bạn. Cảm ơn.' },
+    { s: 'captain', en: 'Grandmother? Is that really you?', vi: 'Bà ơi? Có thật là bà không?' },
+    { s: 'keeper', en: "Hello, my dear. I'm sorry I made you wait so long. I'm at the Sunken Light, to the north. Come before the tide turns.", vi: 'Chào cháu yêu. Bà xin lỗi vì đã để cháu chờ lâu như vậy. Bà đang ở Ngọn Hải Đăng Chìm, phía bắc. Hãy tới trước khi thuỷ triều đổi chiều.' },
+    { s: 'p1', en: "We're coming. Hold on!", vi: 'Chúng cháu đang tới. Cố lên bà nhé!', say: true },
+    { s: 'p2', en: 'Help is coming.', vi: 'Sắp có người tới cứu rồi.', say: true },
+    { s: 'pip', en: 'Eleanor! Home! Home!', vi: 'Eleanor! Về nhà! Về nhà!' },
+    { s: 'narr', vi: 'Còn tiếp: Chương 3 — Ngọn Hải Đăng Chìm.' },
   ],
 };
 
@@ -82,7 +110,9 @@ export const ROOMS = {
   dome: { name: 'Antenna dome', vi: 'Mái vòm ăng-ten', x: 46, y: 4, notes: [
     { title: 'Warning', en: 'Do not look directly at the alignment lights for more than a few seconds.', vi: 'Không nhìn thẳng vào đèn căn chỉnh quá vài giây.' },
   ] },
-  transmitter: { name: 'Transmitter room', vi: 'Phòng máy phát', x: 80, y: 8, locked: 'Đợt 3 — sắp có', notes: [] },
+  transmitter: { name: 'Transmitter room', vi: 'Phòng máy phát', x: 78, y: 4, notes: [
+    { title: 'Last log entry', en: 'Transmitter repaired, mostly. If it fails again, read the manual out loud to someone. It is much faster with two people. — E.M.', vi: 'Máy phát đã sửa, gần xong. Nếu nó hỏng lần nữa, hãy đọc to sổ tay cho một người khác nghe. Hai người làm nhanh hơn nhiều. — E.M.' },
+  ] },
 };
 
 export const LINKS = [['dock', 'hub'], ['hub', 'west'], ['hub', 'east'], ['hub', 'office'], ['hub', 'lockers'], ['office', 'dome'], ['lockers', 'dome'], ['dome', 'transmitter']];
@@ -93,7 +123,9 @@ export const STEPS = [
   { id: 'flood', room: 'hub', title: 'Two flooded wings', vi: 'Hai cánh trạm ngập nước', intro: 'c2_flood_intro', done: 'c2_flood_done', open: ['dock', 'hub'] },
   { id: 'keycard', room: 'office', title: 'Who has the keycard?', vi: 'Ai giữ thẻ từ?', intro: 'c2_keycard_intro', done: 'c2_keycard_done', open: ['dock', 'hub', 'west', 'east', 'office', 'lockers'] },
   { id: 'antenna', room: 'dome', title: 'Aligning the antenna', vi: 'Căn chỉnh ăng-ten', intro: 'c2_antenna_intro', done: 'c2_antenna_done', open: ['dock', 'hub', 'west', 'east', 'office', 'lockers', 'dome'] },
-  { id: 'end', room: 'dome', title: 'To be continued', vi: 'Còn tiếp', open: ['dock', 'hub', 'west', 'east', 'office', 'lockers', 'dome', 'transmitter'] },
+  { id: 'machine', room: 'transmitter', title: 'The signal transmitter', vi: 'Máy phát tín hiệu', intro: 'c2_machine_intro', done: 'c2_machine_done', open: ['dock', 'hub', 'west', 'east', 'office', 'lockers', 'dome', 'transmitter'] },
+  { id: 'finale', room: 'transmitter', title: 'The last signal', vi: 'Tín hiệu cuối cùng', intro: 'c2_finale_intro', done: 'c2_ending', open: ['dock', 'hub', 'west', 'east', 'office', 'lockers', 'dome', 'transmitter'] },
+  { id: 'end', room: 'transmitter', title: 'The end of chapter 2', vi: 'Hết chương 2', open: ['dock', 'hub', 'west', 'east', 'office', 'lockers', 'dome', 'transmitter'] },
 ];
 
 // Where each side of a puzzle stands while it runs.
@@ -102,6 +134,8 @@ export const ROLE_ROOM = {
   flood: { west: 'west', east: 'east' },
   keycard: { office: 'office', lockers: 'lockers' },
   antenna: { north: 'dome', south: 'dome' },
+  machine: { tech: 'transmitter', reader: 'transmitter' },
+  finale: { a: 'transmitter', b: 'transmitter' },
 };
 
 export const ROLE_INFO = {
@@ -113,4 +147,18 @@ export const ROLE_INFO = {
   lockers: { icon: '🔐', vi: 'Phòng tủ đồ', desc: 'Thấy 8 tủ đồ, bảng tên và nhật ký cửa. Là người mở tủ.' },
   north: { icon: '⬆', vi: 'Phía Bắc tấm kính', desc: 'Đĩa 1: cầm bản đồ sao, chỉ cho người kia. Đĩa 2: bật công tắc.' },
   south: { icon: '⬇', vi: 'Phía Nam tấm kính', desc: 'Đĩa 1: bật công tắc. Đĩa 2: cầm bản đồ sao, chỉ cho người kia.' },
+  tech: { icon: '🔧', vi: 'Đứng máy', desc: 'Thấy cỗ máy và thao tác, nhưng không có sổ tay. Tả thật rõ những gì bạn thấy.' },
+  reader: { icon: '📘', vi: 'Cầm sổ tay', desc: 'Có sổ tay tiếng Anh, nhưng không thấy máy. Hỏi, đọc luật, rồi bảo người kia làm gì.' },
+  a: { icon: '🅰', vi: 'Máy chính', desc: 'Làm máy chính (dây cáp, rồi khoá giọng nói). Cầm sổ tay của máy dự phòng (van, bàn phím).' },
+  b: { icon: '🅱', vi: 'Máy dự phòng', desc: 'Làm máy dự phòng (van, rồi bàn phím). Cầm sổ tay của máy chính (dây cáp, gợi ý khoá giọng nói).' },
+};
+
+// Words worth keeping from chapter 2, by puzzle (shown in the chapter's word book)
+export const CH2_WORDS = {
+  coords: [['latitude', 'vĩ độ'], ['longitude', 'kinh độ'], ['grid square', 'ô lưới'], ['correction', 'lời đính chính'], ['vessel', 'tàu thuyền'], ['approach', 'tiến lại gần']],
+  flood: [['valve', 'van'], ['hatch', 'cửa khoang'], ['water level', 'mực nước'], ['twice', 'hai lần'], ['overflow', 'tràn'], ['at the same time', 'cùng một lúc']],
+  keycard: [['shift', 'ca làm việc'], ['swap', 'đổi cho nhau'], ['cover (a shift)', 'làm thay (ca)'], ['on duty', 'đang trực'], ['reminder', 'lời nhắc'], ['after all', 'rốt cuộc thì (không như dự định)'], ["I'm afraid...", 'e rằng... (từ chối lịch sự)'], ['name tag', 'bảng tên']],
+  antenna: [['align', 'căn cho thẳng hàng'], ['opposite', 'đối diện'], ['from my side', 'từ phía tôi'], ['top row', 'hàng trên cùng'], ['column', 'cột'], ['mirror image', 'ảnh trong gương (ngược trái phải)']],
+  machine: [['unless', 'trừ khi'], ['otherwise', 'nếu không thì'], ['exception', 'ngoại lệ'], ['instead of', 'thay vì'], ['pressure', 'áp suất'], ['spell', 'đánh vần']],
+  finale: [['main unit', 'máy chính'], ['backup', 'dự phòng'], ['send', 'gửi'], ['signal', 'tín hiệu'], ['storm', 'cơn bão'], ['tide', 'thuỷ triều']],
 };

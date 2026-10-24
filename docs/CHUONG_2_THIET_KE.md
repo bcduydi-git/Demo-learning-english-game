@@ -17,14 +17,25 @@ Tài liệu này không tiết lộ bí mật cốt truyện của chương 2 (p
 | 2 | Hai cánh trạm bị ngập ✅ | Van bên này đổi mực nước bên kia; đi luân phiên, hẹn thời điểm | *hold on until, after you, as soon as* |
 | 3 | Ai giữ thẻ từ? ✅ | Một người có lịch trực + email, người kia thấy phòng tủ đồ; suy luận chéo | Giờ giấc, *no later than, unless, except*, phủ định |
 | 4 | Căn chỉnh ăng-ten ✅ | Đứng hai phía mái vòm, trái/phải ngược nhau; tả hình và xếp lưới | Vị trí, hướng, hình dạng |
-| 5 | **Máy phát tín hiệu** ✅ bản thử | Một người đứng máy, một người cầm sổ tay | Câu điều kiện, đọc hiểu kỹ thuật, đánh vần |
-| 6 | Cao trào | Gỡ nhiều bộ phận cùng lúc, đổi vai giữa chừng, có luật cần nhớ câu đã học | Tự nhớ |
+| 5 | **Máy phát tín hiệu** ✅ (phòng máy phát, có đồng hồ) | Một người đứng máy, một người cầm sổ tay | Câu điều kiện, đọc hiểu kỹ thuật, đánh vần |
+| 6 | Cao trào: Tín hiệu cuối cùng ✅ | Hai máy, mỗi người làm một máy và cầm sổ tay máy kia; lượt 1 A làm, lượt 2 đổi vai, lượt 3 cả hai cùng lúc (A gõ câu tự nhớ vào khoá giọng nói, B có gợi ý), cuối cùng cùng bấm SEND | Tự nhớ câu đã học, nói và nghe cùng lúc |
 
 ## Kế hoạch làm
 
 1. **Đợt 1 (xong):** thử thách 5 — Máy phát tín hiệu, chơi riêng được (bản thử).
-2. **Đợt 2 (xong, chờ chơi thử):** thử thách 1–4, bản đồ trạm, cốt truyện. Hình nền các phòng đang là hình tạm vẽ bằng code; danh sách hình cho ChatGPT ở `docs/CHUONG_2_HINH_CAN_VE.md`.
-3. **Đợt 3:** phòng máy phát (đưa thử thách 5 vào truyện), cao trào, kết chương, sổ từ của chương.
+2. **Đợt 2 (xong):** thử thách 1–4, bản đồ trạm, cốt truyện. Hình nền các phòng đang là hình tạm vẽ bằng code; danh sách hình cho ChatGPT ở `docs/CHUONG_2_HINH_CAN_VE.md`.
+3. **Đợt 3 (xong, chờ chơi thử):** phòng máy phát (thử thách 5 vào truyện, có đồng hồ), cao trào "Tín hiệu cuối cùng", kết chương, Sổ từ chương 2 (khoảng 40 từ/cụm theo từng thử thách), bảng kết quả 6 thử thách.
+
+## Thử thách 6 — Tín hiệu cuối cùng (cao trào)
+
+| | Người A (máy chính) | Người B (máy dự phòng) |
+|---|---|---|
+| Lượt 1 | Cắt dây máy chính | Đọc luật cắt dây cho A |
+| Lượt 2 (đổi vai) | Đọc luật van cho B | Chỉnh van máy dự phòng |
+| Lượt 3 (cùng lúc) | Gõ một câu đã học vào khoá giọng nói; đọc bảng cột chữ cho B | Bấm bàn phím chữ; đọc gợi ý khoá giọng nói cho A |
+| Cuối | Cùng bấm SEND trong 4 giây | Cùng bấm SEND trong 4 giây |
+
+Gợi ý khoá giọng nói: mức Dễ có nghĩa tiếng Việt và chữ cái đầu; mức Vừa chỉ nghĩa tiếng Việt; mức Hack não chỉ có định nghĩa tiếng Anh. Câu cần nhớ lấy từ chương 1–2 (vd. *Say that again, please*, *Could you spell that, please?*, lời người gác đèn trên cửa hải đăng...). Thời gian: 9:00 / 7:00 / 5:30; làm sai bị trừ 15 giây.
 
 ## Bản đồ trạm
 
@@ -43,7 +54,7 @@ Chương 2 không đi lại tự do bằng phím như chương 1: phần chính 
 
 Mọi thử thách tạo đề ngẫu nhiên mỗi lần; làm sai quá số lần thì làm lại với đề mới. Bảng kết quả cuối Đợt 2 ghi mức, số lần sai, số lượt và thời gian mỗi thử thách.
 
-Nơi sửa: luật và đề — `shared/ch2/*.js`; lời thoại, phòng, giấy tờ — `shared/ch2/story.js`; giao diện — `client/src/scenes/Chapter2Scene.js`, `client/src/ch2/puzzles.js`; kiểm thử — `tests/unit/ch2*.test.js`, `tests/e2e/chapter2.mjs`.
+Nơi sửa: luật và đề — `shared/ch2/*.js` (máy phát trong truyện: `machine.js`, cao trào: `finale.js`); sổ từ — `CH2_WORDS` trong `shared/ch2/story.js`; lời thoại, phòng, giấy tờ — `shared/ch2/story.js`; giao diện — `client/src/scenes/Chapter2Scene.js`, `client/src/ch2/puzzles.js`; kiểm thử — `tests/unit/ch2*.test.js`, `tests/e2e/chapter2.mjs`.
 
 ## Thử thách 5 — Máy phát tín hiệu (bản thử)
 

@@ -49,9 +49,9 @@ Tàu Aurora đi theo đốm sáng xanh → thử thách **toạ độ** cho ra v
 
 Chi tiết gài sẵn: hộp đồ thất lạc có bưu thiếp "Greetings from Beacon Isle" và khăn đỏ; nhật ký thuyền trưởng ghi đèn xanh "ba dài, ba ngắn" (không có giải mã Morse theo yêu cầu).
 
-## Đợt 3 (dự kiến)
+## Đợt 3 — kết chương 2
 
-Phòng máy phát (thử thách Máy phát tín hiệu đã có bản thử) → cao trào: gỡ nhiều bộ phận cùng lúc, đổi vai giữa chừng, có luật cần nhớ câu đã học → máy phát cho ra vị trí của Eleanor → móc nối chương 3.
+Phòng máy phát (nhật ký cuối ký tên "E.M.": *đọc to sổ tay cho người khác nghe, hai người làm nhanh hơn*) → sửa máy → băng ghi âm: *"Send my last signal, and I will answer"* → bão ập tới → **Tín hiệu cuối cùng** → đèn xanh nháy đáp lại và **Eleanor nói trực tiếp qua radio** (không phải băng): bà còn sống, đang ở **Ngọn Hải Đăng Chìm** phía bắc, *"Come before the tide turns."* Hai người chơi đáp lại bằng chính lời trên cửa hải đăng chương 1: *"Hold on!" / "Help is coming."* → Còn tiếp: **Chương 3 — Ngọn Hải Đăng Chìm**.
 
 ## Ai thấy gì (chương 2)
 

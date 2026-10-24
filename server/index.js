@@ -261,7 +261,7 @@ setInterval(() => {
   lastTick = now;
   for (const room of rooms.values()) {
     const st = room.state;
-    if (st.stage !== 'boss' && st.stage !== 'finale' && st.stage !== 'tx') continue;
+    if (st.stage !== 'boss' && st.stage !== 'finale' && st.stage !== 'tx' && st.stage !== 'ch2') continue;
     if (!SLOTS.some((s) => st.players[s].connected)) continue;
     const { ev, changed } = tick(st, dt, now);
     if (changed) {

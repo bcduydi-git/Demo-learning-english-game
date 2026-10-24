@@ -68,7 +68,7 @@ export class CreditsScene extends Phaser.Scene {
         h('div', { class: 'en', style: { fontSize: '30px', color: '#6dff8a' } }, 'To be continued...'),
         h('div', {}, 'Chương 2 — Ngọn đèn xanh. Ai đang gọi từ nơi không có hòn đảo nào?'),
         h('div', { class: 'row', style: { marginTop: '8px' } },
-          h('span', { class: 'small', style: { flex: 1, color: '#cfd8e8' } }, 'Chương 2 đã có 4 thử thách đầu. Hai bạn chơi tiếp ngay được!'),
+          h('span', { class: 'small', style: { flex: 1, color: '#cfd8e8' } }, 'Chương 2 đã sẵn sàng: sáu thử thách phối hợp ở một trạm nghiên cứu giữa biển.'),
           h('button', { class: 'btn teal small', onclick: () => act({ type: 'ch2_start' }) }, 'Chương 2 ▶')),
       ),
       h('div', { class: 'row' },

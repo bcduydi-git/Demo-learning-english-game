@@ -8,8 +8,9 @@ import { h, clear, portraitUrl } from '../ui/dom.js';
 import { toast } from '../ui/hud.js';
 import { line } from '../ui/enline.js';
 import { openModal } from '../ui/modal.js';
-import { music, ambience, sfx } from '../audio.js';
-import { ROOMS, LINKS, STEPS, ROLE_INFO } from '../../../shared/ch2/story.js';
+import { clearLastSession } from '../store.js';
+import { music, ambience, sfx, speak } from '../audio.js';
+import { ROOMS, LINKS, STEPS, ROLE_INFO, CH2_WORDS } from '../../../shared/ch2/story.js';
 import { PUZZLES, LEVELS, roleOf } from '../../../shared/ch2/puzzle.js';
 import { stepOf, isOpen } from '../../../shared/ch2/index.js';
 import { VIEWS, PHRASES } from '../ch2/puzzles.js';
@@ -123,10 +124,22 @@ export class Chapter2Scene extends Phaser.Scene {
       this.drawRoom();
     }
     const c2 = s.c2;
-    const sig = JSON.stringify({ c2, sc: !!s.scene, p: [s.players.p1, s.players.p2] });
-    if (sig === this.sig) return;
-    this.sig = sig;
-    this.render();
+    // the clock of timed puzzles ticks every second: update it alone so
+    // the rest of the screen (and the manual's scroll position) stays put
+    const sig = JSON.stringify({ c2, sc: !!s.scene, p: [s.players.p1, s.players.p2] }, (k, v) => (k === 'left' ? 0 : v));
+    if (sig !== this.sig) {
+      this.sig = sig;
+      this.render();
+    }
+    this.drawClock();
+  }
+
+  drawClock() {
+    const pz = G.state.c2.pz;
+    if (!this.clockEl || !pz || !pz.data || pz.data.left == null) return;
+    const sec = Math.max(0, Math.ceil(pz.data.left / 1000));
+    this.clockEl.textContent = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+    this.clockEl.classList.toggle('low', sec < 60);
   }
 
   onEvent(e) {
@@ -136,7 +149,18 @@ export class Chapter2Scene extends Phaser.Scene {
     switch (e.e) {
       case 'pz_start': sfx('door'); if (c2.pz && c2.pz.kind === 'coords') music('boss'); break;
       case 'pz_strike': sfx('wrong'); this.cameras.main.shake(160, 0.005); toast(`✗ Sai: ${e.what || 'chưa đúng'}`, 'bad'); break;
-      case 'pz_failed': sfx('fail'); break;
+      case 'pz_failed': sfx('fail'); if (e.why === 'time') toast('⏰ Hết giờ rồi!', 'bad'); break;
+      case 'pz_part': sfx('success'); break;
+      case 'tx_key_ok': sfx('click'); break;
+      case 'finale_phase': toast(e.phase === 2 ? '🔄 Đổi vai! Giờ đến máy dự phòng.' : e.phase === 3 ? '⚡ Cả hai cùng làm một lúc!' : '📡 Sẵn sàng gửi! Cùng bấm SEND!', 'good'); break;
+      case 'finale_send':
+        if (c2.pz && roleOf(c2.pz, G.slot) !== e.side) {
+          const ui = this.ui.finale || (this.ui.finale = {});
+          ui.partnerSend = performance.now();
+          this.render();
+          setTimeout(() => this.render(), 4100);
+        }
+        break;
       case 'pz_done': sfx('success'); music('night'); toast('✓ Hoàn thành thử thách!', 'good'); break;
       case 'flood_hatch':
         if (c2.pz && roleOf(c2.pz, G.slot) !== e.side) {
@@ -162,6 +186,7 @@ export class Chapter2Scene extends Phaser.Scene {
     const fk = f && this.root.contains(f) && f.dataset && f.dataset.k;
     const caret = fk && f.selectionStart;
     clear(this.root);
+    this.clockEl = null;
     this.root.append(this.topBar(c2), this.mapPanel(c2), this.roomPanel(c2));
     if (c2.step === 'end' && !s.scene) this.root.append(this.endPanel(c2));
     else if (c2.open && c2.pz && !s.scene) this.root.append(this.puzzlePanel(c2));
@@ -169,6 +194,7 @@ export class Chapter2Scene extends Phaser.Scene {
       const el = this.root.querySelector(`[data-k="${fk}"]`);
       if (el) { el.focus(); try { el.setSelectionRange(caret, caret); } catch { /* not a text box */ } }
     }
+    this.drawClock();
   }
 
   topBar(c2) {
@@ -176,7 +202,7 @@ export class Chapter2Scene extends Phaser.Scene {
     const n = STEPS.findIndex((x) => x.id === st.id);
     return h('div', { class: 'box c2-top' },
       h('div', { class: 'small' }, 'CHƯƠNG 2 · NGỌN ĐÈN XANH'),
-      h('b', {}, st.id === 'end' ? 'Hết phần 2 — còn tiếp' : `Thử thách ${n + 1}/4: ${st.vi}`),
+      h('b', {}, st.id === 'end' ? 'Hết chương 2' : `Thử thách ${n + 1}/${STEPS.length - 1}: ${st.vi}`),
       st.id !== 'end' ? h('div', { class: 'small' }, `Đến ${ROOMS[st.room].vi} để bắt đầu.`) : null);
   }
 
@@ -218,10 +244,21 @@ export class Chapter2Scene extends Phaser.Scene {
     return h('div', { class: 'box c2-roombox' },
       h('div', { class: 'en', style: { fontSize: '28px', lineHeight: 1 } }, r.name),
       h('div', { class: 'small' }, r.vi, ' · ', other === id ? `${nameOf(partner())} ở cùng phòng` : `${nameOf(partner())} đang ở ${ROOMS[other].vi}`),
-      notes.length ? h('div', { class: 'row', style: { marginTop: '6px' } }, ...notes) : null,
+      h('div', { class: 'row', style: { marginTop: '6px' } }, ...notes, h('button', { class: 'btn small', onclick: () => this.openWords(c2) }, '📖 Sổ từ chương 2')),
       canStart ? h('button', { class: 'btn gold', style: { marginTop: '8px' }, onclick: () => act({ type: 'c2_open' }) }, `▶ Thử thách: ${st.vi}`) : null,
       !canStart && c2.step !== 'end' && st.room !== id ? h('div', { class: 'small', style: { marginTop: '6px' } }, `Thử thách tiếp theo ở: ${ROOMS[st.room].vi}`) : null,
     );
+  }
+
+  openWords(c2) {
+    const m = openModal('📖 Sổ từ chương 2', { id: 'c2words', wide: true });
+    m.body.append(h('p', { class: 'small' }, 'Từ và cụm từ kiểu TOEIC gặp trong chương 2. Thử thách đã xong có dấu ✓. Bấm 🔊 để nghe.'));
+    for (const x of STEPS.filter((st) => CH2_WORDS[st.id])) {
+      m.body.append(h('h3', {}, `${c2.results[x.id] ? '✓ ' : ''}${x.vi}`),
+        h('div', { class: 'tx-words' }, ...CH2_WORDS[x.id].map(([en, vi]) => h('div', { class: 'card' },
+          h('span', { class: 'en', style: { flex: 1 } }, en), h('span', { class: 'small' }, vi),
+          h('button', { class: 'btn small', onclick: () => speak(en, 'narr') }, '🔊')))));
+    }
   }
 
   openNote(n) {
@@ -247,7 +284,7 @@ export class Chapter2Scene extends Phaser.Scene {
       const pOn = G.state.players[partner()].connected;
       const meReady = !!pz.ready[G.slot];
       wrap.append(h('div', { class: 'box c2-setup' },
-        h('div', { class: 'small' }, `THỬ THÁCH ${STEPS.findIndex((x) => x.id === pz.kind) + 1}/4`),
+        h('div', { class: 'small' }, `THỬ THÁCH ${STEPS.findIndex((x) => x.id === pz.kind) + 1}/${STEPS.length - 1}`),
         h('h2', { class: 'en', style: { fontSize: '36px', margin: '0 0 4px' } }, st.title),
         h('p', {}, st.vi, '. Mỗi người chỉ thấy một nửa thông tin: hãy gọi thoại và nói chuyện bằng tiếng Anh.'),
         h('div', { class: 'roles' }, ...P.roles.map(card)),
@@ -275,10 +312,12 @@ export class Chapter2Scene extends Phaser.Scene {
     const body = VIEWS[pz.kind]({ pz, d: pz.data, role: myRole, send, ui, redraw: () => this.render() });
     const strikes = h('span', { class: 'tx-strikes' }, ...Array.from({ length: P.strikes[pz.level] }, (_, i) => h('span', { class: i < pz.strikes ? 'x' : '' }, i < pz.strikes ? '✗' : '○')));
     const phr = PHRASES[myRole] || [];
+    this.clockEl = P.timed ? h('div', { class: 'tx-clock en' }) : null;
     wrap.append(h('div', { class: 'c2-run' },
       h('div', { class: 'box c2-runhead' },
         h('div', {}, h('div', { class: 'small' }, `${st.title} · ${LEVELS[pz.level]}`), h('b', {}, `${ROLE_INFO[myRole].icon} Bạn: ${ROLE_INFO[myRole].vi}`)),
         h('span', { class: 'small' }, `${nameOf(partner())}: ${ROLE_INFO[Object.keys(pz.roles).find((r) => r !== myRole)].vi}`),
+        this.clockEl,
         strikes),
       h('div', { class: 'c2-cols' },
         h('div', { class: 'c2-main' }, ...body),
@@ -294,14 +333,19 @@ export class Chapter2Scene extends Phaser.Scene {
       return h('tr', {}, h('td', {}, x.vi), h('td', {}, r ? LEVELS[r.level] : '—'), h('td', {}, r ? String(r.strikes) : '—'), h('td', {}, r ? String(r.attempts) : '—'), h('td', { class: 'en' }, mm));
     });
     return h('div', { class: 'c2-overlay' }, h('div', { class: 'box c2-setup' },
-      h('div', { class: 'logo', style: { fontSize: '44px' } }, 'TO BE CONTINUED'),
-      h('p', {}, `${nameOf('p1')} và ${nameOf('p2')} đã đi hết 4 thử thách đầu của trạm Halcyon.`),
+      h('div', { class: 'logo', style: { fontSize: '44px' } }, 'SIGNAL SENT!'),
+      h('p', {}, `${nameOf('p1')} và ${nameOf('p2')} đã đi hết chương 2: sáu thử thách ở trạm Halcyon.`),
       h('table', { class: 'tx-table' }, h('tr', {}, h('th', {}, 'Thử thách'), h('th', {}, 'Mức'), h('th', {}, 'Sai'), h('th', {}, 'Lượt chơi'), h('th', {}, 'Thời gian')), ...rows),
-      h('div', { class: 'tx-tip' }, 'Phần tiếp theo (đang làm): Phòng máy phát và trận cao trào. Trong lúc chờ, hai bạn có thể chơi thử Máy phát tín hiệu.'),
+      h('div', { style: { margin: '6px 0', padding: '10px', border: '2px dashed #4fc1bc', borderRadius: '4px' } },
+        h('div', { class: 'en', style: { fontSize: '30px', color: '#2f8f8a' } }, 'To be continued...'),
+        h('div', {}, 'Chương 3 — Ngọn Hải Đăng Chìm (sắp có).')),
       h('div', { class: 'row' },
+        h('button', { class: 'btn', onclick: () => this.openWords(c2) }, '📖 Sổ từ chương 2'),
         h('span', { class: 'spacer' }),
-        h('button', { class: 'btn teal', onclick: () => act({ type: 'tx_open' }) }, '🧪 Chơi thử Máy phát ▶')),
+        h('button', { class: 'btn small', onclick: () => act({ type: 'tx_open' }) }, '🧪 Luyện thêm Máy phát'),
+        h('button', { class: 'btn gold', onclick: () => { clearLastSession(); G.net.close(); location.href = location.pathname; } }, 'Về màn hình chính')),
     ));
   }
+
 }
 

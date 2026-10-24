@@ -8,6 +8,8 @@
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
 import { viewOf } from '../../shared/ch2/antenna.js';
+import { wireAnswer, valveAnswer, keypadOrder } from '../../shared/transmitter.js';
+import { recallOf } from '../../shared/ch2/finale.js';
 
 const URL = process.env.URL || 'http://localhost:8080/';
 const OUT = process.env.OUT || '/tmp/claude-0/ch2-shots';
@@ -87,7 +89,7 @@ try {
   await waitFor(b, () => window.__beacon.G.state.stage === 'ch2');
   await skipScenes(a, b, 'intro');
   // expose room names for the helpers
-  for (const p of [a, b]) await p.evaluate(() => { window.__beacon.ROOMS = { bridge: 'Buồng lái tàu Aurora', dock: 'Cầu cập tàu', hub: 'Sảnh trung tâm', west: 'Cánh Tây', east: 'Cánh Đông', office: 'Văn phòng', lockers: 'Phòng tủ đồ', dome: 'Mái vòm ăng-ten' }; window.__beacon.ROOMS = Object.fromEntries(Object.entries(window.__beacon.ROOMS).map(([k, v]) => [k, { vi: v }])); });
+  for (const p of [a, b]) await p.evaluate(() => { window.__beacon.ROOMS = { bridge: 'Buồng lái tàu Aurora', dock: 'Cầu cập tàu', hub: 'Sảnh trung tâm', west: 'Cánh Tây', east: 'Cánh Đông', office: 'Văn phòng', lockers: 'Phòng tủ đồ', dome: 'Mái vòm ăng-ten', transmitter: 'Phòng máy phát' }; window.__beacon.ROOMS = Object.fromEntries(Object.entries(window.__beacon.ROOMS).map(([k, v]) => [k, { vi: v }])); });
   await shot(a, 'bridge');
 
   // ---------------------------------------------------------------- 1. coords
@@ -192,9 +194,68 @@ try {
   await waitFor(a, () => window.__beacon.G.state.scene && window.__beacon.G.state.scene.id === 'c2_antenna_done');
   check(true, 'antenna solved: both dishes aligned');
   await skipScenes(a, b, 'antenna-done');
+
+  // ---------------------------------------------------------------- 5. transmitter room
+  check((await c2(a)).step === 'machine', 'step 5 opens: the transmitter room');
+  await openPuzzle(a, b, 'transmitter');
+  const tech = await pageFor(a, b, 'tech');
+  const reader = tech === a ? b : a;
+  check(await tech.isVisible('.tx-plate') && !(await reader.isVisible('.tx-plate')), 'machine: only the technician sees the machine');
+  check(await reader.isVisible('.tx-manual') && !(await tech.isVisible('.tx-manual')), 'machine: only the reader has the manual');
+  check(await a.isVisible('.c2-runhead .tx-clock'), 'machine: the clock is running');
+  await shot(tech, 'machine-tech');
+  await shot(reader, 'machine-reader');
+  let md = (await c2(a)).pz.data;
+  const leftBefore = md.left;
+  const rightWire = wireAnswer(md.wires.colours, md.plate).index;
+  await tech.click(`.tx-wire >> nth=${rightWire === 0 ? 1 : 0}`);
+  await tech.click('text=✂ Cắt dây');
+  await waitFor(a, () => window.__beacon.G.state.c2.pz.strikes === 1);
+  md = (await c2(a)).pz.data;
+  check(leftBefore - md.left >= 15000, 'machine: a wrong wire costs a strike and 15 seconds');
+  await tech.click(`.tx-wire >> nth=${rightWire}`);
+  await tech.click('text=✂ Cắt dây');
+  const mv = valveAnswer(md.valves.pressure, md.plate, (await c2(a)).pz.level);
+  if (mv.valve) for (let i = 0; i < mv.turns; i++) await tech.locator('.tx-dial').filter({ hasText: mv.valve }).locator('button:has-text("+")').click();
+  await tech.click('button:has-text("CONFIRM")');
+  for (const word of keypadOrder(md.keypad.words)) { await tech.click(`.tx-key:has-text("${word}")`); await sleep(120); }
+  await waitFor(a, () => window.__beacon.G.state.scene && window.__beacon.G.state.scene.id === 'c2_machine_done');
+  check(true, 'machine solved');
+  await skipScenes(a, b);
+
+  // ---------------------------------------------------------------- 6. finale
+  check((await c2(a)).step === 'finale', 'step 6 opens: the last signal');
+  await openPuzzle(a, b, 'transmitter');
+  const pa = await pageFor(a, b, 'a');
+  const pb = pa === a ? b : a;
+  let fd = (await c2(a)).pz.data;
+  check(await pb.isVisible('text=Mở ở lượt 2.') && await pb.isVisible('.tx-page'), 'finale phase 1: B reads the wire rules, B\'s valves are still locked');
+  await shot(pa, 'finale-a');
+  await shot(pb, 'finale-b');
+  await pa.click(`.tx-wire >> nth=${wireAnswer(fd.main.wires.colours, fd.main.plate).index}`);
+  await pa.click('text=✂ Cắt dây');
+  await waitFor(a, () => window.__beacon.G.state.c2.pz.data.phase === 2);
+  check(true, 'finale phase 2: roles swap');
+  const fv = valveAnswer(fd.backup.valves.pressure, fd.backup.plate, (await c2(a)).pz.level);
+  if (fv.valve) for (let i = 0; i < fv.turns; i++) await pb.locator('.tx-dial').filter({ hasText: fv.valve }).locator('button:has-text("+")').click();
+  await pb.click('button:has-text("CONFIRM")');
+  await waitFor(a, () => window.__beacon.G.state.c2.pz.data.phase === 3);
+  check(await pb.isVisible('text=Gợi ý khoá giọng nói') && !(await pa.isVisible('text=Gợi ý khoá giọng nói')), 'finale phase 3: only B has the clue for A\'s voice lock');
+  await shot(pb, 'finale-b-phase3');
+  await pa.fill('input[data-k="recall"]', recallOf(fd).answers[0]);
+  await pa.click('text=Mở khoá ▶');
+  for (const word of keypadOrder(fd.backup.keypad.words)) { await pb.click(`.tx-key:has-text("${word}")`); await sleep(120); }
+  await waitFor(a, () => window.__beacon.G.state.c2.pz.data.phase === 4);
+  await shot(pa, 'finale-send');
+  await pa.click('.c2-sendbtn');
+  await sleep(300);
+  await pb.click('.c2-sendbtn');
+  await waitFor(a, () => window.__beacon.G.state.scene && window.__beacon.G.state.scene.id === 'c2_ending');
+  check(true, 'finale solved: the signal is sent');
+  await skipScenes(a, b, 'ending');
   await waitFor(a, () => document.querySelector('.c2-overlay .logo'));
   await shot(a, 'end');
-  check((await c2(a)).step === 'end', 'end of chapter 2 part 2');
+  check((await c2(a)).step === 'end', 'end of chapter 2');
 
   // reload: comes back to the same place
   await b.reload();

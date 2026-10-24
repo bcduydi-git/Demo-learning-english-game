@@ -4,7 +4,7 @@
 import { SCENES, BOSS, CALL, BAY, DOOR_HALVES, makeGenerator, generatorSequence, parseBoatCommand } from './content.js';
 import { normalize, matchPhrase } from './phrases.js';
 import { newTx, txAction, txTick } from './transmitter.js';
-import { newC2, c2Action, c2SceneEnd, restoreC2 } from './ch2/index.js';
+import { newC2, c2Action, c2SceneEnd, restoreC2, c2Tick } from './ch2/index.js';
 
 export const SLOTS = ['p1', 'p2'];
 // Who each player is drawn as (independent of the role they chose).
@@ -530,6 +530,7 @@ function finalSeconds(state) {
 // Returns events; `changed` tells the server whether to broadcast.
 export function tick(state, dt, now = Date.now()) {
   if (state.stage === 'tx') return txTick(state, dt);
+  if (state.stage === 'ch2') return c2Tick(state, dt);
   const ev = [];
   let changed = false;
   const b = state.boss;

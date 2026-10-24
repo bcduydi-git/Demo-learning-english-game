@@ -2,6 +2,14 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.7.0 — Chương 2 hoàn chỉnh (24/10/2026)
+
+- Thử thách 5 **Máy phát tín hiệu** vào truyện (phòng máy phát của trạm, có đồng hồ đếm ngược, làm sai bị trừ giờ).
+- Thử thách 6 **Tín hiệu cuối cùng** (cao trào): hai máy, mỗi người làm một máy và cầm sổ tay máy bên kia; lượt 1 một người làm, lượt 2 đổi vai, lượt 3 cả hai cùng lúc (một người gõ câu tiếng Anh tự nhớ vào khoá giọng nói, người kia có gợi ý), cuối cùng cùng bấm SEND.
+- Đoạn kết chương 2 và móc nối Chương 3. Bảng kết quả 6 thử thách. **Sổ từ chương 2** (nút trong mỗi phòng và ở màn hình cuối).
+- Màn hình máy phát dùng chung cho bản thử, phòng máy phát và cao trào.
+- Kiểm thử: 31 bài luật chơi (thêm bài cho máy phát trong truyện, đồng hồ, cao trào và cả chương 2 sáu bước); chơi tự động trọn chương 2 bằng 2 trình duyệt; chương 1, bản thử máy phát, kết nối lại vẫn đạt.
+
 ## Phiên bản 0.6.0 — Chương 2, Đợt 2: bốn thử thách đầu (23/10/2026)
 
 - Vào Chương 2 từ phòng chờ (nút **Chương 2 ▶**) hoặc ở màn hình kết chương 1. Tiến độ chương 2 được lưu, tải lại trang vẫn vào đúng chỗ.

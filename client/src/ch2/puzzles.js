@@ -11,6 +11,9 @@ import { fmtPos } from '../../../shared/ch2/coords.js';
 import { levels, ROOMS as WROOMS, HATCH_WINDOW_MS } from '../../../shared/ch2/flood.js';
 import { DAYS, full, LOCKERS } from '../../../shared/ch2/keycard.js';
 import { viewOf } from '../../../shared/ch2/antenna.js';
+import { recallOf, SEND_WINDOW_MS } from '../../../shared/ch2/finale.js';
+import { TX_PHRASES } from '../../../shared/transmitter.js';
+import { platePanel, moduleBox, wiresBody, valvesBody, keypadBody, wiresManual, valvesManual, keypadManual, glossaryPage, manualBook } from './machineui.js';
 
 // sentences each side will need on the call
 export const PHRASES = {
@@ -53,6 +56,15 @@ export const PHRASES = {
 };
 PHRASES.east = PHRASES.west;
 PHRASES.south = PHRASES.north;
+PHRASES.tech = TX_PHRASES.tech;
+PHRASES.reader = TX_PHRASES.reader;
+PHRASES.a = [
+  ['How many wires are there?', 'Có bao nhiêu dây?'],
+  ["What's the pressure on your gauge?", 'Đồng hồ áp suất bên bạn chỉ bao nhiêu?'],
+  ['Read me the clue, please.', 'Đọc gợi ý cho mình nghe với.'],
+  ['On three: one, two, three, send!', 'Đếm đến ba: một, hai, ba, gửi!'],
+];
+PHRASES.b = PHRASES.a;
 
 // ------------------------------------------------------------ 1. coords
 async function playBroadcast(ctx) {
@@ -247,7 +259,85 @@ function antennaView(ctx) {
   ];
 }
 
-export const VIEWS = { coords: coordsView, flood: floodView, keycard: keycardView, antenna: antennaView };
+// ------------------------------------------------------------ 5. machine
+function machineView(ctx) {
+  const { d, role, ui, pz } = ctx;
+  if (role === 'tech') {
+    return [
+      h('div', { class: 'c2-wide' }, platePanel(d.plate)),
+      moduleBox('1 · Wires', d.solved.wires, wiresBody({ wires: d.wires, solved: d.solved.wires, ui, redraw: ctx.redraw, onCut: (index) => ctx.send('cut', { index }) })),
+      moduleBox('2 · Valves', d.solved.valves, valvesBody({ pressure: d.valves.pressure, solved: d.solved.valves, ui, redraw: ctx.redraw, onConfirm: (set) => ctx.send('valves', { set }) })),
+      moduleBox('3 · Keypad', d.solved.keypad, keypadBody({ words: d.keypad.words, pressed: d.keypad.pressed, solved: d.solved.keypad, onKey: (word) => ctx.send('key', { word }) })),
+    ];
+  }
+  return [h('div', { class: 'c2-wide' }, manualBook([
+    ['wires', '1 · Wires', () => wiresManual(pz.level)],
+    ['valves', '2 · Valves', () => valvesManual(pz.level)],
+    ['keypad', '3 · Keypad', () => keypadManual()],
+    ['words', '📖 Sổ từ', () => glossaryPage()],
+  ], ui, ctx.redraw, d.solved))];
+}
+
+// ------------------------------------------------------------ 6. finale
+const PHASES = [
+  'Lượt 1 · Máy chính: dây cáp',
+  'Lượt 2 · Đổi vai — Máy dự phòng: van',
+  'Lượt 3 · Cả hai cùng lúc: khoá giọng nói + bàn phím',
+  'Cuối cùng · Cùng bấm SEND',
+];
+function recallClue(rc, level) {
+  if (level === 'hard') return [line(rc.en, null), h('p', { class: 'small' }, 'Mức Hack não: chỉ có định nghĩa tiếng Anh.')];
+  const out = [h('div', { class: 'c2-clue' }, rc.vi)];
+  if (level === 'easy') out.push(h('div', { class: 'c2-clue en' }, rc.hint));
+  out.push(h('p', { class: 'small' }, 'Đọc gợi ý cho người kia. Họ phải tự nhớ ra câu tiếng Anh và gõ vào khoá.'));
+  return out;
+}
+function finaleView(ctx) {
+  const { d, role, ui, pz } = ctx;
+  const phaseBar = h('div', { class: 'c2-wide c2-phases' }, ...PHASES.map((t, i) => h('span', { class: `ph ${d.phase === i + 1 ? 'now' : ''} ${d.phase > i + 1 ? 'ok' : ''}` }, (d.phase > i + 1 ? '✓ ' : '') + t)));
+  const wait = (txt) => h('p', { class: 'c2-waiting' }, txt);
+  let mine;
+  let book;
+  if (role === 'a') {
+    const recall = (() => {
+      if (d.solved.recall) return h('p', {}, '✓ Khoá giọng nói đã mở.');
+      if (d.phase < 3) return wait('Khoá giọng nói mở ở lượt 3.');
+      const inp = h('input', { type: 'text', class: 'en-input', 'data-k': 'recall', placeholder: 'Gõ câu tiếng Anh...', value: ui.recall || '', style: { width: '100%' } });
+      inp.addEventListener('input', () => { ui.recall = inp.value; });
+      const go = () => { if (inp.value.trim()) { ctx.send('recall', { text: inp.value }); ui.recall = ''; } };
+      inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
+      return h('div', {}, h('p', { class: 'small' }, `Khoá chỉ mở khi gõ đúng một câu tiếng Anh hai bạn đã gặp. ${nameOf(partner())} có gợi ý.`), inp,
+        h('div', { class: 'row' }, h('button', { class: 'btn gold small', onclick: go }, 'Mở khoá ▶')),
+        d.recall.tries.length ? h('div', { class: 'small' }, 'Đã thử: ', d.recall.tries.join(' · ')) : null);
+    })();
+    mine = [h('h4', {}, '🅰 Máy chính (bạn làm)'), platePanel(d.main.plate),
+      moduleBox('Wires', d.solved.wires, d.phase === 1 || d.solved.wires ? wiresBody({ wires: d.main.wires, solved: d.solved.wires || d.phase !== 1, ui, redraw: ctx.redraw, onCut: (index) => ctx.send('cut', { index }) }) : wait('')),
+      moduleBox('Voice lock', d.solved.recall, recall)];
+    book = [h('h4', {}, `📘 Sổ tay máy dự phòng (${nameOf(partner())} làm)`),
+      d.phase === 1 ? wait(`Lượt 1: ${nameOf(partner())} đang đọc sổ tay cho bạn. Sổ tay của bạn dùng từ lượt 2.`) : null,
+      d.phase === 2 ? valvesManual(pz.level) : null,
+      d.phase >= 3 ? keypadManual() : null];
+  } else {
+    mine = [h('h4', {}, '🅱 Máy dự phòng (bạn làm)'), platePanel(d.backup.plate),
+      moduleBox('Valves', d.solved.valves, d.phase >= 2 ? valvesBody({ pressure: d.backup.valves.pressure, solved: d.solved.valves, ui, redraw: ctx.redraw, onConfirm: (set) => ctx.send('valves', { set }) }) : wait('Mở ở lượt 2.')),
+      moduleBox('Keypad', d.solved.keypad, d.phase >= 3 ? keypadBody({ words: d.backup.keypad.words, pressed: d.backup.keypad.pressed, solved: d.solved.keypad, onKey: (word) => ctx.send('key', { word }) }) : wait('Mở ở lượt 3.'))];
+    book = [h('h4', {}, `📘 Sổ tay máy chính (${nameOf(partner())} làm)`),
+      d.phase === 1 ? wiresManual(pz.level) : null,
+      d.phase === 2 ? wait(`Lượt 2: ${nameOf(partner())} đang đọc sổ tay cho bạn. Sổ tay của bạn dùng lại ở lượt 3.`) : null,
+      d.phase >= 3 ? h('div', {}, h('h4', {}, '🔑 Gợi ý khoá giọng nói'), ...(d.solved.recall ? [h('p', {}, '✓ Đã mở.')] : recallClue(recallOf(d), pz.level))) : null];
+  }
+  const out = [phaseBar, h('div', { class: 'box c2-card' }, ...mine), h('div', { class: 'box c2-card' }, ...book)];
+  if (d.phase === 4) {
+    const waitP = ui.partnerSend && performance.now() - ui.partnerSend < SEND_WINDOW_MS;
+    out.splice(1, 0, h('div', { class: 'box c2-card c2-wide c2-send' },
+      h('p', {}, `Cả hai máy đã sẵn sàng. Hai bạn phải bấm SEND cách nhau không quá ${SEND_WINDOW_MS / 1000} giây: đếm "one, two, three" rồi cùng bấm!`),
+      h('button', { class: 'btn red c2-sendbtn', onclick: () => ctx.send('send') }, d.send[role] ? 'SEND lại' : 'SEND ▶'),
+      h('div', { class: 'small' }, waitP ? `⏳ ${nameOf(partner())} vừa bấm SEND! Bấm ngay!` : `${nameOf(partner())}: chưa bấm`)));
+  }
+  return out;
+}
+
+export const VIEWS = { coords: coordsView, flood: floodView, keycard: keycardView, antenna: antennaView, machine: machineView, finale: finaleView };
 
 // Pip's hint (H key) for each step
 export const C2_HINT = {

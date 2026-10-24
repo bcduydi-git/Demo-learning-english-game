@@ -5,6 +5,7 @@
 //   strikes    max strikes per level
 //   create(level, r)            -> puzzle data (random)
 //   act(pz, role, a, ev)        -> 'ok' | 'strike' | 'solved' | undefined
+//   timed      true if data.left counts down (see puzzleTick)
 // Only the side named in each action's role may do it; the server checks.
 
 import { rng } from '../transmitter.js';
@@ -12,8 +13,10 @@ import { coords } from './coords.js';
 import { flood } from './flood.js';
 import { keycard } from './keycard.js';
 import { antenna } from './antenna.js';
+import { machine } from './machine.js';
+import { finale } from './finale.js';
 
-export const PUZZLES = { coords, flood, keycard, antenna };
+export const PUZZLES = { coords, flood, keycard, antenna, machine, finale };
 export const LEVELS = { easy: 'Dễ', normal: 'Vừa', hard: 'Hack não' };
 
 export function newPuzzle(kind, prev, level = 'normal') {
@@ -81,4 +84,16 @@ export function puzzleAction(state, pz, slot, a, seed) {
     }
   }
   return ev;
+}
+
+// The clock of a timed puzzle. -> { ev, changed }
+export function puzzleTick(pz, dt) {
+  if (!pz || pz.status !== 'run' || !PUZZLES[pz.kind].timed || !pz.data) return { ev: [], changed: false };
+  const before = Math.ceil(pz.data.left / 1000);
+  pz.data.left = Math.max(0, pz.data.left - dt * 1000);
+  if (pz.data.left <= 0) {
+    pz.status = 'failed';
+    return { ev: [{ e: 'pz_failed', kind: pz.kind, why: 'time' }], changed: true };
+  }
+  return { ev: [], changed: Math.ceil(pz.data.left / 1000) !== before };
 }
