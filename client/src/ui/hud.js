@@ -2,7 +2,7 @@
 
 import { h, root, clear, portraitUrl } from './dom.js';
 import { G, nameOf, partner, objectives, settings, ROLE } from '../ctx.js';
-import { ROLE_INFO } from '../../../shared/ch2/story.js';
+import { ALL_ROLE_INFO as ROLE_INFO } from '../../../shared/ch2/index.js';
 import { PHRASE_BY_ID } from '../../../shared/phrases.js';
 import { toggleMute, speak, sfx } from '../audio.js';
 import { openRadio } from './radio.js';

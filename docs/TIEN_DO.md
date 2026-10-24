@@ -2,6 +2,14 @@
 
 Tài liệu này không tiết lộ cốt truyện.
 
+## Phiên bản 0.8.0 — Chương 3, chương cuối (24/10/2026)
+
+- **Chương 3 — Ngọn Hải Đăng Chìm**, 4 thử thách mới với cơ chế khác chương 2: Cửa sổ thuỷ triều (đọc bảng số liệu), Nhật ký rách (xếp văn bản theo từ nối, kiểu TOEIC Part 6), Bánh răng thấu kính (chiều quay, số vòng, bản thiết kế cũ), Đèn hiệu cho tàu (cao trào: tả tàu ↔ tra sổ quy tắc, đổi vai giữa chừng, cùng bấm LIGHT). Kết thúc câu chuyện, màn hình THE END, Sổ từ chương 3.
+- Vào bằng **Chương 3 ▶** ở phòng chờ hoặc cuối chương 2. Mỗi chương lưu tiến độ riêng; chuyển qua lại giữa chương 2 và 3 không mất tiến độ.
+- Bộ máy chương (bản đồ phòng, thử thách, cảnh truyện) dùng chung cho chương 2 và 3.
+- Kiểm thử: 37 bài luật chơi (thêm bài cho 4 thử thách chương 3 với hàng trăm đề ngẫu nhiên, luồng chương 3, chuyển chương giữ tiến độ, đồng hồ cao trào); chơi tự động chương 3 bằng 2 trình duyệt; các bài cũ (chương 1, 2, máy phát, kết nối lại) chạy lại.
+- Hình nền phòng chương 3 cũng là hình tạm; đã thêm vào danh sách hình cho ChatGPT.
+
 ## Phiên bản 0.7.0 — Chương 2 hoàn chỉnh (24/10/2026)
 
 - Thử thách 5 **Máy phát tín hiệu** vào truyện (phòng máy phát của trạm, có đồng hồ đếm ngược, làm sai bị trừ giờ).

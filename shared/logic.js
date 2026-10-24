@@ -4,7 +4,7 @@
 import { SCENES, BOSS, CALL, BAY, DOOR_HALVES, makeGenerator, generatorSequence, parseBoatCommand } from './content.js';
 import { normalize, matchPhrase } from './phrases.js';
 import { newTx, txAction, txTick } from './transmitter.js';
-import { newC2, c2Action, c2SceneEnd, restoreC2, c2Tick } from './ch2/index.js';
+import { c2Action, c2SceneEnd, restoreC2, c2Tick, enterChapter } from './ch2/index.js';
 
 export const SLOTS = ['p1', 'p2'];
 // Who each player is drawn as (independent of the role they chose).
@@ -39,7 +39,7 @@ export function createState(room, rand = Math.random) {
     v: SAVE_VERSION,
     room,
     createdAt: Date.now(),
-    stage: 'world', // world | boss | finale | credits | ch2 (chapter 2) | tx (transmitter prototype)
+    stage: 'world', // world | boss | finale | credits | ch2 (chapters 2 and 3, see state.c2.chapter) | tx (transmitter prototype)
     players: {
       p1: { name: '', connected: false, look: DEFAULT_LOOK.p1 },
       p2: { name: '', connected: false, look: DEFAULT_LOOK.p2 },
@@ -215,17 +215,20 @@ export function applyAction(state, slot, a, now = Date.now()) {
       state.players[slot].name = cleanName(a.name);
       break;
 
-    case 'ch2_start': // chapter 2 begins (after chapter 1, or straight from the waiting room)
-      if (state.stage !== 'ch2') {
-        f.started = true;
-        f.ch2 = true;
-        state.stage = 'ch2';
-        state.scene = null;
-        state.sceneQueue = [];
-        state.c2 = state.c2 && state.c2.step ? state.c2 : newC2();
-        if (state.c2.step === 'coords' && !state.c2.seenIntro.c2) { state.c2.seenIntro.c2 = true; startScene(state, 'c2_intro'); }
-      }
+    case 'ch2_start': // chapter 2 or 3 begins (after the previous chapter, or straight from the waiting room)
+    case 'ch3_start': {
+      const chapter = a.type === 'ch3_start' ? 3 : 2;
+      if (state.stage === 'ch2' && state.c2 && (state.c2.chapter || 2) === chapter) break;
+      f.started = true;
+      f[`ch${chapter}`] = true;
+      state.stage = 'ch2';
+      state.scene = null;
+      state.sceneQueue = [];
+      enterChapter(state, chapter);
+      const c = state.c2;
+      if (c.step === c.pz?.kind && !c.seenIntro.c && Object.keys(c.results).length === 0) { c.seenIntro.c = true; startScene(state, chapter === 3 ? 'c3_intro' : 'c2_intro'); }
       break;
+    }
 
     case 'tx_open': // chapter 2 prototype: the signal transmitter
       if (state.stage !== 'tx') {
@@ -597,6 +600,7 @@ export function restoreState(save, room) {
   if (!save || typeof save !== 'object') return s;
   const keep = ['stage', 'flags', 'gen', 'learn', 'pos', 'log', 'call', 'txReturn'];
   if (save.c2) s.c2 = restoreC2(save.c2);
+  if (save.parked) s.parked = Object.fromEntries(Object.entries(save.parked).map(([k, v]) => [k, restoreC2(v)]));
   for (const k of keep) if (save[k] !== undefined) s[k] = save[k];
   for (const slot of SLOTS) {
     if (save.players && save.players[slot]) {

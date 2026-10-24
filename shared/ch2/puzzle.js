@@ -1,4 +1,4 @@
-// Common frame for the chapter 2 puzzles: setup (pick level, swap roles,
+// Common frame for the chapter 2 and 3 puzzles: setup (pick level, swap roles,
 // both ready) -> run -> done, or failed after too many strikes (then a new
 // random puzzle). Each puzzle module provides:
 //   roles      [roleA, roleB]: names of the two sides, given to p1 / p2
@@ -15,8 +15,12 @@ import { keycard } from './keycard.js';
 import { antenna } from './antenna.js';
 import { machine } from './machine.js';
 import { finale } from './finale.js';
+import { tide } from '../ch3/tide.js';
+import { diary } from '../ch3/diary.js';
+import { gears } from '../ch3/gears.js';
+import { beacon } from '../ch3/beacon.js';
 
-export const PUZZLES = { coords, flood, keycard, antenna, machine, finale };
+export const PUZZLES = { coords, flood, keycard, antenna, machine, finale, tide, diary, gears, beacon };
 export const LEVELS = { easy: 'Dễ', normal: 'Vừa', hard: 'Hack não' };
 
 export function newPuzzle(kind, prev, level = 'normal') {

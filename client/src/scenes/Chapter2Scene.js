@@ -10,9 +10,9 @@ import { line } from '../ui/enline.js';
 import { openModal } from '../ui/modal.js';
 import { clearLastSession } from '../store.js';
 import { music, ambience, sfx, speak } from '../audio.js';
-import { ROOMS, LINKS, STEPS, ROLE_INFO, CH2_WORDS } from '../../../shared/ch2/story.js';
+
 import { PUZZLES, LEVELS, roleOf } from '../../../shared/ch2/puzzle.js';
-import { stepOf, isOpen } from '../../../shared/ch2/index.js';
+import { stepOf, isOpen, chapterOf, ALL_ROLE_INFO as ROLE_INFO } from '../../../shared/ch2/index.js';
 import { VIEWS, PHRASES } from '../ch2/puzzles.js';
 
 const ROOM_LOOK = {
@@ -25,8 +25,13 @@ const ROOM_LOOK = {
   lockers: { wall: 0x2f3440, floor: 0x50525a, accent: 0xc0c8d8, kind: 'room' },
   dome: { wall: 0x0b1024, floor: 0x262a3a, accent: 0x6dff8a, kind: 'stars' },
   transmitter: { wall: 0x1a1a22, floor: 0x2a2a33, accent: 0xff6a5a, kind: 'room' },
+  deck: { wall: 0x2a4a6a, floor: 0x6a5038, accent: 0x6dff8a, kind: 'sea' },
+  landing: { wall: 0x2a3a52, floor: 0x55565e, accent: 0x7fd6ff, kind: 'sea' },
+  stairs: { wall: 0x4a3f38, floor: 0x3a3430, accent: 0xffd27a, kind: 'room' },
+  keeperroom: { wall: 0x5a4636, floor: 0x6a5038, accent: 0xffd27a, kind: 'room' },
+  gearroom: { wall: 0x3a3a3a, floor: 0x4a4038, accent: 0xf2c230, kind: 'room' },
+  lantern: { wall: 0x0b1024, floor: 0x3a3430, accent: 0x6dff8a, kind: 'stars' },
 };
-const TITLES = Object.fromEntries(STEPS.map((s) => [s.id, s]));
 
 export class Chapter2Scene extends Phaser.Scene {
   constructor() {
@@ -119,6 +124,8 @@ export class Chapter2Scene extends Phaser.Scene {
   // ------------------------------------------------------------ state
   applyState(s) {
     if (!s || !s.c2) return;
+    this.C = chapterOf(s.c2); // rooms, steps and words of the chapter being played
+    if (this.chapter !== (s.c2.chapter || 2)) { this.chapter = s.c2.chapter || 2; this.room = null; this.ui = {}; music(this.chapter === 3 ? 'woods' : 'night'); }
     if (this.room !== s.c2.rooms[G.slot]) {
       this.room = s.c2.rooms[G.slot];
       this.drawRoom();
@@ -171,8 +178,17 @@ export class Chapter2Scene extends Phaser.Scene {
           setTimeout(() => this.render(), 4100);
         }
         break;
+      case 'beacon_ship': sfx('success'); toast(e.swap ? `✓ Tàu ${e.n} an toàn! 🔄 Đổi vai: người quan sát giờ phát đèn.` : `✓ Tàu ${e.n} đã đổi hướng, an toàn!`, 'good'); break;
+      case 'beacon_light':
+        if (c2.pz && roleOf(c2.pz, G.slot) !== e.side) {
+          const ui = this.ui.beacon || (this.ui.beacon = {});
+          ui.partnerLight = performance.now();
+          this.render();
+          setTimeout(() => this.render(), 4100);
+        }
+        break;
       case 'antenna_round': sfx('success'); toast('✓ Đĩa thứ nhất đã đúng hướng! Giờ đổi phía.', 'good'); break;
-      case 'c2_moved': if (e.by !== G.slot) toast(`${who} đi tới ${ROOMS[e.room].vi}`); break;
+      case 'c2_moved': if (e.by !== G.slot) toast(`${who} đi tới ${this.C.ROOMS[e.room].vi}`); break;
       default: break;
     }
   }
@@ -199,11 +215,11 @@ export class Chapter2Scene extends Phaser.Scene {
 
   topBar(c2) {
     const st = stepOf(c2);
-    const n = STEPS.findIndex((x) => x.id === st.id);
+    const n = this.C.STEPS.findIndex((x) => x.id === st.id);
     return h('div', { class: 'box c2-top' },
-      h('div', { class: 'small' }, 'CHƯƠNG 2 · NGỌN ĐÈN XANH'),
-      h('b', {}, st.id === 'end' ? 'Hết chương 2' : `Thử thách ${n + 1}/${STEPS.length - 1}: ${st.vi}`),
-      st.id !== 'end' ? h('div', { class: 'small' }, `Đến ${ROOMS[st.room].vi} để bắt đầu.`) : null);
+      h('div', { class: 'small' }, this.C.TITLE.vi),
+      h('b', {}, st.id === 'end' ? `Hết chương ${c2.chapter || 2}` : `Thử thách ${n + 1}/${this.C.STEPS.length - 1}: ${st.vi}`),
+      st.id !== 'end' ? h('div', { class: 'small' }, `Đến ${this.C.ROOMS[st.room].vi} để bắt đầu.`) : null);
   }
 
   mapPanel(c2) {
@@ -211,15 +227,15 @@ export class Chapter2Scene extends Phaser.Scene {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 100 100');
     svg.setAttribute('preserveAspectRatio', 'none');
-    for (const [a, b] of LINKS) {
+    for (const [a, b] of this.C.LINKS) {
       const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      for (const [k, v] of Object.entries({ x1: ROOMS[a].x + 9, y1: ROOMS[a].y + 6, x2: ROOMS[b].x + 9, y2: ROOMS[b].y + 6 })) l.setAttribute(k, v);
+      for (const [k, v] of Object.entries({ x1: this.C.ROOMS[a].x + 9, y1: this.C.ROOMS[a].y + 6, x2: this.C.ROOMS[b].x + 9, y2: this.C.ROOMS[b].y + 6 })) l.setAttribute(k, v);
       l.setAttribute('class', isOpen(c2, a) && isOpen(c2, b) ? 'open' : '');
       svg.append(l);
     }
     map.append(svg);
     const busy = c2.pz && c2.pz.status === 'run';
-    for (const [id, r] of Object.entries(ROOMS)) {
+    for (const [id, r] of Object.entries(this.C.ROOMS)) {
       const open = isOpen(c2, id) && !r.locked;
       const here = ['p1', 'p2'].filter((p) => c2.rooms[p] === id);
       const isStep = stepOf(c2).room === id && c2.step !== 'end';
@@ -236,26 +252,26 @@ export class Chapter2Scene extends Phaser.Scene {
 
   roomPanel(c2) {
     const id = c2.rooms[G.slot];
-    const r = ROOMS[id];
+    const r = this.C.ROOMS[id];
     const st = stepOf(c2);
     const other = c2.rooms[partner()];
     const notes = r.notes.map((n) => h('button', { class: 'btn small', onclick: () => this.openNote(n) }, `📄 ${n.title}`));
     const canStart = c2.pz && st.room === id && !c2.open && c2.step !== 'end';
     return h('div', { class: 'box c2-roombox' },
       h('div', { class: 'en', style: { fontSize: '28px', lineHeight: 1 } }, r.name),
-      h('div', { class: 'small' }, r.vi, ' · ', other === id ? `${nameOf(partner())} ở cùng phòng` : `${nameOf(partner())} đang ở ${ROOMS[other].vi}`),
-      h('div', { class: 'row', style: { marginTop: '6px' } }, ...notes, h('button', { class: 'btn small', onclick: () => this.openWords(c2) }, '📖 Sổ từ chương 2')),
+      h('div', { class: 'small' }, r.vi, ' · ', other === id ? `${nameOf(partner())} ở cùng phòng` : `${nameOf(partner())} đang ở ${this.C.ROOMS[other].vi}`),
+      h('div', { class: 'row', style: { marginTop: '6px' } }, ...notes, h('button', { class: 'btn small', onclick: () => this.openWords(c2) }, `📖 Sổ từ chương ${c2.chapter || 2}`)),
       canStart ? h('button', { class: 'btn gold', style: { marginTop: '8px' }, onclick: () => act({ type: 'c2_open' }) }, `▶ Thử thách: ${st.vi}`) : null,
-      !canStart && c2.step !== 'end' && st.room !== id ? h('div', { class: 'small', style: { marginTop: '6px' } }, `Thử thách tiếp theo ở: ${ROOMS[st.room].vi}`) : null,
+      !canStart && c2.step !== 'end' && st.room !== id ? h('div', { class: 'small', style: { marginTop: '6px' } }, `Thử thách tiếp theo ở: ${this.C.ROOMS[st.room].vi}`) : null,
     );
   }
 
   openWords(c2) {
-    const m = openModal('📖 Sổ từ chương 2', { id: 'c2words', wide: true });
-    m.body.append(h('p', { class: 'small' }, 'Từ và cụm từ kiểu TOEIC gặp trong chương 2. Thử thách đã xong có dấu ✓. Bấm 🔊 để nghe.'));
-    for (const x of STEPS.filter((st) => CH2_WORDS[st.id])) {
+    const m = openModal(`📖 Sổ từ chương ${c2.chapter || 2}`, { id: 'c2words', wide: true });
+    m.body.append(h('p', { class: 'small' }, `Từ và cụm từ kiểu TOEIC gặp trong chương ${c2.chapter || 2}. Thử thách đã xong có dấu ✓. Bấm 🔊 để nghe.`));
+    for (const x of this.C.STEPS.filter((st) => this.C.WORDS[st.id])) {
       m.body.append(h('h3', {}, `${c2.results[x.id] ? '✓ ' : ''}${x.vi}`),
-        h('div', { class: 'tx-words' }, ...CH2_WORDS[x.id].map(([en, vi]) => h('div', { class: 'card' },
+        h('div', { class: 'tx-words' }, ...this.C.WORDS[x.id].map(([en, vi]) => h('div', { class: 'card' },
           h('span', { class: 'en', style: { flex: 1 } }, en), h('span', { class: 'small' }, vi),
           h('button', { class: 'btn small', onclick: () => speak(en, 'narr') }, '🔊')))));
     }
@@ -270,7 +286,7 @@ export class Chapter2Scene extends Phaser.Scene {
   puzzlePanel(c2) {
     const pz = c2.pz;
     const P = PUZZLES[pz.kind];
-    const st = TITLES[pz.kind];
+    const st = this.C.STEPS.find((x) => x.id === pz.kind);
     const myRole = roleOf(pz, G.slot);
     const send = (op, extra = {}) => act({ type: 'c2_pz', op, ...extra });
     const wrap = h('div', { class: 'c2-overlay' });
@@ -284,7 +300,7 @@ export class Chapter2Scene extends Phaser.Scene {
       const pOn = G.state.players[partner()].connected;
       const meReady = !!pz.ready[G.slot];
       wrap.append(h('div', { class: 'box c2-setup' },
-        h('div', { class: 'small' }, `THỬ THÁCH ${STEPS.findIndex((x) => x.id === pz.kind) + 1}/${STEPS.length - 1}`),
+        h('div', { class: 'small' }, `THỬ THÁCH ${this.C.STEPS.findIndex((x) => x.id === pz.kind) + 1}/${this.C.STEPS.length - 1}`),
         h('h2', { class: 'en', style: { fontSize: '36px', margin: '0 0 4px' } }, st.title),
         h('p', {}, st.vi, '. Mỗi người chỉ thấy một nửa thông tin: hãy gọi thoại và nói chuyện bằng tiếng Anh.'),
         h('div', { class: 'roles' }, ...P.roles.map(card)),
@@ -327,23 +343,37 @@ export class Chapter2Scene extends Phaser.Scene {
   }
 
   endPanel(c2) {
-    const rows = STEPS.filter((x) => PUZZLES[x.id]).map((x) => {
+    const rows = this.C.STEPS.filter((x) => PUZZLES[x.id]).map((x) => {
       const r = c2.results[x.id];
       const mm = r ? `${Math.floor(r.ms / 60000)}:${String(Math.floor(r.ms / 1000) % 60).padStart(2, '0')}` : '—';
       return h('tr', {}, h('td', {}, x.vi), h('td', {}, r ? LEVELS[r.level] : '—'), h('td', {}, r ? String(r.strikes) : '—'), h('td', {}, r ? String(r.attempts) : '—'), h('td', { class: 'en' }, mm));
     });
+    const ch = c2.chapter || 2;
+    const table = h('table', { class: 'tx-table' }, h('tr', {}, h('th', {}, 'Thử thách'), h('th', {}, 'Mức'), h('th', {}, 'Sai'), h('th', {}, 'Lượt chơi'), h('th', {}, 'Thời gian')), ...rows);
+    if (ch === 3) {
+      return h('div', { class: 'c2-overlay' }, h('div', { class: 'box c2-setup' },
+        h('div', { class: 'logo', style: { fontSize: '52px' } }, 'THE END'),
+        h('p', {}, `${nameOf('p1')} và ${nameOf('p2')} đã đưa bà Eleanor về nhà và giữ cho Ngọn Hải Đăng Chìm luôn sáng. Cảm ơn hai bạn đã chơi Beacon Isle!`),
+        table,
+        h('div', { class: 'tx-tip' }, 'Muốn luyện thêm: mỗi thử thách của chương 2 và 3 đều tạo đề mới mỗi lần, và có mức Hack não. Chơi lại từ phòng chờ (Chương 2 ▶ / Chương 3 ▶), nhớ đổi vai để luyện cả nói lẫn nghe.'),
+        h('div', { class: 'row' },
+          h('button', { class: 'btn', onclick: () => this.openWords(c2) }, '📖 Sổ từ chương 3'),
+          h('span', { class: 'spacer' }),
+          h('button', { class: 'btn gold', onclick: () => { clearLastSession(); G.net.close(); location.href = location.pathname; } }, 'Về màn hình chính')),
+      ));
+    }
     return h('div', { class: 'c2-overlay' }, h('div', { class: 'box c2-setup' },
       h('div', { class: 'logo', style: { fontSize: '44px' } }, 'SIGNAL SENT!'),
       h('p', {}, `${nameOf('p1')} và ${nameOf('p2')} đã đi hết chương 2: sáu thử thách ở trạm Halcyon.`),
-      h('table', { class: 'tx-table' }, h('tr', {}, h('th', {}, 'Thử thách'), h('th', {}, 'Mức'), h('th', {}, 'Sai'), h('th', {}, 'Lượt chơi'), h('th', {}, 'Thời gian')), ...rows),
+      table,
       h('div', { style: { margin: '6px 0', padding: '10px', border: '2px dashed #4fc1bc', borderRadius: '4px' } },
         h('div', { class: 'en', style: { fontSize: '30px', color: '#2f8f8a' } }, 'To be continued...'),
-        h('div', {}, 'Chương 3 — Ngọn Hải Đăng Chìm (sắp có).')),
+        h('div', {}, 'Chương 3 — Ngọn Hải Đăng Chìm.')),
       h('div', { class: 'row' },
         h('button', { class: 'btn', onclick: () => this.openWords(c2) }, '📖 Sổ từ chương 2'),
-        h('span', { class: 'spacer' }),
         h('button', { class: 'btn small', onclick: () => act({ type: 'tx_open' }) }, '🧪 Luyện thêm Máy phát'),
-        h('button', { class: 'btn gold', onclick: () => { clearLastSession(); G.net.close(); location.href = location.pathname; } }, 'Về màn hình chính')),
+        h('span', { class: 'spacer' }),
+        h('button', { class: 'btn teal', onclick: () => act({ type: 'ch3_start' }) }, 'Chương 3 ▶')),
     ));
   }
 
